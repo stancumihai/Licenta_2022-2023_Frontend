@@ -31,6 +31,6 @@ abstract class BaseService<T> {
     async Update(body: T): Promise<IResponse<T>> {
         return await APIHelper.request(`${this._endpoint}`, 'PUT', body)
     }
-}
+};
 
 export default BaseService

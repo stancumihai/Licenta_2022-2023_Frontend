@@ -1,4 +1,4 @@
-import { IResponse } from "../models/IResponse";
+import { IResponse } from "../Models/IResponse";
 
 export interface IFetchResult<T> {
     data: IResponse<T> | null;

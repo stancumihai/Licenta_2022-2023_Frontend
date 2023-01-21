@@ -1,0 +1,1 @@
+export type IsModified<T extends string> = Record<T, boolean>;
