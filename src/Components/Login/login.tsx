@@ -1,27 +1,56 @@
 import { Checkbox, DefaultButton, TextField } from '@fluentui/react';
-import { ENVELOPE_LOGO_LOCATION, FORGOT_PASSWORD, LOCK_LOGO_LOCATION, LOGIN, REMEMBER_ME, SIGN_UP } from '../../Library/constants';
-import { contentStyles, containerLoginClassName, textFieldStyles, loginButtonStyles, additionalInfoHeaderClassName, forgotPasswordClassName, headerButtonsClassName, loginHeaderButtonStyles, signUpHeaderButtonStyles, checkBoxStyles, containerClassName, emailAddressIconClassName, passwordIconClassName } from './login.styles';
-import { useState } from 'react';
+import {
+    ENVELOPE_LOGO_LOCATION,
+    FORGOT_PASSWORD,
+    LOCK_LOGO_LOCATION,
+    LOGIN,
+    REMEMBER_ME,
+    SIGN_UP,
+    SIGN_UP_PATH,
+    SURVEY_PATH
+} from '../../Library/constants';
+import {
+    contentStyles,
+    containerLoginClassName,
+    textFieldStyles,
+    loginButtonStyles,
+    additionalInfoHeaderClassName,
+    forgotPasswordClassName,
+    headerButtonsClassName,
+    loginHeaderButtonStyles,
+    signUpHeaderButtonStyles,
+    rememberMeCheckboxStyles,
+    containerClassName,
+    emailAddressIconClassName,
+    passwordIconClassName,
+    customIconButtonContainerClasssName,
+} from './login.styles';
+import { useContext, useState } from 'react';
 import { IsModified } from '../../Library/types';
 import { ILoginFormData } from './login.types';
 import { Background } from '../Background/background';
 import { SocialMedia } from '../SocialMedia/socialMedia';
 import { Logo } from '../Logo/logo';
 import { CustomIconButton } from '../CustomIconButton/customIconButton';
+import { NavigateFunction, useNavigate } from 'react-router';
+import AuthentificationContext from '../../Authentication/authenticationContext';
+import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
 
 export const Login = (): JSX.Element => {
+    const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
     const [emailAddress, setEmailAddress] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [rememberMe, setRememberMe] = useState<boolean>(false);
     const [emailAddressErrorMessage, setEmailAddressErrorMessage] = useState<string>('');
     const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
-    const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(false);
+    const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true);
     const [isModified, setIsModified] = useState<IsModified<'Email' | 'Password'>>(
         {
             Email: false,
             Password: false
         }
     );
+    const navigate: NavigateFunction = useNavigate();
 
     const isReadyToSumbit = (data: ILoginFormData): boolean => {
         return data.Email !== "" && data.Password !== '';
@@ -46,15 +75,21 @@ export const Login = (): JSX.Element => {
         setRememberMe(checked!);
     };
     const handleLogin = (): void => {
-        console.log('Login pressed');
+        authenticationContext.SetUpdatedUser({ email: emailAddress, password })
+        navigate(SURVEY_PATH);
+        return;
     };
+    const handleSignUpClick = (): void => {
+        navigate(SIGN_UP_PATH);
+    };
+
     return <div className={containerClassName}>
         <Background />
         <div className={containerLoginClassName}>
             <div className={contentStyles.container}>
                 <div className={headerButtonsClassName}>
                     <DefaultButton styles={loginHeaderButtonStyles} text={LOGIN} />
-                    <DefaultButton styles={signUpHeaderButtonStyles} text={SIGN_UP} />
+                    <DefaultButton onClick={handleSignUpClick} styles={signUpHeaderButtonStyles} text={SIGN_UP} />
                 </div>
                 <p className={additionalInfoHeaderClassName}>Get login to access your account</p>
                 <div className={contentStyles.body}>
@@ -69,12 +104,14 @@ export const Login = (): JSX.Element => {
                         styles={textFieldStyles}
                         placeholder='Password'
                         type="password" />
-                    <CustomIconButton className={emailAddressIconClassName}
-                        logoLocation={ENVELOPE_LOGO_LOCATION} />
-                    <CustomIconButton className={passwordIconClassName}
-                        logoLocation={LOCK_LOGO_LOCATION} />
+                    <div className={customIconButtonContainerClasssName}>
+                        <CustomIconButton className={emailAddressIconClassName}
+                            logoLocation={ENVELOPE_LOGO_LOCATION} />
+                        <CustomIconButton className={passwordIconClassName}
+                            logoLocation={LOCK_LOGO_LOCATION} />
+                    </div>
                     <Checkbox onChange={onRememberMeChange}
-                        styles={checkBoxStyles}
+                        styles={rememberMeCheckboxStyles}
                         label={REMEMBER_ME} />
                     <DefaultButton disabled={isSaveButtonDisabled}
                         onClick={handleLogin}

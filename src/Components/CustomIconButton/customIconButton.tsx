@@ -2,6 +2,8 @@ import { GOOGLE_LOGO_LOCATION, IMAGE_NOT_FOUND_ALTERNATE_TEXT } from '../../Libr
 import { customIconClassName, customIconClassNameSpecial } from './customIconButton.styles';
 import { ICustomIconButtonProps } from './customIconButton.types';
 
+;
+
 export const CustomIconButton = (props: ICustomIconButtonProps): JSX.Element => {
     return <div>
         <img

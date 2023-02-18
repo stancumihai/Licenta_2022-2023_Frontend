@@ -1,7 +1,11 @@
+import { SurveyQuestionCategory } from '../Enums/SurveyQuestionCategory';
+import { SurveyQuestionType } from '../Enums/SurveyQuestionType';
 import { ISurveyAnswer } from './ISurveyAnswer';
 
 export interface ISurveyQuestion {
-    Uid: string;
-    Value: string;
-    SurveyAnswers?: ISurveyAnswer[];
+    uid?: string;
+    value: string;
+    surveyAnswers?: ISurveyAnswer[];
+    Type?: SurveyQuestionType;
+    category: SurveyQuestionCategory
 };

@@ -1,25 +1,27 @@
 import React from 'react'
+import { SURVEY_QUESTIONS_ENDPONT, SURVEY_ANSWERS_ENDPONT } from '../Library/constants';
+import SurveyAnswersService from '../Services/surveyAnswersService';
+import SurveyQuestionsService from '../Services/surveyQuestionsService';
 
 
 export class ServiceContext {
-    // private _usersService?: UsersService;
-    // private _projectsService?: ProjectsService;
-    // private _assignmentsService?: AssignmentsService;
-    // private _authentificationService?: AuthentificationService;
+    private _surveyQuestionsService?: SurveyQuestionsService;
+    private _surveyAnswersService?: SurveyAnswersService;
 
-    // get UsersService(): UsersService {
-    //     if (this._usersService == null) {
-    //         this._usersService = new UsersService(USERS_ENDPOINT);
-    //     }
-    //     return this._usersService;
-    // }
 
-    // get ProjectsService(): ProjectsService {
-    //     if (this._projectsService == null) {
-    //         this._projectsService = new ProjectsService(PROJECTS_ENDPOINT);
-    //     }
-    //     return this._projectsService;
-    // }
+    get SurveyQuestionsService(): SurveyQuestionsService {
+        if (this._surveyQuestionsService == null) {
+            this._surveyQuestionsService = new SurveyQuestionsService(SURVEY_QUESTIONS_ENDPONT);
+        }
+        return this._surveyQuestionsService;
+    }
+
+    get SurveyAnswersService(): SurveyAnswersService {
+        if (this._surveyAnswersService == null) {
+            this._surveyAnswersService = new SurveyAnswersService(SURVEY_ANSWERS_ENDPONT);
+        }
+        return this._surveyAnswersService;
+    }
 
     // get AssignmentsService(): AssignmentsService {
     //     if (this._assignmentsService == null) {

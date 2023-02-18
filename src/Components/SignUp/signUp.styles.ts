@@ -3,6 +3,7 @@ import { mergeStyles } from '@fluentui/react';
 import { FONT_FAMILY, LOGIN_INPUTS_COLOR } from '../../Library/constants';
 
 export const containerSignUpClassName: string = mergeStyles({
+    display: 'grid',
     padding: "1%",
     fontFamily: FONT_FAMILY,
     color: '#49494D',
@@ -45,7 +46,6 @@ export const contentStyles = mergeStyleSets({
     },
     body: {
         flex: '4 4 auto',
-        padding: '0 24px 24px 24px',
         selectors: {
             p: { margin: '14px 0' },
             'p:first-child': { marginTop: 0 },
@@ -77,7 +77,7 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
     fieldGroup: {
         fontFamily: FONT_FAMILY,
         border: 'none',
-        height: '5vh',
+        height: '6vh',
     },
     field: {
         fontFamily: FONT_FAMILY,
@@ -104,20 +104,23 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
                 color: 'red'
             }
         }
+    },
+    errorMessage: {
+        position: 'fixed'
     }
 };
 
 export const signUpButtonStyles: Partial<IButtonStyles> = {
     root: {
+        top: '7vh',
         fontFamily: FONT_FAMILY,
-        width: '6.5vw',
+        width: '8vw',
         height: '4.5vh',
-        left: '24%',
+        left: '27%',
         backgroundColor: '#5149DB',
         color: 'white',
         borderRadius: '25px',
         border: 'none',
-        top: '-3vh'
     }
 };
 
@@ -131,30 +134,28 @@ export const additionalInfoHeaderClassName: string = mergeStyles({
 });
 
 export const forgotPasswordClassName: string = mergeStyles({
+    top: '7vh',
     fontFamily: FONT_FAMILY,
     color: 'white',
     position: 'relative',
-    left: '26%',
+    left: '30%',
     fontSize: '14px',
-    top: '3vh'
 });
 
 export const emailAddressIconClassName: string = mergeStyles({
-    position: 'relative',
-    top: '-14.5vh',
-    left: '12.5vw',
+    display: 'block',
+    position: 'absolute',
+    bottom: '33.5vh',
+    left: '15vw',
     width: '22.5px',
-    paddingBottom: '24px',
-    marginTop: '9px'
 });
 
 export const passwordIconClassName: string = mergeStyles({
-    position: 'relative',
-    top: '-12vh',
-    left: '12.5vw',
+    display: 'block',
+    position: 'absolute',
+    bottom: '23.5vh',
+    left: '15vw',
     width: '22.5px',
-    paddingBottom: '24px',
-    marginTop: '9px'
 });
 
 export const headerButtonsClassName: string = mergeStyles({
@@ -165,9 +166,11 @@ export const headerButtonsClassName: string = mergeStyles({
     left: '1vw',
 });
 
+
+
 export const signUpHeaderButtonStyles: Partial<IButtonStyles> = {
     root: {
-        marginRight: '0.5vw',
+        right: '-0.5vw',
         fontSize: '22px',
         color: 'white',
         fontFamily: FONT_FAMILY,
@@ -184,10 +187,24 @@ export const signUpHeaderButtonStyles: Partial<IButtonStyles> = {
     }
 };
 
-export const checkBoxStyles: Partial<ICheckboxStyles> = {
+export const loginHeaderButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        fontSize: '22px',
+        fontFamily: FONT_FAMILY,
+        border: 'none',
+        backgroundColor: 'transparent'
+    },
+    rootHovered: {
+        backgroundColor: 'transparent'
+    },
+    rootPressed: {
+        color: LOGIN_INPUTS_COLOR,
+        backgroundColor: 'transparent'
+    }
+};
+export const rememberMeCheckboxStyles: Partial<ICheckboxStyles> = {
     root: {
         left: '1vw',
-        top: '-0.5vh'
     },
     checkbox: {
         borderRadius: '25px',
@@ -214,4 +231,8 @@ export const socialMediaContainerClassName: string = mergeStyles({
     left: '47.5%',
     zIndex: '100',
     top: '10px'
+});
+
+export const customIconButtonContainerClasssName: string = mergeStyles({
+    pointerEvents: 'none',
 });

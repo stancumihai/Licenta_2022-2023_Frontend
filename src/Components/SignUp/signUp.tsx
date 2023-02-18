@@ -1,27 +1,48 @@
 import { DefaultButton, TextField } from '@fluentui/react'
 import { useState } from 'react'
-import { ENVELOPE_LOGO_LOCATION, LOCK_LOGO_LOCATION, LOGIN, SIGN_UP } from '../../Library/constants'
+import {
+    ENVELOPE_LOGO_LOCATION,
+    LOCK_LOGO_LOCATION,
+    LOGIN,
+    LOGIN_PATH,
+    SIGN_UP
+} from '../../Library/constants'
 import { IsModified } from '../../Library/types'
 import { Background } from '../Background/background'
 import { CustomIconButton } from '../CustomIconButton/customIconButton'
-import { loginHeaderButtonStyles, signUpHeaderButtonStyles, additionalInfoHeaderClassName } from '../Login/login.styles'
 import { Logo } from '../Logo/logo'
 import { SocialMedia } from '../SocialMedia/socialMedia'
-import { containerClassName, containerSignUpClassName, contentStyles, headerButtonsClassName, signUpButtonStyles, emailAddressIconClassName, textFieldStyles, passwordIconClassName } from './signUp.styles'
+import {
+    containerClassName,
+    containerSignUpClassName,
+    contentStyles,
+    headerButtonsClassName,
+    signUpButtonStyles,
+    emailAddressIconClassName,
+    textFieldStyles,
+    passwordIconClassName,
+    additionalInfoHeaderClassName,
+    signUpHeaderButtonStyles,
+    loginHeaderButtonStyles,
+    customIconButtonContainerClasssName
+} from './signUp.styles'
 import { ISignUpFormData } from './signUp.types'
+import { NavigateFunction, useNavigate } from 'react-router';
 
 export const SignUp = (): JSX.Element => {
     const [emailAddress, setEmailAddress] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [emailAddressErrorMessage, setEmailAddressErrorMessage] = useState<string>('');
     const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
-    const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(false);
+    const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true);
     const [isModified, setIsModified] = useState<IsModified<'Email' | 'Password'>>(
         {
             Email: false,
             Password: false
         }
     );
+    const navigate: NavigateFunction = useNavigate();
+
     const isReadyToSumbit = (data: ISignUpFormData): boolean => {
         return data.Email !== "" && data.Password !== '';
     };
@@ -42,14 +63,17 @@ export const SignUp = (): JSX.Element => {
         setPassword(newPassword!);
     };
     const handleSignUp = (): void => {
-        console.log('SignUp pressed');
+        console.log('Signin Up');
+    };
+    const handleLoginClick = (): void => {
+        navigate(LOGIN_PATH);
     };
     return <div className={containerClassName}>
         <Background />
         <div className={containerSignUpClassName}>
             <div className={contentStyles.container}>
                 <div className={headerButtonsClassName}>
-                    <DefaultButton styles={loginHeaderButtonStyles} text={LOGIN} />
+                    <DefaultButton onClick={handleLoginClick} styles={loginHeaderButtonStyles} text={LOGIN} />
                     <DefaultButton styles={signUpHeaderButtonStyles} text={SIGN_UP} />
                 </div>
                 <p className={additionalInfoHeaderClassName}>Get login to access your account</p>
@@ -65,11 +89,12 @@ export const SignUp = (): JSX.Element => {
                         styles={textFieldStyles}
                         placeholder='Password'
                         type="password" />
-                    <CustomIconButton className={emailAddressIconClassName}
-                        logoLocation={ENVELOPE_LOGO_LOCATION} />
-                    <CustomIconButton className={passwordIconClassName}
-                        logoLocation={LOCK_LOGO_LOCATION} />
-
+                    <div className={customIconButtonContainerClasssName}>
+                        <CustomIconButton className={emailAddressIconClassName}
+                            logoLocation={ENVELOPE_LOGO_LOCATION} />
+                        <CustomIconButton className={passwordIconClassName}
+                            logoLocation={LOCK_LOGO_LOCATION} />
+                    </div>
                     <DefaultButton disabled={isSaveButtonDisabled}
                         onClick={handleSignUp}
                         styles={signUpButtonStyles}

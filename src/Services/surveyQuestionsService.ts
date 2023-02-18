@@ -1,4 +1,4 @@
 import { ISurveyQuestion } from '../Models/ISurveyQuestion';
 import BaseService from './baseService';
 
-export default class SurveyQuestionService extends BaseService<ISurveyQuestion>  { };
+export default class SurveyQuestionsService extends BaseService<ISurveyQuestion>  { };
