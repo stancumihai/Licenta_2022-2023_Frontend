@@ -8,4 +8,5 @@ export interface IAutocompleteSearchBoxProps extends ISearchBoxProps {
     suggestions?: string[] | ISuggestionItem[];
     inProgress?: boolean;
     debounceTime?: number;
+    mapClickedSuggestion: (suggestion: string) => void;
 };

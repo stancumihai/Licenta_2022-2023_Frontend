@@ -118,6 +118,7 @@ export const loginButtonStyles: Partial<IButtonStyles> = {
         height: '4.5vh',
         left: '27%',
         backgroundColor: '#5149DB',
+        //backgroundColor: '#945564',
         color: 'white',
         borderRadius: '25px',
         border: 'none',
@@ -133,14 +134,28 @@ export const additionalInfoHeaderClassName: string = mergeStyles({
     position: 'relative'
 });
 
-export const forgotPasswordClassName: string = mergeStyles({
-    top: '5.5vh',
-    fontFamily: FONT_FAMILY,
-    color: 'white',
-    position: 'relative',
-    left: '32%',
-    fontSize: '14px',
-});
+export const forgotPasswordStyles: Partial<IButtonStyles> = {
+    root: {
+        position: 'absolute',
+        display: 'block',
+        bottom: '1.25vh',
+        border: 'none',
+        color: 'white',
+        background: 'transparent',
+        fontFamily: FONT_FAMILY,
+        left: '5.5vw'
+    },
+    rootHovered: {
+        color: 'gray',
+        background: 'transparent',
+        fontFamily: FONT_FAMILY,
+    },
+    rootPressed: {
+        color: 'white',
+        background: 'transparent',
+        fontFamily: FONT_FAMILY
+    }
+};
 
 export const emailAddressIconClassName: string = mergeStyles({
     display: 'block',
@@ -148,14 +163,15 @@ export const emailAddressIconClassName: string = mergeStyles({
     bottom: '33.5vh',
     left: '15vw',
     width: '22.5px',
+    top: '19.75vh'
 });
 
 export const passwordIconClassName: string = mergeStyles({
     display: 'block',
     position: 'absolute',
-    bottom: '23.5vh',
     left: '15vw',
     width: '22.5px',
+    top: '29.5vh'
 });
 
 export const headerButtonsClassName: string = mergeStyles({
@@ -234,4 +250,13 @@ export const socialMediaContainerClassName: string = mergeStyles({
 
 export const customIconButtonContainerClasssName: string = mergeStyles({
     pointerEvents: 'none',
+});
+
+export const errorClassName: string = mergeStyles({
+    fontFamily: FONT_FAMILY,
+    color: '#945564',
+    display: 'block',
+    position: 'absolute',
+    left: '3vw',
+    top: '38vh'
 });

@@ -1,6 +1,7 @@
-import { ILoginUser } from '../Models/ILoginUser';
+import { ITokenUser } from '../Models/ITokenUser';
 
 export interface IAuthentificationContext {
-    User: ILoginUser,
-    SetUpdatedUser: (newUser: ILoginUser) => void
+    User: ITokenUser,
+    SetUpdatedUser: (newUser: ITokenUser) => void,
+    IsAuthenticated: () => boolean
 };

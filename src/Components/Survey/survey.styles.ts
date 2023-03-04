@@ -10,7 +10,7 @@ import { FONT_FAMILY } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
     marginLeft: '12.5%',
-    marginTop: '5%',
+    marginTop: '3vh',
     border: '1px solid black',
     width: '75%',
     padding: '5vh 5vw 5vh 5vw',
@@ -68,7 +68,10 @@ export const surveyTitleClassName: string = mergeStyles({
     fontFamily: FONT_FAMILY,
     left: '20vw',
     marginBottom: '6.5vh',
-    color: '#CCCCCC'
+    color: '#CCCCCC',
+    overflowWrap: 'break-word',
+    wordWrap: 'break-word',
+    hyphens: 'auto',
 });
 export const labelStyles: Partial<ILabelStyles> = {
     root: {
@@ -87,7 +90,10 @@ export const sendButtonStyles: Partial<IButtonGridStyles> = {
 };
 export const errorClassName: string = mergeStyles({
     fontFamily: FONT_FAMILY,
-    color: 'red'
+    display: 'block',
+    position: 'absolute',
+    color: 'red',
+    top: '15vh'
 });
 export const loadingSpinnerStyle: Partial<ISpinnerStyles> = {
     root: {
@@ -102,3 +108,12 @@ export const loadingSpinnerStyle: Partial<ISpinnerStyles> = {
         fontSize: '900',
     }
 };
+export const requiredAssetClassName: string = mergeStyles({
+    width: '10px',
+    height: '10px',
+    marginLeft: '5px',
+    marginTop: '22.5px'
+});
+export const requiredAssetContainerClassName: string = mergeStyles({
+    display: 'flex'
+});

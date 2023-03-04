@@ -112,7 +112,7 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
 
 export const signUpButtonStyles: Partial<IButtonStyles> = {
     root: {
-        top: '7vh',
+        top: '6.9vh',
         fontFamily: FONT_FAMILY,
         width: '8vw',
         height: '4.5vh',
@@ -148,14 +148,15 @@ export const emailAddressIconClassName: string = mergeStyles({
     bottom: '33.5vh',
     left: '15vw',
     width: '22.5px',
+    top: '19.75vh'
 });
 
 export const passwordIconClassName: string = mergeStyles({
     display: 'block',
     position: 'absolute',
-    bottom: '23.5vh',
     left: '15vw',
     width: '22.5px',
+    top: '29.5vh'
 });
 
 export const headerButtonsClassName: string = mergeStyles({
@@ -165,8 +166,6 @@ export const headerButtonsClassName: string = mergeStyles({
     top: '2vh',
     left: '1vw',
 });
-
-
 
 export const signUpHeaderButtonStyles: Partial<IButtonStyles> = {
     root: {
@@ -235,4 +234,21 @@ export const socialMediaContainerClassName: string = mergeStyles({
 
 export const customIconButtonContainerClasssName: string = mergeStyles({
     pointerEvents: 'none',
+});
+
+export const successfullyRegisteredClassName: string = mergeStyles({
+    position: 'relative',
+    top: '2vh',
+    left: '4vw',
+    fontFamily: FONT_FAMILY,
+    color: '#945564',
+});
+
+export const errorClassName: string = mergeStyles({
+    fontFamily: FONT_FAMILY,
+    color: '#945564',
+    display: 'block',
+    position: 'absolute',
+    left: '2vw',
+    top: '37vh',
 });

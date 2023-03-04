@@ -4,5 +4,4 @@ export default interface IResponseBody {
     method: Methods,
     headers: HeadersInit,
     body?: BodyInit | null,
-    credentials: RequestCredentials
 };

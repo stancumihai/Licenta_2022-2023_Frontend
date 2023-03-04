@@ -4,7 +4,7 @@ import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContex
 import { SurveyQuestionType } from '../../Enums/SurveyQuestionType';
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
-import { MAX_CHECKBOX_CHECKED_NUMBER, MAX_CHECKBOX_CHECKED_NUMBER_ERROR, SPINNER_LOADING_MESSAGE, SURVEY_TITLE } from '../../Library/constants';
+import { HOME_PATH, MAX_CHECKBOX_CHECKED_NUMBER, MAX_CHECKBOX_CHECKED_NUMBER_ERROR, MULTISELECT_ERROR_MESSAGE, REQUIRED_ASSET_LOCATION, SEARCHBOX_ERROR_MESSAGE, SPINNER_LOADING_MESSAGE, SURVEY_TITLE } from '../../Library/constants';
 import { ISurveyAnswer } from '../../Models/ISurveyAnswer';
 import { ISurveyQuestion } from '../../Models/ISurveyQuestion';
 import {
@@ -15,24 +15,31 @@ import {
     errorClassName,
     labelStyles,
     loadingSpinnerStyle,
+    requiredAssetClassName,
+    requiredAssetContainerClassName,
     sendButtonStyles,
     surveyTitleClassName
 } from './survey.styles';
 import $ from 'jquery';
 import { AutocompleteSearchBox } from '../../libs/AutocompleteSearchBox/autocompleteSearchBox';
 import { SurveyQuestionCategory } from '../../Enums/SurveyQuestionCategory';
+import { NavigateFunction, useNavigate } from 'react-router';
 
 export const Survey = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const [surveyQuestions, setSurveyQuestions] = useState<ISurveyQuestion[]>([]);
     const [areSurveyQuestionsLoaded, setAreSurveyQuestionsLoaded] = useState(false);
     const surveyQuestionsData: IFetchResult<ISurveyQuestion[]> = useFetch<ISurveyQuestion[]>(() => services.SurveyQuestionsService.GetAll());
-    const [checkboxError, setCheckboxError] = useState<string>('');
+    const [multiselectMessage, setMultiselectMessage] = useState<string>('');
     const [checkedCheckboxes, setCheckedCheckboxes] = useState<string[]>([]);
     const [movieSuggestions, setMovieSuggestions] = useState<string[] | undefined>();
     const [actorSuggestions, setActorSuggestions] = useState<string[] | undefined>();
     const [directorSuggestions, setDirectorSuggestions] = useState<string[] | undefined>();
     const [initialCheckboxColor, setInitialCheckboxColor] = useState<string>('');
+    const [mappedSuggestions, setMappedSuggestions] = useState<string[]>([]);
+    const [surveyErrorMessage, setSurveyErrorMessage] = useState<string>('');
+
+    const navigate: NavigateFunction = useNavigate();
 
     //DUMMY DATA
     const moviesData: string[] = [
@@ -75,9 +82,9 @@ export const Survey = (): JSX.Element => {
             } return 1;
         })
         setSurveyQuestions(surveyQuestionsData.data.Data!);
-        setTimeout(() => {
-            setAreSurveyQuestionsLoaded(true);
-        }, 2000);
+        // setTimeout(() => {
+        setAreSurveyQuestionsLoaded(true);
+        // }, 2000);
     }, [surveyQuestionsData]);
     //MAPPERS
     const mapAnswersToOptions = (surveyAnswers: ISurveyAnswer[]): IChoiceGroupOption[] => {
@@ -124,12 +131,20 @@ export const Survey = (): JSX.Element => {
         return directorSuggestions;
     };
 
+    const mapClickedSuggestion = (suggestion: string) => {
+        setMappedSuggestions(current => [...current, suggestion]);
+    };
+
     const mapAnswersToQuestions = (): JSX.Element[] => {
         return mapQuestionToType(surveyQuestions).map((surveyQuestion: ISurveyQuestion): JSX.Element => {
             if (surveyQuestion.Type! === SurveyQuestionType.SINGLELINE) {
                 return <div key={surveyQuestion.uid!}>
-                    <Label styles={labelStyles}>{surveyQuestion.value}</Label>
+                   <div className={requiredAssetContainerClassName}>
+                        <Label styles={labelStyles}>{surveyQuestion.value}</Label>
+                        <img className={requiredAssetClassName} src={REQUIRED_ASSET_LOCATION} alt='Loading...'></img>
+                    </div>
                     <AutocompleteSearchBox
+                        mapClickedSuggestion={mapClickedSuggestion}
                         key={surveyQuestion.uid!}
                         onChange={(_, newValue) => {
                             handleSearchboxOnChange(surveyQuestion.category!, newValue);
@@ -140,7 +155,10 @@ export const Survey = (): JSX.Element => {
             }
             else if (surveyQuestion.Type! === SurveyQuestionType.MULTICHOICE) {
                 return <div>
-                    <Label styles={labelStyles}>{surveyQuestion.value}</Label>
+                    <div className={requiredAssetContainerClassName}>
+                        <Label styles={labelStyles}>{surveyQuestion.value}</Label>
+                        <img className={requiredAssetClassName} src={REQUIRED_ASSET_LOCATION} alt='Loading...'></img>
+                    </div>
                     {mapAnswersToCheckboxes(surveyQuestion.surveyAnswers!)}
                 </div>
             }
@@ -178,7 +196,7 @@ export const Survey = (): JSX.Element => {
     const addGenreToState = (ev?: React.FormEvent<HTMLElement | HTMLInputElement> | undefined) => {
         $(ev!.target).parent().children().each((i: number, el: HTMLElement) => {
             if (i === 1) {
-                let checkboxLabel = $(el).text().trim().substring(1);
+                let checkboxLabel: string = $(el).text().trim().substring(1);
                 setCheckedCheckboxes(current => [...current, checkboxLabel]);
             }
         });
@@ -187,7 +205,7 @@ export const Survey = (): JSX.Element => {
     const removeGenreFromState = (ev?: React.FormEvent<HTMLElement | HTMLInputElement> | undefined) => {
         $(ev!.target).parent().children().each((i: number, el: HTMLElement) => {
             if (i === 1) {
-                let checkboxLabel = $(el).text().trim().substring(1);
+                let checkboxLabel: string = $(el).text().trim().substring(1);
                 setCheckedCheckboxes(current => current.filter(c => c !== checkboxLabel));
             }
         });
@@ -195,8 +213,8 @@ export const Survey = (): JSX.Element => {
 
     const resetCheckboxColors = (): void => {
         $('.ms-Checkbox-checkbox').each((i, el) => {
-            var checkedParent = $(el).parents().eq(1);
-            var classes = $(checkedParent).attr('class');
+            var checkedParent: JQuery<HTMLElement> = $(el).parents().eq(1);
+            var classes: string | undefined = $(checkedParent).attr('class');
             if (!classes!.includes('is-checked')) {
                 $(el).css('background', initialCheckboxColor);
             }
@@ -205,48 +223,76 @@ export const Survey = (): JSX.Element => {
 
     const changeCheckboxColor = (): void => {
         $('.ms-Checkbox-checkbox').each((i, el) => {
-            var checkedParent = $(el).parents().eq(1);
-            var classes = $(checkedParent).attr('class');
+            var checkedParent: JQuery<HTMLElement> = $(el).parents().eq(1);
+            var classes: string | undefined = $(checkedParent).attr('class');
             if (!classes!.includes('is-checked')) {
                 setInitialCheckboxColor($(el).css('background'));
                 $(el).css('background', '#49494D');
+                return;
             }
-            else {
-                $(el).css('background', '#005a9e');
-            }
+            $(el).css('background', '#005a9e');
         });
     };
 
-
     const isCheckboxLimitSurpassed = (): boolean => {
-        return checkedCheckboxes.length === MAX_CHECKBOX_CHECKED_NUMBER - 1;
+        const checkedboxes = $('div.ms-Checkbox.is-checked').length;
+        return checkedboxes === MAX_CHECKBOX_CHECKED_NUMBER;
     };
 
     const checkForCheckboxNumberError = (): void => {
         if (isCheckboxLimitSurpassed()) {
-            setCheckboxError(MAX_CHECKBOX_CHECKED_NUMBER_ERROR);
+            setMultiselectMessage(MAX_CHECKBOX_CHECKED_NUMBER_ERROR);
             setTimeout(() => {
                 changeCheckboxColor();
             }, 200)
-        } else {
-            setCheckboxError('');
-            setTimeout(() => {
-                resetCheckboxColors();
-            }, 200)
+            return;
         }
+        setMultiselectMessage('');
+        setTimeout(() => {
+            resetCheckboxColors();
+        }, 200)
     };
 
     const handleCheckboxCheck = (ev?: React.FormEvent<HTMLElement | HTMLInputElement> | undefined, checked?: boolean | undefined): void => {
-        checkForCheckboxNumberError();
-        if (checked! === true) {
-            addGenreToState(ev);
+        setTimeout(() => {
             checkForCheckboxNumberError();
+            if (checked! === true) {
+                addGenreToState(ev);
+                checkForCheckboxNumberError();
+                return;
+            }
+            removeGenreFromState(ev);
+            checkForCheckboxNumberError();
+        }, 300)
+    };
+
+    const handleSurveyError = (message: string): void => {
+        setSurveyErrorMessage(message);
+        setTimeout(() => {
+            setSurveyErrorMessage('');
+        }, 2000)
+    };
+
+    const isReadyToSend = (): boolean => {
+        if (mappedSuggestions.length !== 3) {
+            handleSurveyError(SEARCHBOX_ERROR_MESSAGE);
+            return false;
+        }
+        if (multiselectMessage === '') {
+            handleSurveyError(MULTISELECT_ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    const handleSendClick = () => {
+        if (isReadyToSend()) {
+            navigate(HOME_PATH);
+            setMappedSuggestions([]);
             return;
         }
-        removeGenreFromState(ev);
-        checkForCheckboxNumberError();
     };
- 
+
     return (
         <div>
             {!areSurveyQuestionsLoaded ?
@@ -258,9 +304,12 @@ export const Survey = (): JSX.Element => {
                 </div> :
                 <div className={containerClassName}>
                     <h1 className={surveyTitleClassName}>{SURVEY_TITLE}</h1>
-                    <p className={errorClassName}>{checkboxError}</p>
+                    <p className={errorClassName}>{multiselectMessage}</p>
+                    <p className={errorClassName}>{surveyErrorMessage}</p>
                     {areSurveyQuestionsLoaded && mapAnswersToQuestions()}
-                    <DefaultButton styles={sendButtonStyles} text='Send' />
+                    <DefaultButton onClick={handleSendClick}
+                        styles={sendButtonStyles}
+                        text='Send' />
                 </div>}
         </div>
     )

@@ -2,8 +2,11 @@ import { Checkbox, DefaultButton, TextField } from '@fluentui/react';
 import {
     ENVELOPE_LOGO_LOCATION,
     FORGOT_PASSWORD,
+    FORGOT_PASSWORD_PATH,
+    JWT_TOKEN,
     LOCK_LOGO_LOCATION,
     LOGIN,
+    LOGIN_SERVER_ERROR,
     REMEMBER_ME,
     SIGN_UP,
     SIGN_UP_PATH,
@@ -15,7 +18,7 @@ import {
     textFieldStyles,
     loginButtonStyles,
     additionalInfoHeaderClassName,
-    forgotPasswordClassName,
+    forgotPasswordStyles,
     headerButtonsClassName,
     loginHeaderButtonStyles,
     signUpHeaderButtonStyles,
@@ -24,6 +27,7 @@ import {
     emailAddressIconClassName,
     passwordIconClassName,
     customIconButtonContainerClasssName,
+    errorClassName,
 } from './login.styles';
 import { useContext, useState } from 'react';
 import { IsModified } from '../../Library/types';
@@ -33,24 +37,34 @@ import { SocialMedia } from '../SocialMedia/socialMedia';
 import { Logo } from '../Logo/logo';
 import { CustomIconButton } from '../CustomIconButton/customIconButton';
 import { NavigateFunction, useNavigate } from 'react-router';
-import AuthentificationContext from '../../Authentication/authenticationContext';
+import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
+import { ILoginUser } from '../../Models/ILoginUser';
+import Cookies from 'universal-cookie';
 import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
+import AuthentificationContext from '../../Authentication/authenticationContext';
+import { IResponse } from '../../Models/IResponse';
+import { ITokenUser } from '../../Models/ITokenUser';
+import { IAuthUser } from '../../Models/IAuthUser';
 
 export const Login = (): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
+    const services = useContext<ServiceContext>(ServiceContextInstance);
     const [emailAddress, setEmailAddress] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [rememberMe, setRememberMe] = useState<boolean>(false);
     const [emailAddressErrorMessage, setEmailAddressErrorMessage] = useState<string>('');
     const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
     const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true);
+    const [serverError, setServerError] = useState<string>('');
     const [isModified, setIsModified] = useState<IsModified<'Email' | 'Password'>>(
         {
             Email: false,
             Password: false
         }
     );
+
     const navigate: NavigateFunction = useNavigate();
+    const cookie = new Cookies();
 
     const isReadyToSumbit = (data: ILoginFormData): boolean => {
         return data.Email !== "" && data.Password !== '';
@@ -74,15 +88,52 @@ export const Login = (): JSX.Element => {
     const onRememberMeChange = (ev?: React.FormEvent<HTMLInputElement | HTMLElement> | undefined, checked?: boolean | undefined): void => {
         setRememberMe(checked!);
     };
+    const clearFields = () => {
+        setEmailAddress('');
+        setPassword('');
+    };
     const handleLogin = (): void => {
-        authenticationContext.SetUpdatedUser({ email: emailAddress, password })
-        navigate(SURVEY_PATH);
-        return;
+        const loginUser: ILoginUser = {
+            email: emailAddress,
+            password,
+            rememberMe: rememberMe
+        };
+        services.AuthenticationService.Login(loginUser).then((data: IResponse<any>) => {
+            if (data.Error !== undefined) {
+                setServerError(LOGIN_SERVER_ERROR);
+                setTimeout(() => {
+                    setServerError('');
+                }, 2000)
+                clearFields();
+                return;
+            }
+            if (data.Data! !== undefined && data.Status === 200) {
+                services.UserService.GetByEmail(emailAddress).then((data: IResponse<IAuthUser>) => {
+                    const tokenUser: ITokenUser = {
+                        Uid: data.Data?.uid,
+                        email: data.Data!.email,
+                        password: data.Data!.password,
+                        role: data.Data!.role,
+                        tokenCreated: data.Data!.tokenCreated,
+                        tokenExpires: data.Data!.tokenExpires,
+                        refreshToken: data.Data!.refreshToken,
+                    };
+                    authenticationContext.SetUpdatedUser(tokenUser);
+                    navigate(SURVEY_PATH);
+                })
+                return;
+            }
+        });
     };
     const handleSignUpClick = (): void => {
         navigate(SIGN_UP_PATH);
     };
-
+    const isAnyFieldEmpty = (): boolean => {
+        return emailAddress === '' || password === '';
+    };
+    const handleForgotPassword = () => {
+        navigate(FORGOT_PASSWORD_PATH);
+    };
     return <div className={containerClassName}>
         <Background />
         <div className={containerLoginClassName}>
@@ -91,7 +142,7 @@ export const Login = (): JSX.Element => {
                     <DefaultButton styles={loginHeaderButtonStyles} text={LOGIN} />
                     <DefaultButton onClick={handleSignUpClick} styles={signUpHeaderButtonStyles} text={SIGN_UP} />
                 </div>
-                <p className={additionalInfoHeaderClassName}>Get login to access your account</p>
+                <p className={additionalInfoHeaderClassName}>Login to access your account</p>
                 <div className={contentStyles.body}>
                     <TextField value={emailAddress}
                         onGetErrorMessage={() => emailAddressErrorMessage.toString()}
@@ -113,11 +164,14 @@ export const Login = (): JSX.Element => {
                     <Checkbox onChange={onRememberMeChange}
                         styles={rememberMeCheckboxStyles}
                         label={REMEMBER_ME} />
-                    <DefaultButton disabled={isSaveButtonDisabled}
+                    <p className={errorClassName}>{serverError}</p>
+                    <DefaultButton disabled={isSaveButtonDisabled || isAnyFieldEmpty()}
                         onClick={handleLogin}
                         styles={loginButtonStyles}
                         text={LOGIN} />
-                    <p className={forgotPasswordClassName}>{FORGOT_PASSWORD}</p>
+                    <DefaultButton onClick={handleForgotPassword}
+                        styles={forgotPasswordStyles}
+                        text={FORGOT_PASSWORD} />
                 </div>
             </div>
         </div>

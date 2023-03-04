@@ -75,7 +75,8 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
         return null;
     };
 
-    const onSuggestionClicked = (suggestion: string | ISuggestionItem) => {
+    const onSuggestionClicked = (e: any, suggestion: string | ISuggestionItem) => {
+        props.mapClickedSuggestion(e.target.textContent.trim());
         let query = typeof suggestion === "string" ? suggestion : suggestion.getSearchText();
         setSuggestionClicked(true);
         setQuery(query);
@@ -87,10 +88,10 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
     };
 
     const onSuggestionKeyDown = (event: React.KeyboardEvent<any>, suggestion: ISuggestionItem) => {
-        if (event.which === KeyCodes.enter) onSuggestionClicked(suggestion);
+        if (event.which === KeyCodes.enter) onSuggestionClicked(event, suggestion);
     };
 
-    const renderSuggestions = (uid: string) => {
+    const renderSuggestions = () => {
         let views: JSX.Element[] = [];
         if (!suggestions) return <></>;
         suggestions.forEach((suggestion: string | ISuggestionItem, i: number) => {
@@ -101,7 +102,7 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
                     <Link style={{ margin: "2px", width: "95%" }}
                         key={i}
                         onKeyPress={(e) => onSuggestionKeyDown(e, suggestion)}
-                        onClick={(e) => onSuggestionClicked(suggestion)}
+                        onClick={(e) => onSuggestionClicked(e, suggestion)}
                         className="oneSuggestion"
                         role="listitem" >
                         {suggestion.getSuggestionItem(query)}
@@ -117,9 +118,10 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
 
         return (
             <div className="oneSuggestion" role="listitem" key={key}>
-                <Link onClick={(e) => onSuggestionClicked(suggestion)}
+                <Link onClick={(e) => onSuggestionClicked(e, suggestion)}
                     style={defaultSuggestionItem} >
-                    <HighlightTextView text={suggestion} filter={query}></HighlightTextView>
+                    <HighlightTextView text={suggestion}
+                        filter={query}></HighlightTextView>
                 </Link>
             </div>
         );
@@ -160,7 +162,7 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
                         handleTabKey={FocusZoneTabbableElements.all}
                         id="focusZoneSuggestions"
                         componentRef={focusZoneRef}>
-                        {renderSuggestions('bcfbb764-cafe-4b99-9461-2be7ecea193e')}
+                        {renderSuggestions()}
                     </FocusZone>
                 </Callout>
             </RenderIf>
