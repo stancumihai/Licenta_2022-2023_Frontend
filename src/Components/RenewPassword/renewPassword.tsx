@@ -1,15 +1,43 @@
-import { DefaultButton, TextField } from 'office-ui-fabric-react';
-import { useContext, useState } from 'react';
-import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
+import {
+    DefaultButton,
+    Label,
+    TextField
+} from 'office-ui-fabric-react';
+import {
+    useContext,
+    useState
+} from 'react';
+import {
+    ServiceContext,
+    ServiceContextInstance
+} from '../../Core/serviceContext';
 import { IResponse } from '../../Models/IResponse';
-import { IRenewPassword } from '../../Models/RenewPassword';
-import { errorClassName } from './renewPassword.styles';
-
+import { Logo } from '../Logo/logo';
+import { MessageCallout } from '../MessageCallout/messageCallout';
+import {
+    containerClassName,
+    labelClassName,
+    loginSpanClassName,
+    mainLogoClassName,
+    mainTextClassName,
+    resetPasswordButtonStyles,
+    resetPasswordQuestionClassName,
+    textFieldStyles
+} from './renewPassword.styles';
+import {
+    NavigateFunction,
+    useNavigate
+} from 'react-router';
+import { LOGIN_PATH } from '../../Library/constants';
 export const RenewPassword = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
-    const [errorMessage, setErrorMessage] = useState<string>('');
+    const [notificationTitle, setNotificationTitle] = useState<string>('');
+    const [notificationMessage, setNotificationMessage] = useState<string>('');
+    const [isCalloutVisible, setIsCalloutVisible] = useState<boolean>(false);
+
+    const navigate: NavigateFunction = useNavigate();
 
     const onNewPasswordChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newPassword?: string | undefined): void => {
         setNewPassword(newPassword!)
@@ -22,13 +50,19 @@ export const RenewPassword = (): JSX.Element => {
     const getEmailFromURL = (): string => {
         return window.location.href.split('email=')[1];
     };
-
+    const setCalloutParameters = (notificationTitle: string, notificationMessage: string) => {
+        setIsCalloutVisible(true);
+        setNotificationTitle(notificationTitle);
+        setNotificationMessage(notificationMessage);
+    };
     const onHandleSubmitClick = () => {
+        if (newPassword === '' || confirmPassword === '') {
+            setCalloutParameters('Please field both fields', '');
+            return;
+        }
         if (newPassword !== confirmPassword) {
-            setErrorMessage('Passwords are not the same');
-            setTimeout(() => {
-                setErrorMessage('');
-            }, 2000)
+            setCalloutParameters('Passwords do not match!',
+                'Please enter passwords that match!');
             return;
         }
         const email = getEmailFromURL();
@@ -36,19 +70,45 @@ export const RenewPassword = (): JSX.Element => {
             email: email,
             password: newPassword
         }).then((data: IResponse<any>) => {
-            console.log(data);
+            if (data.Error !== undefined) {
+                setCalloutParameters('Please try again', '');
+                return;
+            }
+            setCalloutParameters('Password successfully changed!', '');
         });
     };
-
+    const handleLoginClick = () => {
+        navigate(LOGIN_PATH);
+    };
+    
     return <div>
-        <p className={errorClassName}>{errorMessage}</p>
-        <TextField onChange={onNewPasswordChange}
-            label='Password'
-            type="password" />
-        <TextField onChange={onConfirmPasswordChange}
-            label='Confirm Password'
-            type="password" />
-        <DefaultButton onClick={onHandleSubmitClick}
-            text='Reset Password' />
+        <Logo mainLogoClassName={mainLogoClassName}
+            mainTextClassName={mainTextClassName} />
+        <div className={containerClassName}>
+            <Label className={labelClassName}>Password</Label>
+            <TextField onChange={onNewPasswordChange}
+                canRevealPassword={true}
+                styles={textFieldStyles}
+                underlined={true}
+                type="password" />
+            <Label className={labelClassName}>Confirm Password</Label>
+            <TextField onChange={onConfirmPasswordChange}
+                canRevealPassword={true}
+                underlined={true}
+                styles={textFieldStyles}
+                type="password" />
+            <DefaultButton onClick={onHandleSubmitClick}
+                styles={resetPasswordButtonStyles}
+                text='Reset Password' />
+            <p className={resetPasswordQuestionClassName}>Have you reset password?
+                <span onClick={handleLoginClick}
+                    className={loginSpanClassName} >Login</span></p>
+        </div>
+        {
+            isCalloutVisible &&
+            <MessageCallout setIsCalloutVisible={setIsCalloutVisible}
+                notificationMessage={notificationMessage}
+                notificationTitle={notificationTitle} />
+        }
     </div>
 };

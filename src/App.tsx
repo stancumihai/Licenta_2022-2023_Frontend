@@ -88,7 +88,7 @@ export default function App(): JSX.Element {
         } />
         <Route path={FORGOT_PASSWORD_PATH} element={<ForgotPassword />} />
         <Route path={`${RENEW_PASSWORD_PATH}/:email`} element={<RenewPassword />} />
-        
+
       </Routes>
     </div>
   );

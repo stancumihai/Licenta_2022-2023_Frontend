@@ -17,3 +17,12 @@ export const mainLogoClassName: string = mergeStyles({
     borderRadius: '3px',
     top: '81vh'
 });
+
+export const containerClassName: string = mergeStyles({
+    position: 'absolute',
+    top: '9vh',
+    left: '44vw',
+    maxWidth: '200px',
+    display: 'grid',
+    gridTemplateColumns: 'auto auto'
+});
