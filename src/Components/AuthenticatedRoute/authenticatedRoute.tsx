@@ -6,7 +6,6 @@ import { AuthenticatedRouteProps } from "./authenticatedRoute.types";
 
 export const AuthenticatedRoute = (props: AuthenticatedRouteProps): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
-
     if (props.permissions === undefined) {
         return <>{authenticationContext.IsAuthenticated() ?
             props.children :

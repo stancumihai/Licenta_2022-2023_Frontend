@@ -88,7 +88,7 @@ export const sendButtonStyles: Partial<IButtonGridStyles> = {
         backgroundColor: '#CCCCCC'
     }
 };
-export const errorClassName: string = mergeStyles({
+export const informationClassName: string = mergeStyles({
     fontFamily: FONT_FAMILY,
     display: 'block',
     position: 'absolute',

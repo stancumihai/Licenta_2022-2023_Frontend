@@ -4,7 +4,15 @@ import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContex
 import { SurveyQuestionType } from '../../Enums/SurveyQuestionType';
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
-import { HOME_PATH, MAX_CHECKBOX_CHECKED_NUMBER, MAX_CHECKBOX_CHECKED_NUMBER_ERROR, MULTISELECT_ERROR_MESSAGE, REQUIRED_ASSET_LOCATION, SEARCHBOX_ERROR_MESSAGE, SPINNER_LOADING_MESSAGE, SURVEY_TITLE } from '../../Library/constants';
+import {
+    MAX_CHECKBOX_CHECKED_NUMBER,
+    MAX_CHECKBOX_CHECKED_NUMBER_ERROR,
+    MULTISELECT_ERROR_MESSAGE,
+    REQUIRED_ASSET_LOCATION,
+    SEARCHBOX_ERROR_MESSAGE,
+    SPINNER_LOADING_MESSAGE,
+    SURVEY_TITLE
+} from '../../Library/constants';
 import { ISurveyAnswer } from '../../Models/ISurveyAnswer';
 import { ISurveyQuestion } from '../../Models/ISurveyQuestion';
 import {
@@ -12,7 +20,7 @@ import {
     checkboxItemStyle,
     choiceGroupStyles,
     containerClassName,
-    errorClassName,
+    informationClassName,
     labelStyles,
     loadingSpinnerStyle,
     requiredAssetClassName,
@@ -24,6 +32,9 @@ import $ from 'jquery';
 import { AutocompleteSearchBox } from '../../libs/AutocompleteSearchBox/autocompleteSearchBox';
 import { SurveyQuestionCategory } from '../../Enums/SurveyQuestionCategory';
 import { NavigateFunction, useNavigate } from 'react-router';
+import { ISurveyUserAnswer } from '../../Models/ISurveyUserAnswer';
+import { ISurveyUserRowResponse } from '../../Models/ISurveyUserRowResponse';
+import { IResponse } from '../../Models/IResponse';
 
 export const Survey = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
@@ -31,6 +42,7 @@ export const Survey = (): JSX.Element => {
     const [areSurveyQuestionsLoaded, setAreSurveyQuestionsLoaded] = useState(false);
     const surveyQuestionsData: IFetchResult<ISurveyQuestion[]> = useFetch<ISurveyQuestion[]>(() => services.SurveyQuestionsService.GetAll());
     const [multiselectMessage, setMultiselectMessage] = useState<string>('');
+    const [surveyCreatedMessage, setSurveyCreatedMessage] = useState<string>('');
     const [checkedCheckboxes, setCheckedCheckboxes] = useState<string[]>([]);
     const [movieSuggestions, setMovieSuggestions] = useState<string[] | undefined>();
     const [actorSuggestions, setActorSuggestions] = useState<string[] | undefined>();
@@ -38,10 +50,10 @@ export const Survey = (): JSX.Element => {
     const [initialCheckboxColor, setInitialCheckboxColor] = useState<string>('');
     const [mappedSuggestions, setMappedSuggestions] = useState<string[]>([]);
     const [surveyErrorMessage, setSurveyErrorMessage] = useState<string>('');
+    const [collectedData, setCollectedData] = useState<ISurveyUserRowResponse[]>([]);
 
     const navigate: NavigateFunction = useNavigate();
 
-    //DUMMY DATA
     const moviesData: string[] = [
         "Movie1",
         "Movie2",
@@ -86,10 +98,10 @@ export const Survey = (): JSX.Element => {
         setAreSurveyQuestionsLoaded(true);
         // }, 2000);
     }, [surveyQuestionsData]);
-    //MAPPERS
+
     const mapAnswersToOptions = (surveyAnswers: ISurveyAnswer[]): IChoiceGroupOption[] => {
         const results = surveyAnswers.map((surveyAnswer: ISurveyAnswer) => {
-            return { key: surveyAnswer.uid!, text: surveyAnswer.value };
+            return { id: surveyAnswer.uid!, key: surveyAnswer.uid!, text: surveyAnswer.value };
         });
         return results;
     };
@@ -112,7 +124,8 @@ export const Survey = (): JSX.Element => {
     const mapAnswersToCheckboxes = (surveyAnswers: ISurveyAnswer[]): JSX.Element => {
         return <div className={checkboxContainerClassName}>
             {surveyAnswers?.map((surveyAnswer: ISurveyAnswer) => {
-                return <Checkbox key={surveyAnswer.uid!}
+                return <Checkbox id={surveyAnswer.uid}
+                    key={surveyAnswer.uid!}
                     styles={checkboxItemStyle}
                     disabled={!checkedCheckboxes.includes(surveyAnswer.value)
                         && checkedCheckboxes.length >= MAX_CHECKBOX_CHECKED_NUMBER}
@@ -139,11 +152,14 @@ export const Survey = (): JSX.Element => {
         return mapQuestionToType(surveyQuestions).map((surveyQuestion: ISurveyQuestion): JSX.Element => {
             if (surveyQuestion.Type! === SurveyQuestionType.SINGLELINE) {
                 return <div key={surveyQuestion.uid!}>
-                   <div className={requiredAssetContainerClassName}>
+                    <div className={requiredAssetContainerClassName}>
                         <Label styles={labelStyles}>{surveyQuestion.value}</Label>
-                        <img className={requiredAssetClassName} src={REQUIRED_ASSET_LOCATION} alt='Loading...'></img>
+                        <img className={requiredAssetClassName}
+                            src={REQUIRED_ASSET_LOCATION}
+                            alt='Loading...'></img>
                     </div>
                     <AutocompleteSearchBox
+                        id={surveyQuestion.uid!}
                         mapClickedSuggestion={mapClickedSuggestion}
                         key={surveyQuestion.uid!}
                         onChange={(_, newValue) => {
@@ -153,22 +169,42 @@ export const Survey = (): JSX.Element => {
                     </AutocompleteSearchBox>
                 </div>
             }
-            else if (surveyQuestion.Type! === SurveyQuestionType.MULTICHOICE) {
+            if (surveyQuestion.Type! === SurveyQuestionType.MULTICHOICE) {
                 return <div>
                     <div className={requiredAssetContainerClassName}>
                         <Label styles={labelStyles}>{surveyQuestion.value}</Label>
-                        <img className={requiredAssetClassName} src={REQUIRED_ASSET_LOCATION} alt='Loading...'></img>
+                        <img className={requiredAssetClassName}
+                            src={REQUIRED_ASSET_LOCATION}
+                            alt='Loading...'></img>
                     </div>
                     {mapAnswersToCheckboxes(surveyQuestion.surveyAnswers!)}
                 </div>
             }
-            return <ChoiceGroup key={surveyQuestion.uid!}
+            return <ChoiceGroup id={surveyQuestion.uid!}
+                key={surveyQuestion.uid!}
                 styles={choiceGroupStyles}
+                onChange={handleChoiceGroupChange}
                 options={mapAnswersToOptions(surveyQuestion.surveyAnswers!)}
                 defaultSelectedKey={surveyQuestion.surveyAnswers![0].uid!}
                 label={surveyQuestion.value}
                 required={true} />;
         });
+    };
+
+    const handleChoiceGroupChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement> | undefined, option?: IChoiceGroupOption | undefined) => {
+        services.SurveyQuestionsService.GetGuidBySurveyAnswerGuid(option!.key).then((data: IResponse<any>) => {
+            const surveyUserRowResponse: ISurveyUserRowResponse = {
+                surveyAnswerUid: option!.key,
+                surveyQuestionUid: data.Data!,
+                value: option!.text,
+                type: 'Choice'
+            };
+            const filteredArray = collectedData.filter(data => {
+                return data.type !== 'Choice'
+            });
+            filteredArray.push(surveyUserRowResponse);
+            setCollectedData(filteredArray);
+        })
     };
 
     const handleSearchboxOnChange = (surveyQuestionCategory: SurveyQuestionCategory, newText?: string) => {
@@ -191,6 +227,30 @@ export const Survey = (): JSX.Element => {
             setActorSuggestions(undefined);
             setDirectorSuggestions(directorsData);
         }
+    };
+
+    const handleCheckboxCheck = (ev?: React.FormEvent<HTMLElement | HTMLInputElement> | undefined, checked?: boolean | undefined): void => {
+        setTimeout(() => {
+            checkForCheckboxNumberError();
+            if (checked! === true) {
+                const surveyAnswerUid = $(ev!.target).attr('id');
+                const surveyAnswerValue = $(ev!.target).parent().find('span').text();
+                services.SurveyQuestionsService.GetGuidBySurveyAnswerGuid(surveyAnswerUid!).then((data: IResponse<any>) => {
+                    const surveyUserRowResponse: ISurveyUserRowResponse = {
+                        surveyAnswerUid: surveyAnswerUid!,
+                        surveyQuestionUid: data.Data!,
+                        value: surveyAnswerValue,
+                        type: 'MultiChoice'
+                    };
+                    setCollectedData(prev => [...prev, surveyUserRowResponse]);
+                })
+                addGenreToState(ev);
+                checkForCheckboxNumberError();
+                return;
+            }
+            removeGenreFromState(ev);
+            checkForCheckboxNumberError();
+        }, 300)
     };
 
     const addGenreToState = (ev?: React.FormEvent<HTMLElement | HTMLInputElement> | undefined) => {
@@ -253,19 +313,6 @@ export const Survey = (): JSX.Element => {
         }, 200)
     };
 
-    const handleCheckboxCheck = (ev?: React.FormEvent<HTMLElement | HTMLInputElement> | undefined, checked?: boolean | undefined): void => {
-        setTimeout(() => {
-            checkForCheckboxNumberError();
-            if (checked! === true) {
-                addGenreToState(ev);
-                checkForCheckboxNumberError();
-                return;
-            }
-            removeGenreFromState(ev);
-            checkForCheckboxNumberError();
-        }, 300)
-    };
-
     const handleSurveyError = (message: string): void => {
         setSurveyErrorMessage(message);
         setTimeout(() => {
@@ -285,12 +332,42 @@ export const Survey = (): JSX.Element => {
         return true;
     }
 
+    const getTextfieldData = (): ISurveyUserRowResponse[] => {
+        const textData: ISurveyUserRowResponse[] = [];
+        $('.ms-SearchBox').each((i, el) => {
+            const input = $(el).find('input');
+            const surveyQuestionId = $(input).attr('id');
+            const surveyAnswerValue = $(input).attr('value');
+            const surveyUserRowResponse: ISurveyUserRowResponse = {
+                surveyAnswerUid: "00000000-0000-0000-0000-000000000000",
+                surveyQuestionUid: surveyQuestionId!,
+                value: surveyAnswerValue!,
+                type: 'Text'
+            };
+            textData.push(surveyUserRowResponse);
+        });
+        return textData;
+    };
+
     const handleSendClick = () => {
-        if (isReadyToSend()) {
-            navigate(HOME_PATH);
-            setMappedSuggestions([]);
+        setMappedSuggestions([]);
+        if (!isReadyToSend()) {
             return;
         }
+        let textFieldData: ISurveyUserRowResponse[] = getTextfieldData();
+        textFieldData = textFieldData.concat(collectedData);
+        textFieldData.forEach((data: ISurveyUserRowResponse) => {
+            const surveyUserAnswer: ISurveyUserAnswer = {
+                surveyAnswerUid: data.surveyAnswerUid!,
+                surveyQuestionUid: data.surveyQuestionUid,
+                userUid: '7ecb773e-a1ef-4ca2-9e48-5fc61646974e',
+                value: data.value
+            };
+            services.SurveyUserAnswerService.Add(surveyUserAnswer);
+        });
+        setMultiselectMessage('');
+        setSurveyErrorMessage('');
+        setSurveyCreatedMessage('User survey created');
     };
 
     return (
@@ -304,8 +381,11 @@ export const Survey = (): JSX.Element => {
                 </div> :
                 <div className={containerClassName}>
                     <h1 className={surveyTitleClassName}>{SURVEY_TITLE}</h1>
-                    <p className={errorClassName}>{multiselectMessage}</p>
-                    <p className={errorClassName}>{surveyErrorMessage}</p>
+                    <div>
+                        <p className={informationClassName}>{multiselectMessage}</p>
+                        <p className={informationClassName}>{surveyErrorMessage}</p>
+                        <p className={informationClassName}>{surveyCreatedMessage}</p>
+                    </div>
                     {areSurveyQuestionsLoaded && mapAnswersToQuestions()}
                     <DefaultButton onClick={handleSendClick}
                         styles={sendButtonStyles}

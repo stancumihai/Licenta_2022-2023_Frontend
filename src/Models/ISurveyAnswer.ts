@@ -1,5 +1,5 @@
 export interface ISurveyAnswer {
     uid?: string;
-    surveyQuestionGuid: string;
+    surveyQuestionUid: string;
     value: string;
 };

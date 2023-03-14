@@ -1,10 +1,10 @@
 import { APIHelper } from '../Configuration/apiHelper';
 import { GET_LOGGED_USER_ENDPOINT, LOGIN_ENDPOINT, REFRESH_TOKEN_ENDPOINT, REGISTER_ENDPOINT, RENEWPASSWORD_ENDPOINT, SENDEMAIL_ENDPOINT } from '../Library/constants';
-import { ILoginUser } from '../Models/ILoginUser';
-import { IRegisterUser } from '../Models/IRegisterUser';
+import { ILoginUser } from '../Models/User/ILoginUser';
 import { IResponse } from '../Models/IResponse';
-import { ITokenUser } from '../Models/ITokenUser';
+import { IUser } from '../Models/User/IUser';
 import { IRenewPassword } from '../Models/RenewPassword';
+import { IRegisterUser } from '../Models/User/IRegisterUser';
 
 export default class AuthenticationService {
     async Login(user: ILoginUser): Promise<IResponse<ILoginUser>> {
@@ -15,7 +15,7 @@ export default class AuthenticationService {
         return await APIHelper.request(REGISTER_ENDPOINT, 'POST', user);
     };
 
-    async GetLoggedInUser(): Promise<IResponse<ITokenUser>> {
+    async GetLoggedInUser(): Promise<IResponse<IUser>> {
         return await APIHelper.request(GET_LOGGED_USER_ENDPOINT, 'GET');
     };
 

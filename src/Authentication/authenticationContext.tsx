@@ -2,16 +2,15 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import { ServiceContext, ServiceContextInstance } from '../Core/serviceContext';
 import { useFetch } from '../Hooks/useFetch';
 import { IFetchResult } from '../Hooks/useFetch.types';
-import { ITokenUser } from '../Models/ITokenUser';
+import { IUser } from '../Models/User/IUser';
 import { IAuthentificationContext } from './authenticationContext.types';
 
-const defaultUser: ITokenUser = {
+const defaultUser: IUser = {
     email: '',
     password: '',
     role: 1,
-    tokenCreated: new Date(),
-    tokenExpires: new Date(),
-    refreshToken: ''
+    refreshToken: '',
+    refreshTokenExpiryTime: new Date(),
 };
 
 const AuthentificationContext: React.Context<IAuthentificationContext> = createContext<IAuthentificationContext>({
@@ -22,9 +21,9 @@ const AuthentificationContext: React.Context<IAuthentificationContext> = createC
 
 export const AuthentificationContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
-    const [user, setUser] = useState<ITokenUser | undefined>(defaultUser);
+    const [user, setUser] = useState<IUser | undefined>(defaultUser);
 
-    const authenticatedUserFetchResult: IFetchResult<ITokenUser> = useFetch(services.AuthenticationService.GetLoggedInUser);
+    const authenticatedUserFetchResult: IFetchResult<IUser> = useFetch(services.AuthenticationService.GetLoggedInUser);
 
     useEffect(() => {
         if (authenticatedUserFetchResult.errors === "" && !authenticatedUserFetchResult.isLoading && authenticatedUserFetchResult.data?.Data !== undefined) {
@@ -32,13 +31,14 @@ export const AuthentificationContextProvider = ({ children }: PropsWithChildren<
         }
     }, [authenticatedUserFetchResult]);
 
-    const setUpdatedUser = (newUser: ITokenUser): void => {
+    const setUpdatedUser = (newUser: IUser): void => {
         setUser(newUser);
     };
 
     const isAuthenticated = (): boolean => {
         return user!.email !== defaultUser.email &&
-            user!.password !== defaultUser.password
+            user!.password !== defaultUser.password &&
+            new Date(user!.refreshTokenExpiryTime) > new Date()
     };
 
     return (<AuthentificationContext.Provider value={{ User: user!, SetUpdatedUser: setUpdatedUser, IsAuthenticated: isAuthenticated }}>

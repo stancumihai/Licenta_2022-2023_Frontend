@@ -139,7 +139,8 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
     return (
         <div style={searchContainer}>
             <div ref={textInput} className={props.className}>
-                <SearchBox {...props}
+                <SearchBox
+                    {...props}
                     styles={searchBoxStyle}
                     autoComplete="off"
                     onChange={onChange}

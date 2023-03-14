@@ -8,7 +8,6 @@ import {
     LOGIN_PATH,
     PASSWORD_SHOULD_NOT_BE_EMPTY,
     SIGN_UP,
-    SUCCESSFULLY_REGISTERED_MESSAGE,
     USER_ALREADY_EXISTS,
     USER_SUCCESFULLY_REGISTER,
     VALID_EMAIL_ADDRESS_ERROR_MESSAGE
@@ -39,7 +38,7 @@ import { NavigateFunction, useNavigate } from 'react-router';
 import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext'
 import { IResponse } from '../../Models/IResponse'
 import validator from 'validator';
-import { IRegisterUser } from '../../Models/IRegisterUser'
+import { IRegisterUser } from '../../Models/User/IRegisterUser'
 
 export const Register = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);

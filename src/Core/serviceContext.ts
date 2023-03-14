@@ -1,16 +1,24 @@
 import React from 'react'
-import { SURVEY_QUESTIONS_ENDPONT, SURVEY_ANSWERS_ENDPONT, USER_ENDPOINT } from '../Library/constants';
+import { SURVEY_USER_ANSWER_ENDPOINT, SURVEY_ANSWERS_ENDPONT, USER_ENDPOINT, SURVEY_QUESTIONS_ENDPONT } from '../Library/constants';
 import AuthenticationService from '../Services/authenticationService';
 import SurveyAnswersService from '../Services/surveyAnswersService';
 import SurveyQuestionsService from '../Services/surveyQuestionsService';
+import SurveyUserAnswerService from '../Services/surveyUserAnswerService';
 import UsersService from '../Services/userService';
-
 
 export class ServiceContext {
     private _surveyQuestionsService?: SurveyQuestionsService;
     private _surveyAnswersService?: SurveyAnswersService;
     private _authenticationService?: AuthenticationService;
+    private _surveyUserAnswerService?: SurveyUserAnswerService;
     private _userService?: UsersService;
+
+    get SurveyUserAnswerService(): SurveyUserAnswerService {
+        if (this._surveyUserAnswerService == null) {
+            this._surveyUserAnswerService = new SurveyUserAnswerService(SURVEY_USER_ANSWER_ENDPOINT);
+        }
+        return this._surveyUserAnswerService;
+    };
 
     get SurveyQuestionsService(): SurveyQuestionsService {
         if (this._surveyQuestionsService == null) {

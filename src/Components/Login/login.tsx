@@ -3,6 +3,7 @@ import {
     ENVELOPE_LOGO_LOCATION,
     FORGOT_PASSWORD,
     FORGOT_PASSWORD_PATH,
+    JWT_TOKEN,
     LOCK_LOGO_LOCATION,
     LOGIN,
     LOGIN_SERVER_ERROR,
@@ -37,13 +38,12 @@ import { Logo } from '../Logo/logo';
 import { CustomIconButton } from '../CustomIconButton/customIconButton';
 import { NavigateFunction, useNavigate } from 'react-router';
 import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
-import { ILoginUser } from '../../Models/ILoginUser';
+import { ILoginUser } from '../../Models/User/ILoginUser';
 import Cookies from 'universal-cookie';
 import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
 import AuthentificationContext from '../../Authentication/authenticationContext';
 import { IResponse } from '../../Models/IResponse';
-import { ITokenUser } from '../../Models/ITokenUser';
-import { IAuthUser } from '../../Models/IAuthUser';
+import { IUser } from '../../Models/User/IUser';
 
 export const Login = (): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -107,19 +107,11 @@ export const Login = (): JSX.Element => {
                 return;
             }
             if (data.Data! !== undefined && data.Status === 200) {
-                services.UserService.GetByEmail(emailAddress).then((data: IResponse<IAuthUser>) => {
-                    const tokenUser: ITokenUser = {
-                        Uid: data.Data?.uid,
-                        email: data.Data!.email,
-                        password: data.Data!.password,
-                        role: data.Data!.role,
-                        tokenCreated: data.Data!.tokenCreated,
-                        tokenExpires: data.Data!.tokenExpires,
-                        refreshToken: data.Data!.refreshToken,
-                    };
-                    authenticationContext.SetUpdatedUser(tokenUser);
+                cookie.set(JWT_TOKEN, data.Data.token);
+                services.AuthenticationService.GetLoggedInUser().then((data: IResponse<IUser>) => {
+                    authenticationContext.SetUpdatedUser(data.Data!);
                     navigate(SURVEY_PATH);
-                })
+                });
                 return;
             }
         });
