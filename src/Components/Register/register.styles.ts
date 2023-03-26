@@ -66,7 +66,7 @@ export const iconButtonStyles: Partial<IButtonStyles> = {
     },
 };
 
-export const textFieldStyles: Partial<ITextFieldStyles> = {
+export const textErrorFieldStyles: Partial<ITextFieldStyles> = {
     root: {
         fontFamily: FONT_FAMILY,
         border: 'none',
@@ -96,17 +96,48 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
     wrapper: {
         backgroundColor: '#0C0B0F'
     },
-    revealButton: {
-        border: "none",
-        backgroundColor: '#49494D',
+    errorMessage: {
+        position: 'fixed',
+    }
+};
+
+export const textFieldStyles: Partial<ITextFieldStyles> = {
+    root: {
+        fontFamily: FONT_FAMILY,
+        border: 'none',
+        color: 'white',
+        padding: '15px 15px 10px 10px',
+        marginBottom: '10px'
+    },
+    fieldGroup: {
+        fontFamily: FONT_FAMILY,
+        border: 'none',
+        height: '6vh',
         selectors: {
-            "revealIcon-122": {
-                color: 'red'
+            "::after": {
+                border: '2px solid rgb(81, 73, 219)',
             }
         }
     },
+    field: {
+        fontFamily: FONT_FAMILY,
+        paddingLeft: '15px',
+        fontSize: '12.5px',
+        backgroundImage: "linear-gradient(to right, #49494D, #0C0B0F)",
+        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25)',
+        color: 'white',
+        selectors: {
+            "::placeholder": {
+                color: '#CCCCCC',
+                fontSize: '24'
+            }
+        }
+    },
+    wrapper: {
+        backgroundColor: '#0C0B0F'
+    },
     errorMessage: {
-        position: 'fixed'
+        position: 'fixed',
     }
 };
 
@@ -121,6 +152,14 @@ export const signUpButtonStyles: Partial<IButtonStyles> = {
         color: 'white',
         borderRadius: '25px',
         border: 'none',
+    },
+    rootHovered: {
+        backgroundColor: '#857fe5',
+        color: 'white'
+    },
+    rootPressed: {
+        backgroundColor: '#a7a3ed',
+        color: 'white'
     }
 };
 
@@ -209,8 +248,6 @@ export const rememberMeCheckboxStyles: Partial<ICheckboxStyles> = {
         borderRadius: '25px',
         width: '17.5px',
         height: '17.5px'
-    },
-    checkmark: {
     },
     text: {
         fontFamily: FONT_FAMILY

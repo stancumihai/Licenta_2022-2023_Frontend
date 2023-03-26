@@ -5,6 +5,7 @@ import { IResponse } from '../Models/IResponse';
 import { IUser } from '../Models/User/IUser';
 import { IRenewPassword } from '../Models/RenewPassword';
 import { IRegisterUser } from '../Models/User/IRegisterUser';
+import { ITokenModel } from '../Models/User/ITokenModel';
 
 export default class AuthenticationService {
     async Login(user: ILoginUser): Promise<IResponse<ILoginUser>> {
@@ -23,8 +24,8 @@ export default class AuthenticationService {
         return await APIHelper.request(REFRESH_TOKEN_ENDPOINT, 'POST');
     };
 
-    async RefreshToken(): Promise<IResponse<ILoginUser>> {
-        return await APIHelper.request(REFRESH_TOKEN_ENDPOINT, 'POST');
+    async RefreshToken(tokenModel: ITokenModel): Promise<IResponse<ITokenModel>> {
+        return await APIHelper.request(REFRESH_TOKEN_ENDPOINT, 'POST', tokenModel);
     };
 
     async SendEmail(email: string): Promise<IResponse<string>> {

@@ -51,3 +51,6 @@ export const USER_SUCCESFULLY_REGISTER: string = 'User succesfully registered';
 export const SEARCHBOX_ERROR_MESSAGE: string = 'Please fill all text areas!';
 export const MULTISELECT_ERROR_MESSAGE: string = 'Please pick 3 options!';
 export const FORGOT_PASSWORD_HEADER_MESSAGE: string = "Enter your email address associated with your account and we'll send you a link to reset your password.";
+export const DEFAULT_PATH: string = '*';
+export const SESSION_EXPIRED_MESSAGE: string = 'Session expired, you will be logged out!';
+export const REFRESH_TOKEN: string = "RefreshToken";

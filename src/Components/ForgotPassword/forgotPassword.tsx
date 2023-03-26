@@ -75,7 +75,7 @@ export const ForgotPassword = (): JSX.Element => {
         navigate(SIGN_UP_PATH);
     };
 
-    return <div>
+    return <>
         <Logo mainLogoClassName={mainLogoClassName}
             mainTextClassName={mainTextClassName} />
         <div className={containerClassName}>
@@ -101,5 +101,5 @@ export const ForgotPassword = (): JSX.Element => {
                 notificationMessage={notificationMessage}
                 notificationTitle={notificationTitle} />
         }
-    </div>
+    </>
 };

@@ -4,6 +4,7 @@ import { ILogoProps } from './logo.types';
 
 export const Logo = (props: ILogoProps): JSX.Element => {
     if (props.mainLogoClassName !== undefined && props.mainTextClassName !== undefined) {
+
         return <div className={containerClassName}>
             <img className={props.mainLogoClassName!} src={LOGO_IMAGE_LOCATION}
                 alt={IMAGE_NOT_FOUND_ALTERNATE_TEXT} />

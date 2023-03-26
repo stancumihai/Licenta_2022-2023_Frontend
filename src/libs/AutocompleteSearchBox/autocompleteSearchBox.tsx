@@ -13,7 +13,7 @@ import {
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { HighlightTextView } from '../Utils/HighlightTextView';
 import { RenderIf } from '../Utils/RenderIf';
-import { defaultSuggestionItem, ProgressIndicatorStyle, searchBoxStyle, searchContainer, typeAheadCalloutStyle } from './autocompleteSearchBox.styles';
+import { defaultSuggestionItem, iconProps, ProgressIndicatorStyle, searchBoxStyle, searchContainer, typeAheadCalloutStyle } from './autocompleteSearchBox.styles';
 import { IAutocompleteSearchBoxProps, ISuggestionItem } from './autocompleteSearchBox.types';
 
 export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.Element => {
@@ -139,10 +139,10 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
     return (
         <div style={searchContainer}>
             <div ref={textInput} className={props.className}>
-                <SearchBox
-                    {...props}
+                <SearchBox {...props}
                     styles={searchBoxStyle}
                     autoComplete="off"
+                    iconProps={iconProps}
                     onChange={onChange}
                     onFocus={onFocus}
                     onKeyDown={onKeyDown}

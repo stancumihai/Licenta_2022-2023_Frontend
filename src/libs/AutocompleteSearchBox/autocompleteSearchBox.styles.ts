@@ -51,12 +51,12 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
     root: {
         backgroundImage: "linear-gradient(to right, #49494D, #0C0B0F)",
         boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25)',
+        borderRadius: '5px',
+        border: 'none',
+        maxWidth: '100%',
         selectors: {
             "::after": {
-                outline: 'red'
-            },
-            "::is-active": {
-                outline: 'red'
+                border: 'none',
             }
         }
     },
@@ -74,7 +74,20 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
             }
         }
     },
+    iconContainer: {
+        marginRight: '1.5vw',
+        marginLeft: '0.5vw',
+        width: '0'
+    },
     icon: {
         color: '#0C0B0F'
+    },
+    clearButton: {
+        display: 'none'
     }
+};
+
+export const iconProps = {
+    iconName: 'Search',
+    style: { opacity: 100, color: 'black', cursor: 'pointer' }
 };

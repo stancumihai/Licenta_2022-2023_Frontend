@@ -6,14 +6,5 @@ import { AuthenticatedRouteProps } from "./authenticatedRoute.types";
 
 export const AuthenticatedRoute = (props: AuthenticatedRouteProps): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
-    if (props.permissions === undefined) {
-        return <>{authenticationContext.IsAuthenticated() ?
-            props.children :
-            <Navigate to={props.unaunthenticatedRedirectUrl} />}</>
-    }
-
-    return <>{authenticationContext.IsAuthenticated() &&
-        props.permissions!.includes(authenticationContext.User.role!.toString()) ?
-        props.children :
-        <Navigate to={props.unaunthenticatedRedirectUrl} />}</>
+    return <>{props.permissions!.includes(authenticationContext.User.role!) ? props.children : <Navigate to={props.unaunthenticatedRedirectUrl} />}</>
 };

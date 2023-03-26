@@ -1,10 +1,25 @@
-import { Checkbox, ChoiceGroup, DefaultButton, IChoiceGroupOption, Label, Spinner } from '@fluentui/react';
-import { useContext, useEffect, useState } from 'react';
-import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
+import {
+    Checkbox,
+    ChoiceGroup,
+    DefaultButton,
+    IChoiceGroupOption,
+    Label,
+    Spinner
+} from '@fluentui/react';
+import {
+    useContext,
+    useEffect,
+    useState
+} from 'react';
+import {
+    ServiceContext,
+    ServiceContextInstance
+} from '../../Core/serviceContext';
 import { SurveyQuestionType } from '../../Enums/SurveyQuestionType';
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import {
+    HOME_PATH,
     MAX_CHECKBOX_CHECKED_NUMBER,
     MAX_CHECKBOX_CHECKED_NUMBER_ERROR,
     MULTISELECT_ERROR_MESSAGE,
@@ -19,14 +34,19 @@ import {
     checkboxContainerClassName,
     checkboxItemStyle,
     choiceGroupStyles,
-    containerClassName,
+    surveyContentClassName,
     informationClassName,
     labelStyles,
     loadingSpinnerStyle,
     requiredAssetClassName,
     requiredAssetContainerClassName,
     sendButtonStyles,
-    surveyTitleClassName
+    surveyTitleClassName,
+    containerClassName,
+    mainLogoDivClassName,
+    mainLogoClassName,
+    mainTextClassName,
+    choiceGroupOptionStyle
 } from './survey.styles';
 import $ from 'jquery';
 import { AutocompleteSearchBox } from '../../libs/AutocompleteSearchBox/autocompleteSearchBox';
@@ -35,6 +55,9 @@ import { NavigateFunction, useNavigate } from 'react-router';
 import { ISurveyUserAnswer } from '../../Models/ISurveyUserAnswer';
 import { ISurveyUserRowResponse } from '../../Models/ISurveyUserRowResponse';
 import { IResponse } from '../../Models/IResponse';
+import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
+import AuthentificationContext from '../../Authentication/authenticationContext';
+import { Logo } from '../Logo/logo';
 
 export const Survey = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
@@ -47,10 +70,10 @@ export const Survey = (): JSX.Element => {
     const [movieSuggestions, setMovieSuggestions] = useState<string[] | undefined>();
     const [actorSuggestions, setActorSuggestions] = useState<string[] | undefined>();
     const [directorSuggestions, setDirectorSuggestions] = useState<string[] | undefined>();
-    const [initialCheckboxColor, setInitialCheckboxColor] = useState<string>('');
     const [mappedSuggestions, setMappedSuggestions] = useState<string[]>([]);
     const [surveyErrorMessage, setSurveyErrorMessage] = useState<string>('');
     const [collectedData, setCollectedData] = useState<ISurveyUserRowResponse[]>([]);
+    const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
 
     const navigate: NavigateFunction = useNavigate();
 
@@ -94,14 +117,19 @@ export const Survey = (): JSX.Element => {
             } return 1;
         })
         setSurveyQuestions(surveyQuestionsData.data.Data!);
-        // setTimeout(() => {
+        //setTimeout(() => {
         setAreSurveyQuestionsLoaded(true);
-        // }, 2000);
+        //}, 2000);
     }, [surveyQuestionsData]);
 
     const mapAnswersToOptions = (surveyAnswers: ISurveyAnswer[]): IChoiceGroupOption[] => {
         const results = surveyAnswers.map((surveyAnswer: ISurveyAnswer) => {
-            return { id: surveyAnswer.uid!, key: surveyAnswer.uid!, text: surveyAnswer.value };
+            const choiceGroupOption: IChoiceGroupOption = {
+                id: surveyAnswer.uid!, key: surveyAnswer.uid!,
+                text: surveyAnswer.value,
+                styles: choiceGroupOptionStyle
+            }
+            return choiceGroupOption;
         });
         return results;
     };
@@ -271,28 +299,28 @@ export const Survey = (): JSX.Element => {
         });
     };
 
-    const resetCheckboxColors = (): void => {
-        $('.ms-Checkbox-checkbox').each((i, el) => {
-            var checkedParent: JQuery<HTMLElement> = $(el).parents().eq(1);
-            var classes: string | undefined = $(checkedParent).attr('class');
-            if (!classes!.includes('is-checked')) {
-                $(el).css('background', initialCheckboxColor);
-            }
-        });
-    };
+    // const resetCheckboxColors = (): void => {
+    //     $('.ms-Checkbox-checkbox').each((i, el) => {
+    //         var checkedParent: JQuery<HTMLElement> = $(el).parents().eq(1);
+    //         var classes: string | undefined = $(checkedParent).attr('class');
+    //         if (!classes!.includes('is-checked')) {
+    //             $(el).css('background', initialCheckboxColor);
+    //         }
+    //     });
+    // };
 
-    const changeCheckboxColor = (): void => {
-        $('.ms-Checkbox-checkbox').each((i, el) => {
-            var checkedParent: JQuery<HTMLElement> = $(el).parents().eq(1);
-            var classes: string | undefined = $(checkedParent).attr('class');
-            if (!classes!.includes('is-checked')) {
-                setInitialCheckboxColor($(el).css('background'));
-                $(el).css('background', '#49494D');
-                return;
-            }
-            $(el).css('background', '#005a9e');
-        });
-    };
+    // const changeCheckboxColor = (): void => {
+    //     $('.ms-Checkbox-checkbox').each((i, el) => {
+    //         var checkedParent: JQuery<HTMLElement> = $(el).parents().eq(1);
+    //         var classes: string | undefined = $(checkedParent).attr('class');
+    //         if (!classes!.includes('is-checked')) {
+    //             setInitialCheckboxColor($(el).css('background'));
+    //             //$(el).css('background', '#49494D');
+    //             return;
+    //         }
+    //         // $(el).css('background', '#005a9e');
+    //     });
+    // };
 
     const isCheckboxLimitSurpassed = (): boolean => {
         const checkedboxes = $('div.ms-Checkbox.is-checked').length;
@@ -303,13 +331,13 @@ export const Survey = (): JSX.Element => {
         if (isCheckboxLimitSurpassed()) {
             setMultiselectMessage(MAX_CHECKBOX_CHECKED_NUMBER_ERROR);
             setTimeout(() => {
-                changeCheckboxColor();
+                //changeCheckboxColor();
             }, 200)
             return;
         }
         setMultiselectMessage('');
         setTimeout(() => {
-            resetCheckboxColors();
+            // resetCheckboxColors();
         }, 200)
     };
 
@@ -321,6 +349,7 @@ export const Survey = (): JSX.Element => {
     };
 
     const isReadyToSend = (): boolean => {
+        setMultiselectMessage('');
         if (mappedSuggestions.length !== 3) {
             handleSurveyError(SEARCHBOX_ERROR_MESSAGE);
             return false;
@@ -360,7 +389,7 @@ export const Survey = (): JSX.Element => {
             const surveyUserAnswer: ISurveyUserAnswer = {
                 surveyAnswerUid: data.surveyAnswerUid!,
                 surveyQuestionUid: data.surveyQuestionUid,
-                userUid: '7ecb773e-a1ef-4ca2-9e48-5fc61646974e',
+                userUid: authenticationContext.User.uid!,
                 value: data.value
             };
             services.SurveyUserAnswerService.Add(surveyUserAnswer);
@@ -368,10 +397,15 @@ export const Survey = (): JSX.Element => {
         setMultiselectMessage('');
         setSurveyErrorMessage('');
         setSurveyCreatedMessage('User survey created');
+        navigate(HOME_PATH);
     };
 
     return (
-        <div>
+        <div className={containerClassName}>
+            <div className={mainLogoDivClassName}>
+                <Logo mainLogoClassName={mainLogoClassName}
+                    mainTextClassName={mainTextClassName} />
+            </div>
             {!areSurveyQuestionsLoaded ?
                 <div>
                     <Spinner styles={loadingSpinnerStyle}
@@ -379,7 +413,8 @@ export const Survey = (): JSX.Element => {
                         ariaLive="assertive"
                         labelPosition="top" />
                 </div> :
-                <div className={containerClassName}>
+
+                <div className={surveyContentClassName}>
                     <h1 className={surveyTitleClassName}>{SURVEY_TITLE}</h1>
                     <div>
                         <p className={informationClassName}>{multiselectMessage}</p>

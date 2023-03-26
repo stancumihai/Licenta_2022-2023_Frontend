@@ -31,7 +31,8 @@ import {
     loginHeaderButtonStyles,
     customIconButtonContainerClasssName,
     successfullyRegisteredClassName,
-    errorClassName
+    errorClassName,
+    textErrorFieldStyles
 } from './register.styles'
 import { ISignUpFormData } from './register.types'
 import { NavigateFunction, useNavigate } from 'react-router';
@@ -39,6 +40,7 @@ import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContex
 import { IResponse } from '../../Models/IResponse'
 import validator from 'validator';
 import { IRegisterUser } from '../../Models/User/IRegisterUser'
+import { CustomAlert } from '../CustomAlert/customAlert'
 
 export const Register = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
@@ -49,13 +51,18 @@ export const Register = (): JSX.Element => {
     const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true);
     const [successfullyRegisteredMessage, setSuccessfullyRegisteredMessage] = useState<string>('');
     const [serverErrorMessage, setServerErrorMessage] = useState<string>('');
-    const [successfullyRegistered, setSuccessfullyRegistered] = useState(false);
+    const [successfullyRegistered, setSuccessfullyRegistered] = useState<boolean>(false);
+    const [hasInvalidPassword, setHasInvalidPassword] = useState<boolean>();
     const [isModified, setIsModified] = useState<IsModified<'Email' | 'Password'>>(
         {
             Email: false,
             Password: false
         }
     );
+    const invalidPasswordMessages: string[] = [
+        "Password must contain 1 or more uppercase characters.\n",
+        "Password must be 5 or more characters in length.\n",
+        "Password must contain 1 or more lowercase characters."]
     const navigate: NavigateFunction = useNavigate();
     useEffect(() => {
         if (successfullyRegistered === true) {
@@ -76,6 +83,16 @@ export const Register = (): JSX.Element => {
 
     const isReadyToSumbit = (data: ISignUpFormData): boolean => {
         return data.Email !== "" && data.Password !== '';
+    };
+    const isPasswordValid = (password: string): boolean => {
+        const regex = {
+            'capital': /[A-Z]/,
+            'digit': /[0-9]/,
+            'lowercase': '/[a-z]'
+        };
+        return regex.capital.test(password) &&
+            regex.digit.test(password) &&
+            password.length >= 5;
     };
     const onEmailAddressChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newEmailAddress?: string | undefined): void => {
         if (!isModified.Email) {
@@ -105,15 +122,16 @@ export const Register = (): JSX.Element => {
         setServerErrorMessage(message);
         setTimeout(() => {
             setServerErrorMessage('');
-        }, 2000)
-        setTimeout(() => {
             clearFields();
-        }, 500)
-    };
+        }, 3000)
+    }
     const handleRegister = (): void => {
         if (!validator.isEmail(emailAddress)) {
             handleIncorrectRegister(VALID_EMAIL_ADDRESS_ERROR_MESSAGE);
             return;
+        }
+        if (!isPasswordValid(password)) {
+            setHasInvalidPassword(true);
         }
         const signUpUser: IRegisterUser = {
             email: emailAddress,
@@ -139,6 +157,11 @@ export const Register = (): JSX.Element => {
     const isAnyFieldEmpty = (): boolean => {
         return emailAddress === '' || password === '';
     };
+    const handleModalClose = (): void => {
+        setTimeout(() => {
+            setHasInvalidPassword(false);
+        }, 500)
+    };
     return <div className={containerClassName}>
         <Background />
         <div className={containerSignUpClassName}>
@@ -152,12 +175,12 @@ export const Register = (): JSX.Element => {
                     <TextField value={emailAddress}
                         onGetErrorMessage={() => emailAddressErrorMessage.toString()}
                         onChange={onEmailAddressChange}
-                        styles={textFieldStyles}
+                        styles={emailAddressErrorMessage ? textErrorFieldStyles : textFieldStyles}
                         placeholder='Email Address' />
                     <TextField value={password}
                         onGetErrorMessage={() => passwordErrorMessage.toString()}
                         onChange={onPasswordChange}
-                        styles={textFieldStyles}
+                        styles={passwordErrorMessage ? textErrorFieldStyles : textFieldStyles}
                         placeholder='Password'
                         type="password" />
                     <div className={customIconButtonContainerClasssName}>
@@ -172,6 +195,9 @@ export const Register = (): JSX.Element => {
                         onClick={handleRegister}
                         styles={signUpButtonStyles}
                         text={SIGN_UP} />
+                    <CustomAlert isOpen={hasInvalidPassword!}
+                        messages={invalidPasswordMessages}
+                        handleCloseDialog={handleModalClose} />
                 </div>
             </div>
         </div>

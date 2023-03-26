@@ -1,4 +1,8 @@
-import { Checkbox, DefaultButton, TextField } from '@fluentui/react';
+import {
+    Checkbox,
+    DefaultButton,
+    TextField
+} from '@fluentui/react';
 import {
     ENVELOPE_LOGO_LOCATION,
     FORGOT_PASSWORD,
@@ -28,6 +32,7 @@ import {
     passwordIconClassName,
     customIconButtonContainerClasssName,
     errorClassName,
+    textErrorFieldStyles,
 } from './login.styles';
 import { useContext, useState } from 'react';
 import { IsModified } from '../../Library/types';
@@ -36,8 +41,14 @@ import { Background } from '../Background/background';
 import { SocialMedia } from '../SocialMedia/socialMedia';
 import { Logo } from '../Logo/logo';
 import { CustomIconButton } from '../CustomIconButton/customIconButton';
-import { NavigateFunction, useNavigate } from 'react-router';
-import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
+import {
+    NavigateFunction,
+    useNavigate
+} from 'react-router';
+import {
+    ServiceContext,
+    ServiceContextInstance
+} from '../../Core/serviceContext';
 import { ILoginUser } from '../../Models/User/ILoginUser';
 import Cookies from 'universal-cookie';
 import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
@@ -107,7 +118,7 @@ export const Login = (): JSX.Element => {
                 return;
             }
             if (data.Data! !== undefined && data.Status === 200) {
-                cookie.set(JWT_TOKEN, data.Data.token);
+                cookie.set(JWT_TOKEN, data.Data.accessToken);
                 services.AuthenticationService.GetLoggedInUser().then((data: IResponse<IUser>) => {
                     authenticationContext.SetUpdatedUser(data.Data!);
                     navigate(SURVEY_PATH);
@@ -138,12 +149,12 @@ export const Login = (): JSX.Element => {
                     <TextField value={emailAddress}
                         onGetErrorMessage={() => emailAddressErrorMessage.toString()}
                         onChange={onEmailAddressChange}
-                        styles={textFieldStyles}
+                        styles={emailAddressErrorMessage ? textErrorFieldStyles : textFieldStyles}
                         placeholder='Email Address' />
                     <TextField value={password}
                         onGetErrorMessage={() => passwordErrorMessage.toString()}
                         onChange={onPasswordChange}
-                        styles={textFieldStyles}
+                        styles={passwordErrorMessage ? textErrorFieldStyles : textFieldStyles}
                         placeholder='Password'
                         type="password" />
                     <div className={customIconButtonContainerClasssName}>

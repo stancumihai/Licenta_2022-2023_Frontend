@@ -1,13 +1,24 @@
-import { DefaultButton } from '@fluentui/react';
-import { NavigateFunction, useNavigate } from 'react-router';
-import { LOGIN_PATH } from '../../Library/constants';
+import {
+    containerClassName,
+    mainLogoClassName,
+    mainLogoDivClassName,
+    mainTextClassName
+} from './homePage.styles';
+import { Navbar } from '../Navbar/navbar';
+import { SideBar } from '../SideBar/sideBar';
+import { Logo } from '../Logo/logo';
+import { MovieCardsContainer } from '../MovieCardsContainer/movieCardsContainer';
 
 export const HomePage = (): JSX.Element => {
-    const navigate: NavigateFunction = useNavigate();
 
-    return <div>
-        <DefaultButton onClick={() => {
-            navigate(LOGIN_PATH)
-        }}>Logout</DefaultButton>
-    </div>
+    return (
+        <div className={containerClassName}>
+            <div className={mainLogoDivClassName}>
+                <Logo mainLogoClassName={mainLogoClassName}
+                    mainTextClassName={mainTextClassName} />
+            </div>
+            <Navbar />
+            <SideBar />
+            <MovieCardsContainer />
+        </div>)
 };
