@@ -8,6 +8,7 @@ import { Navbar } from '../Navbar/navbar';
 import { SideBar } from '../SideBar/sideBar';
 import { Logo } from '../Logo/logo';
 import { MovieCardsContainer } from '../MovieCardsContainer/movieCardsContainer';
+import { Paginator } from '../Paginator/paginator';
 
 export const HomePage = (): JSX.Element => {
 
@@ -20,5 +21,6 @@ export const HomePage = (): JSX.Element => {
             <Navbar />
             <SideBar />
             <MovieCardsContainer />
+            <Paginator />
         </div>)
 };

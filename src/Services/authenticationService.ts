@@ -1,9 +1,16 @@
 import { APIHelper } from '../Configuration/apiHelper';
-import { GET_LOGGED_USER_ENDPOINT, LOGIN_ENDPOINT, REFRESH_TOKEN_ENDPOINT, REGISTER_ENDPOINT, RENEWPASSWORD_ENDPOINT, SENDEMAIL_ENDPOINT } from '../Library/constants';
+import {
+    GET_LOGGED_USER_ENDPOINT,
+    LOGIN_ENDPOINT,
+    REFRESH_TOKEN_ENDPOINT,
+    REGISTER_ENDPOINT,
+    RENEWPASSWORD_ENDPOINT,
+    SENDEMAIL_ENDPOINT
+} from '../Library/constants';
 import { ILoginUser } from '../Models/User/ILoginUser';
 import { IResponse } from '../Models/IResponse';
 import { IUser } from '../Models/User/IUser';
-import { IRenewPassword } from '../Models/RenewPassword';
+import { IRenewPassword } from '../Models/IRenewPassword';
 import { IRegisterUser } from '../Models/User/IRegisterUser';
 import { ITokenModel } from '../Models/User/ITokenModel';
 

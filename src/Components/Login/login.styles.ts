@@ -154,7 +154,9 @@ export const loginButtonStyles: Partial<IButtonStyles> = {
         border: 'none',
     },
     rootHovered: {
-        backgroundColor: '#857fe5',
+        backgroundColor: '#5149DB',
+        // backgroundColor: '#857fe5',
+        // backgroundColor: '#a7a3ed',
         color: 'white'
     },
     rootPressed: {
