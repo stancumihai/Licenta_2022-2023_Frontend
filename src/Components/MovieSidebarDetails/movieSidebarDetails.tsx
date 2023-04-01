@@ -1,0 +1,64 @@
+import { Rating, RatingSize } from '@fluentui/react';
+import { IconContext } from 'react-icons/lib';
+import {
+    additionalInfoClassName,
+    detailSpanTitleClassName,
+    detailsSidebarClassName,
+    iconClassName,
+    imageClassName,
+    listClassName,
+    listItemClassName,
+    movieDetailsContainerClassName
+} from './movieSidebarDetails.styles';
+import { FcDvdLogo } from "react-icons/fc";
+import { BiDisc } from "react-icons/bi";
+import { IMovieSidebarDetailsProps } from './movieSidebarDetails.types';
+import { ratingStyles } from '../MovieWrapper/movieWrapper.styles';
+
+export const MovieSidebarDetails = (props: IMovieSidebarDetailsProps): JSX.Element => {
+    return <div className={detailsSidebarClassName}>
+        <img className={imageClassName} src={props.imageSource} alt='Loading'></img>
+        <div className={movieDetailsContainerClassName}>
+            <ul className={listClassName}>
+                <IconContext.Provider
+                    value={{ style: { marginBottom: '10px' }, color: '#888', size: '25px', }}>
+                    <li className={listItemClassName}>
+                        <span className={detailSpanTitleClassName}>Media</span>
+                        <FcDvdLogo />
+                        <BiDisc className={iconClassName} />
+                    </li>
+                    <li className={listItemClassName}>
+                        <span className={detailSpanTitleClassName}>Subtitles</span>
+                        <div className={additionalInfoClassName}>
+                            <span>Bulgarian, German, French, Hungarian</span>
+                        </div>
+                    </li>
+                    <li className={listItemClassName}>
+                        <span className={detailSpanTitleClassName}>Languge</span>
+                        <div className={additionalInfoClassName}>
+                            <span >English</span>
+                        </div>
+                    </li>
+                    <li className={listItemClassName}>
+                        <span className={detailSpanTitleClassName}>Rating</span>
+                        <div className={additionalInfoClassName}>
+                            <Rating max={5}
+                                styles={ratingStyles}
+                                size={RatingSize.Large}
+                                rating={props.movieRating}
+                                ariaLabel="Large stars"
+                                ariaLabelFormat="{0} of {1} stars"
+                            />
+                        </div>
+                    </li>
+                    <li className={listItemClassName}>
+                        <span className={detailSpanTitleClassName}>Votes Count</span>
+                        <div className={additionalInfoClassName}>
+                            <span >{props.votesNumber}</span>
+                        </div>
+                    </li>
+                </IconContext.Provider>
+            </ul>
+        </div>
+    </div>
+};

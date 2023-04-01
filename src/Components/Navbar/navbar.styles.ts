@@ -8,19 +8,20 @@ export const containerClassName: string = mergeStyles({
     maxWidth: '75vw',
     maxHeight: '10vh',
     height: '10vh',
-    top:'1vh'
+    top: '1vh'
 });
 
 export const searchBoxStyles: Partial<ISearchBoxStyles> = {
     root: {
         borderRadius: '25px',
         border: 'none',
+        marginLeft: '-6.3vw',
         maxWidth: '20%',
         selectors: {
             "::after": {
                 border: 'none',
             }
-        }
+        },
     },
     iconContainer: {
         marginRight: '1.5vw',

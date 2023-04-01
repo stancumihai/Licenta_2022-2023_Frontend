@@ -5,11 +5,10 @@ import {
     TooltipHost
 } from '@fluentui/react';
 import { useId } from '@fluentui/react-hooks';
-import { hostStyles } from './paginatorItem.styles';
+import { calloutStyles } from './paginatorItem.styles';
 import { IPaginatorItemProps } from './paginatorItem.types';
 
 export const PaginatorItem = (props: IPaginatorItemProps): JSX.Element => {
-
     const tooltipId = useId('tooltip');
 
     const tooltipProps: ITooltipProps = {
@@ -19,12 +18,13 @@ export const PaginatorItem = (props: IPaginatorItemProps): JSX.Element => {
     };
 
     return <TooltipHost
+        calloutProps={{ styles: calloutStyles }}
         id={tooltipId}
-        tooltipProps={tooltipProps}
-        directionalHint={props.directionalHint}
-        styles={hostStyles}>
-        <IconButton
-            style={props.isLeft ? { transform: 'rotate(180deg)', } : {}}
+        tooltipProps={props.tooltipPropsContent === undefined ? undefined : tooltipProps}
+        directionalHint={props.directionalHint}>
+        <IconButton disabled={props.disabled}
+            onClick={props.onClick}
+            style={props.isLeft ? { transform: 'rotate(180deg)' } : {}}
             aria-describedby={tooltipId}
             styles={props.iconStyles ?? props.iconStyles!}
             iconProps={{ iconName: props.iconName }} />

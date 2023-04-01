@@ -26,12 +26,12 @@ export const iconStyles: Partial<IButtonStyles> = {
     rootPressed: {
         background: 'transparent',
         color: "#a7a3ed"
+    },
+    rootDisabled: {
+        background: 'transparent'
     }
 };
 
-export const pagesClassName: string = mergeStyles({
-    textOverflow: 'ellipsis'
-});
 
 export const paginatorNumberStyles: Partial<IButtonStyles> = {
     root: {
@@ -60,5 +60,9 @@ export const paginatorNumberStyles: Partial<IButtonStyles> = {
     rootPressed: {
         backgroundColor: 'transparent',
         color: '#CCC'
+    },
+    rootDisabled: {
+        backgroundColor: 'transparent',
+        color: 'gray'
     }
 };

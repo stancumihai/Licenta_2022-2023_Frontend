@@ -1,6 +1,10 @@
 import React from 'react'
-import { SURVEY_USER_ANSWER_ENDPOINT, SURVEY_ANSWERS_ENDPONT, USER_ENDPOINT, SURVEY_QUESTIONS_ENDPONT } from '../Library/constants';
+import { SURVEY_USER_ANSWER_ENDPOINT, SURVEY_ANSWERS_ENDPONT, USER_ENDPOINT, SURVEY_QUESTIONS_ENDPONT, MOVIE_ENDPOINT, MOVIE_RATING_ENDPOINT, PERSON_ENDPOINT, KNOWN_FOR_ENDPOINT } from '../Library/constants';
 import AuthenticationService from '../Services/authenticationService';
+import KnownForService from '../Services/knownForService';
+import MovieRatingsService from '../Services/movieRatingsService';
+import MoviesService from '../Services/moviesService';
+import PersonsService from '../Services/personsService';
 import SurveyAnswersService from '../Services/surveyAnswersService';
 import SurveyQuestionsService from '../Services/surveyQuestionsService';
 import SurveyUserAnswerService from '../Services/surveyUserAnswerService';
@@ -12,6 +16,10 @@ export class ServiceContext {
     private _authenticationService?: AuthenticationService;
     private _surveyUserAnswerService?: SurveyUserAnswerService;
     private _userService?: UsersService;
+    private _moviesService?: MoviesService;
+    private _moviesRatingService?: MovieRatingsService;
+    private _personsService?: PersonsService;
+    private _knownForService?: KnownForService;
 
     get SurveyUserAnswerService(): SurveyUserAnswerService {
         if (this._surveyUserAnswerService == null) {
@@ -47,6 +55,35 @@ export class ServiceContext {
         }
         return this._userService;
     }
+
+    get MovieService(): MoviesService {
+        if (this._moviesService == null) {
+            this._moviesService = new MoviesService(MOVIE_ENDPOINT);
+
+        }
+        return this._moviesService;
+    };
+
+    get MovieRatingsService(): MovieRatingsService {
+        if (this._moviesRatingService == null) {
+            this._moviesRatingService = new MovieRatingsService(MOVIE_RATING_ENDPOINT);
+        }
+        return this._moviesRatingService;
+    };
+
+    get PersonsService(): PersonsService {
+        if (this._personsService == null) {
+            this._personsService = new PersonsService(PERSON_ENDPOINT);
+        }
+        return this._personsService;
+    };
+
+    get KnownForService(): KnownForService {
+        if (this._knownForService == null) {
+            this._knownForService = new KnownForService(KNOWN_FOR_ENDPOINT);
+        }
+        return this._knownForService;
+    };
 };
 
 export const ServiceContextInstance = React.createContext(new ServiceContext());

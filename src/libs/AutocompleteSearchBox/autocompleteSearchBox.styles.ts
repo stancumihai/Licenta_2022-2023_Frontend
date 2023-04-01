@@ -15,7 +15,6 @@ export const typeAheadCalloutStyle: Partial<ICalloutContentStyles> = {
         borderRadius: 2,
         marginTop: 0,
         minWidth: "200px",
-        overflow: "hidden",
         top: "0px!important",
         left: "0px!important",
         selectors: {

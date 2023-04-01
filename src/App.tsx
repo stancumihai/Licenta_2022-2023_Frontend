@@ -21,6 +21,7 @@ import {
   HOME_PATH,
   JWT_TOKEN,
   LOGIN_PATH,
+  MOVIE_WRAPPER_PATH,
   REFRESH_TOKEN,
   RENEW_PASSWORD_PATH,
   SESSION_EXPIRED_MESSAGE,
@@ -42,6 +43,7 @@ import {
 import { IResponse } from './Models/IResponse';
 import Cookies from 'universal-cookie';
 import { ITokenModel } from './Models/User/ITokenModel';
+import { MovieWrapper } from './Components/MovieWrapper/movieWrapper';
 
 initializeIcons(undefined, { disableWarnings: true });
 
@@ -120,7 +122,7 @@ export default function App(): JSX.Element {
   useEffect(() => {
     document.body.style.margin = "0";
     document.body.style.padding = "0";
-    document.body.style.overflow = "hidden";
+    //document.body.style.overflow = "hidden";
   }, []);
 
   return (<div>
@@ -138,9 +140,9 @@ export default function App(): JSX.Element {
       } />
       <Route path={FORGOT_PASSWORD_PATH} element={<ForgotPassword />} />
       <Route path={`${RENEW_PASSWORD_PATH}/:email`} element={<RenewPassword />} />
+      <Route path={`${MOVIE_WRAPPER_PATH}/:movieName`} element={<MovieWrapper />} />
       <Route path={DEFAULT_PATH} element={<Navigate to={LOGIN_PATH} />} />
     </Routes>
-
   </div>
   );
 };

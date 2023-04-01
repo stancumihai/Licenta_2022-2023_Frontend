@@ -6,7 +6,7 @@ import BaseService from './baseService';
 export default class UsersService extends BaseService<IUser>  {
     async GetByEmail(email: string): Promise<IResponse<IUser>> {
         return await APIHelper.request(`${this._endpoint}/${'email'}/${email}`, 'GET')
-    }
+    };
 
     async UserHasSurveyAnswers(userUid: string): Promise<IResponse<boolean>> {
         return await APIHelper.request(`${this._endpoint}/${'surveyAnswers'}/${userUid}`, 'GET');

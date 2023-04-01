@@ -1,4 +1,6 @@
 export interface IMovieCardProps {
+    movieUid: string;
     name: string;
-    rating: number;
+    genres: string;
+    pageChangeHelper: boolean;
 };

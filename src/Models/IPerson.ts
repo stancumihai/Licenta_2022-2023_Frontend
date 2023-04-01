@@ -3,5 +3,5 @@ export interface IPerson {
     name: string;
     yearOfBirth: number;
     yearOfDeath: number;
-    profession: string;
+    professions: string;
 };

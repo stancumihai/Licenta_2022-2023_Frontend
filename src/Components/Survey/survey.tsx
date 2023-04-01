@@ -25,7 +25,7 @@ import {
     MULTISELECT_ERROR_MESSAGE,
     REQUIRED_ASSET_LOCATION,
     SEARCHBOX_ERROR_MESSAGE,
-    SPINNER_LOADING_MESSAGE,
+    SPINNER_LOADING_SURVEY_MESSAGE,
     SURVEY_TITLE
 } from '../../Library/constants';
 import { ISurveyAnswer } from '../../Models/ISurveyAnswer';
@@ -409,7 +409,7 @@ export const Survey = (): JSX.Element => {
             {!areSurveyQuestionsLoaded ?
                 <div>
                     <Spinner styles={loadingSpinnerStyle}
-                        label={SPINNER_LOADING_MESSAGE}
+                        label={SPINNER_LOADING_SURVEY_MESSAGE}
                         ariaLive="assertive"
                         labelPosition="top" />
                 </div> :

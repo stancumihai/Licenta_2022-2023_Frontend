@@ -26,8 +26,8 @@ export const CustomAlert = (props: ICustomAlertProps): JSX.Element => {
                 onClick={props.handleCloseDialog} />
         </div>
         <div className={contentStyles.body}>
-            {props.messages.map((message: string) => {
-                return <li>{message}</li>
+            {props.messages.map((message: string, i: number) => {
+                return <li key={i}>{message}</li>
             })}
         </div>
     </Modal>

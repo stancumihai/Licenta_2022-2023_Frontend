@@ -1,5 +1,5 @@
 import { IconButton } from '@fluentui/react';
-import { activeSideBarListItemClassName, dummySidebarItemDivClassName, iconButtonStyles, sidebarListItemClassName, sidebarListItemTextClassName } from './sideBarListItem.styles';
+import { activeSideBarListItemClassName, countSidebarListItemClassName, dummySidebarItemDivClassName, iconButtonStyles, sidebarListItemClassName, sidebarListItemTextClassName } from './sideBarListItem.styles';
 import { ISidebarListItemProps } from './sideBarListItem.types';
 
 export const SideBarListItem = (props: ISidebarListItemProps): JSX.Element => {
@@ -26,7 +26,7 @@ export const SideBarListItem = (props: ISidebarListItemProps): JSX.Element => {
         <div onMouseEnter={handleMouseEnterSidebarItem}
             onMouseLeave={handleOnMouseLeaveSidebarItem}
             className={dummySidebarItemDivClassName}></div>
-        <div id={"activeId" + props.sidebarListItem.text} ></div>
-        <li style={{ display: 'inline-flex', left: "10vw", color: 'white', position: 'fixed' }}>{props.sidebarListItem.count}</li>
+        <div></div>
+        <li className={countSidebarListItemClassName} >{props.sidebarListItem.count}</li>
     </div>
 };

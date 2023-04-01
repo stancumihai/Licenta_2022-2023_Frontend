@@ -1,23 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { IMovie } from '../../Models/IMovie';
 import { MovieCard } from '../MovieCard/movieCard';
 import { containerClassName } from './movieCardsContainer.styles';
+import { IMovieCardsContainerProps } from './movieCardsContainer.types';
 
-export const MovieCardsContainer = (): JSX.Element => {
-    const [movies, setMovies] = useState<{ name: string, rating: number }[]>([
-        { name: "The Story of the Kelly Gang", rating: 1 },
-        { name: "Miss Jerry", rating: 2 },
-        { name: "John Wick: Chapter 4", rating: 3 },
-        { name: "John Wick: Chapter 3", rating: 4 },
-        { name: "John Wick: Chapter 2", rating: 5.5 },
-        { name: "John Wick: Chapter 1", rating: 8.2 },
-        { name: "Top Gun Maverick", rating: 1 },
-        { name: "The Dark Knight", rating: 1 }
-    ]);
+export const MovieCardsContainer = (props: IMovieCardsContainerProps): JSX.Element => {
+    const [pageChangeHelper, setPageChangeHelper] = useState<boolean>(false);
+
+    useEffect(() => {
+        setPageChangeHelper(true);
+    }, [props.moviesToDisplayInPage]);
 
     return <div className={containerClassName}>
-        {movies.map((movie: { name: string, rating: number }) => {
-            return <MovieCard name={movie.name}
-                rating={movie.rating} />
+        {props.moviesToDisplayInPage.map((movie: IMovie, i: number) => {
+            return <MovieCard key={i}
+                pageChangeHelper={pageChangeHelper}
+                movieUid={movie.uid!}
+                name={movie.title}
+                genres={movie.genres} />
         })}
     </div>
 };
