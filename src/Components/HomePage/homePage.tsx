@@ -61,7 +61,7 @@ export const HomePage = (): JSX.Element => {
     };
 
     return <div className={containerClassName}>
-        <Navbar />
+        <Navbar areMoviesLoaded={areMoviesLoaded} />
         {!areMoviesLoaded ?
             <div>
                 <Spinner styles={loadingSpinnerStyle}

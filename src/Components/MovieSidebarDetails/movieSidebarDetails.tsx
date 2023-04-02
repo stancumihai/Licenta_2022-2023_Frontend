@@ -16,6 +16,11 @@ import { IMovieSidebarDetailsProps } from './movieSidebarDetails.types';
 import { ratingStyles } from '../MovieWrapper/movieWrapper.styles';
 
 export const MovieSidebarDetails = (props: IMovieSidebarDetailsProps): JSX.Element => {
+    
+    const getNormalizedRating = (): number => {
+        return props.movieRating / 10 * 5;
+    };
+
     return <div className={detailsSidebarClassName}>
         <img className={imageClassName} src={props.imageSource} alt='Loading'></img>
         <div className={movieDetailsContainerClassName}>
@@ -43,11 +48,13 @@ export const MovieSidebarDetails = (props: IMovieSidebarDetailsProps): JSX.Eleme
                         <span className={detailSpanTitleClassName}>Rating</span>
                         <div className={additionalInfoClassName}>
                             <Rating max={5}
+                                readOnly={true}
                                 styles={ratingStyles}
                                 size={RatingSize.Large}
-                                rating={props.movieRating}
+                                rating={getNormalizedRating()}
                                 ariaLabel="Large stars"
                                 ariaLabelFormat="{0} of {1} stars"
+                                allowZeroStars
                             />
                         </div>
                     </li>

@@ -14,7 +14,7 @@ import {
     NavigateOptions,
     useNavigate
 } from 'react-router';
-import { MOVIE_WRAPPER_PATH } from '../../Library/constants';
+import { MOVIE_NOT_FOUND_IMAGE_LOCATION, MOVIE_WRAPPER_PATH } from '../../Library/constants';
 
 export const MovieCard = (props: IMovieCardProps): JSX.Element => {
     const MOVIE_QUERY_URL: string = 'https://api.themoviedb.org/3/search/movie?api_key=aa32df38f33efcf6781400cf7584d8bb&query='
@@ -51,9 +51,17 @@ export const MovieCard = (props: IMovieCardProps): JSX.Element => {
         fetch(`${MOVIE_QUERY_URL}${props.name}`)
             .then((response) => response.json())
             .then((data) => {
+                if (data.results.length === 0) {
+                    setImageSource(`${MOVIE_NOT_FOUND_IMAGE_LOCATION}`);
+                    return;
+                }
                 const id = data.results[0].id;
                 fetch(`${POSTERS_QUERY_URL}/${id}/images?api_key=aa32df38f33efcf6781400cf7584d8bb`)
                     .then((response2) => response2.json()).then((data2) => {
+                        if (data2.posters.length === 0) {
+                            setImageSource(`${MOVIE_NOT_FOUND_IMAGE_LOCATION}`)
+                            return;
+                        }
                         const image = data2.posters[0].file_path;
                         setImageSource(`${IMAGE_SOURCE_URL}` + image);
                     })

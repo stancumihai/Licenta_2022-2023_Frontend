@@ -16,7 +16,8 @@ export const searchBoxStyles: Partial<ISearchBoxStyles> = {
         borderRadius: '25px',
         border: 'none',
         marginLeft: '-6.3vw',
-        maxWidth: '20%',
+        maxWidth: '17.5%',
+        width: '17.5%',
         selectors: {
             "::after": {
                 border: 'none',
@@ -37,3 +38,25 @@ export const iconProps = {
     iconName: 'Search',
     style: { opacity: 100, color: 'black', cursor: 'pointer' }
 };
+
+export const advancedSearchIconClassName: string = mergeStyles({
+    transition: '0.5s',
+    display: "inline-block",
+    color: 'white',
+    marginTop: '0.5vh',
+    fontSize: '25px',
+    marginLeft: "3vw",
+    selectors: {
+        ":hover": {
+            marginTop: '0',
+            color: "#888",
+            transition: '0.5s',
+            fontSize: '30px',
+        }
+    }
+});
+
+export const searchContainer: string = mergeStyles({
+    display: 'flex',
+    justifyContent: 'flex-start'
+});

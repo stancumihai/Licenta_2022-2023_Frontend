@@ -21,7 +21,9 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
         const directors: IPerson[] = props.moviePersons.filter((moviePerson: IPerson) => {
             return moviePerson.professions.split(',').includes('director');
         })
-        setDirectorName(directors[0].name);
+        if (directors.length > 0) {
+            setDirectorName(directors[0].name);
+        }
     }, []);
 
     useEffect(() => {
@@ -67,10 +69,11 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
                 <span className={detailSpanTitleClassName}>Runtime</span>
                 <p>{props.movie.runtime}</p>
             </li>
-            <li className={listItemClassName}>
-                <span className={detailSpanTitleClassName}>Actors</span>
-                {mapActors()}
-            </li>
+            {actors.length > 0 ?
+                <li className={listItemClassName}>
+                    <span className={detailSpanTitleClassName}>Actors</span>
+                    {mapActors()}
+                </li> : null}
             <li className={listItemClassName}>
                 <span className={detailSpanTitleClassName}>Genres</span>
                 {mapGenres()}

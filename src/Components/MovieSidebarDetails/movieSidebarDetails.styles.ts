@@ -7,6 +7,15 @@ export const movieDetailsContainerClassName: string = mergeStyles({
 export const imageClassName: string = mergeStyles({
     width: '20vw',
     height: '50vh',
+    transition: 'filter 0.4s ease-in-out, opacity 0.4s ease-in-out',
+    filter: 'hue-rotate(0deg)',
+    selectors: {
+        ':hover': {
+            filter: 'hue-rotate(90deg)',
+            opacity: '0.9',
+            transition: '0.5s'
+        }
+    }
 });
 
 export const listClassName: string = mergeStyles({

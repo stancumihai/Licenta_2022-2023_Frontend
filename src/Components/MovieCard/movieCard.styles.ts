@@ -16,6 +16,8 @@ export const cardTitleClassName: string = mergeStyles({
 });
 
 export const movieCardPictureClassName: string = mergeStyles({
+   
+    transition: '0.3s',
     position: 'fixed',
     width: '12vw',
     height: '31vh',

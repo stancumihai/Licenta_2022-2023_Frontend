@@ -64,3 +64,4 @@ export const SESSION_EXPIRED_MESSAGE: string = 'Session expired, you will be log
 export const REFRESH_TOKEN: string = "RefreshToken";
 export const START_PAGE_INDEX: number = 1;
 export const MAX_MOVIES_PER_PAGE: number = 8;
+export const MOVIE_NOT_FOUND_IMAGE_LOCATION: string = './assets/MovieNotFound.png'

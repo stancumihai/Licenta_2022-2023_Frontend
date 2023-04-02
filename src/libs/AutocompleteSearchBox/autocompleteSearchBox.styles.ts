@@ -64,14 +64,6 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
         paddingLeft: '15px',
         fontSize: '12.5px',
         color: 'white',
-        selectors: {
-            "::after": {
-                outline: 'red'
-            },
-            "::is-active": {
-                outline: 'red'
-            }
-        }
     },
     iconContainer: {
         marginRight: '1.5vw',
@@ -88,5 +80,4 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
 
 export const iconProps = {
     iconName: 'Search',
-    style: { opacity: 100, color: 'black', cursor: 'pointer' }
 };
