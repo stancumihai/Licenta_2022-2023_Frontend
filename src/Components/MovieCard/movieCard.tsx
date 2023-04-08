@@ -62,7 +62,7 @@ export const MovieCard = (props: IMovieCardProps): JSX.Element => {
                             setImageSource(`${MOVIE_NOT_FOUND_IMAGE_LOCATION}`)
                             return;
                         }
-                        const image = data2.posters[0].file_path;
+                        const image: string = data2.posters[0].file_path;
                         setImageSource(`${IMAGE_SOURCE_URL}` + image);
                     })
             });

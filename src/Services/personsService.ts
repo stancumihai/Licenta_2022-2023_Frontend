@@ -7,4 +7,7 @@ export default class PersonsService extends BaseService<IPerson>  {
     async GetAllByMovieUid(movieUid: string): Promise<IResponse<IPerson[]>> {
         return await APIHelper.request(`${this._endpoint}/${'movie'}/${movieUid}`, 'GET')
     };
- };
+    async GetPaginatedPersonsByProfession(profession: string, pageNumber: number): Promise<IResponse<IPerson[]>> {
+        return await APIHelper.request(`${this._endpoint}/${'profession'}/${profession}/${pageNumber}`, 'GET')
+    };
+};

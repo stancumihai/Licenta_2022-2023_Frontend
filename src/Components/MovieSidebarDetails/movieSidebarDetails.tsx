@@ -45,7 +45,7 @@ export const MovieSidebarDetails = (props: IMovieSidebarDetailsProps): JSX.Eleme
                         </div>
                     </li>
                     <li className={listItemClassName}>
-                        <span className={detailSpanTitleClassName}>Rating</span>
+                        <span className={detailSpanTitleClassName}>Average Rating</span>
                         <div className={additionalInfoClassName}>
                             <Rating max={5}
                                 readOnly={true}

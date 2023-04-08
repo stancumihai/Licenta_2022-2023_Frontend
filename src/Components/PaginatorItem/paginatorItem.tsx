@@ -1,6 +1,5 @@
 import {
     IconButton,
-    ITooltipHostStyles,
     ITooltipProps,
     TooltipHost
 } from '@fluentui/react';

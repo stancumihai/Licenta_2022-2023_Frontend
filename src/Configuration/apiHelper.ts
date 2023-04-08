@@ -21,11 +21,10 @@ class ApiHelper {
             if (cookies.get(JWT_TOKEN) !== undefined) {
                 responseBody.headers = { ...responseBody.headers, 'Authorization': 'Bearer ' + cookies.get(JWT_TOKEN) }
             }
-            if (method !== 'GET' || 'DELETE') {
+            if (method !== 'GET' && method !== 'DELETE') {
                 responseBody.body = JSON.stringify(body);
             }
             try {
-
                 const response: Response = await fetch(`${BASE_URL.BASE_URL}${endpoint}`, responseBody);
                 if (response.status === 204) {
                     return { Status: response.status };

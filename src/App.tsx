@@ -67,46 +67,46 @@ export default function App(): JSX.Element {
   }
 
   const forbidden = authenticationContext.IsForbidden();
-  // useEffect(() => {
-  //   const trimmedUrl: string = trimUrl(window.location.href);
-  //   if (NON_AUTH_PAGES.includes(trimmedUrl)) {
-  //     return;
-  //   }
-  //   if (forbidden === true) {
-  //     try {
-  //       var accessToken = cookie.get(JWT_TOKEN);
-  //       var refreshToken = cookie.get(REFRESH_TOKEN);
-  //       if ((refreshToken === undefined || refreshToken === "")) {
-  //         if (!authenticationContext.IsAuthenticated()) {
-  //           window.alert(SESSION_EXPIRED_MESSAGE);
-  //           cookie.remove(JWT_TOKEN);
-  //           cookie.remove(REFRESH_TOKEN)
-  //           navigate(LOGIN_PATH);
-  //           return;
-  //         }
-  //         hasSurveyPath();
-  //         return;
-  //       }
-  //       const tokenModel: ITokenModel = {
-  //         accessToken,
-  //         refreshToken
-  //       };
-  //       services.AuthenticationService.RefreshToken(tokenModel).then((data: IResponse<ITokenModel>) => {
-  //         if (data !== null && data.Data!.refreshToken !== null && data.Data!.accessToken !== null) {
-  //           cookie.set(REFRESH_TOKEN, data.Data!.refreshToken);
-  //           cookie.set(JWT_TOKEN, data.Data!.accessToken)
-  //         }
-  //       });
-  //       hasSurveyPath();
-  //       return;
-  //     }
-  //     catch (e) {
-  //       handleAuthorizationExpired();
-  //       return;
-  //     }
-  //   }
-  //   hasSurveyPath();
-  // }, [authenticationContext.User, forbidden]);
+  useEffect(() => {
+    const trimmedUrl: string = trimUrl(window.location.href);
+    if (NON_AUTH_PAGES.includes(trimmedUrl)) {
+      return;
+    }
+    if (forbidden === true) {
+      try {
+        var accessToken = cookie.get(JWT_TOKEN);
+        var refreshToken = cookie.get(REFRESH_TOKEN);
+        if ((refreshToken === undefined || refreshToken === "")) {
+          if (!authenticationContext.IsAuthenticated()) {
+            window.alert(SESSION_EXPIRED_MESSAGE);
+            cookie.remove(JWT_TOKEN);
+            cookie.remove(REFRESH_TOKEN)
+            navigate(LOGIN_PATH);
+            return;
+          }
+          hasSurveyPath();
+          return;
+        }
+        const tokenModel: ITokenModel = {
+          accessToken,
+          refreshToken
+        };
+        services.AuthenticationService.RefreshToken(tokenModel).then((data: IResponse<ITokenModel>) => {
+          if (data !== null && data.Data!.refreshToken !== null && data.Data!.accessToken !== null) {
+            cookie.set(REFRESH_TOKEN, data.Data!.refreshToken);
+            cookie.set(JWT_TOKEN, data.Data!.accessToken)
+          }
+        });
+        hasSurveyPath();
+        return;
+      }
+      catch (e) {
+        handleAuthorizationExpired();
+        return;
+      }
+    }
+    hasSurveyPath();
+  }, [authenticationContext.User, forbidden]);
 
   const hasSurveyPath = (): void => {
     services.UserService.UserHasSurveyAnswers(authenticationContext.User.uid!)
@@ -129,12 +129,11 @@ export default function App(): JSX.Element {
     <Routes>
       <Route path={LOGIN_PATH} element={<Login />} />
       <Route path={SIGN_UP_PATH} element={<Register />} />
-      {/* <Route path={SURVEY_PATH} element={
+      <Route path={SURVEY_PATH} element={
         <AuthenticatedRoute unaunthenticatedRedirectUrl={LOGIN_PATH} permissions={SURVEY_PATH_PERMISSIONS}>
           {!userHasSurveyAnswers ? <Survey /> : <Navigate to={HOME_PATH} />}
         </AuthenticatedRoute>
-      } /> */}
-      <Route path={SURVEY_PATH} element={<Survey />} />
+      } />
       <Route path={HOME_PATH} element={
         <HomePage />
       } />

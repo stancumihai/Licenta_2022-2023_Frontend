@@ -76,7 +76,9 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
     };
 
     const onSuggestionClicked = (e: any, suggestion: string | ISuggestionItem) => {
-        props.mapClickedSuggestion(e.target.textContent.trim());
+        if (props.mapClickedSuggestion !== undefined) {
+            props.mapClickedSuggestion(e.target.textContent.trim());
+        }
         let query = typeof suggestion === "string" ? suggestion : suggestion.getSearchText();
         setSuggestionClicked(true);
         setQuery(query);
@@ -93,7 +95,9 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
 
     const renderSuggestions = () => {
         let views: JSX.Element[] = [];
-        if (!suggestions) return <></>;
+        if (!suggestions) {
+            return <></>;
+        }
         suggestions.forEach((suggestion: string | ISuggestionItem, i: number) => {
             if (typeof suggestion === "string") {
                 views.push(getDefaultListItem(suggestion, i));

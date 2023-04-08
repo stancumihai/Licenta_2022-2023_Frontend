@@ -299,29 +299,6 @@ export const Survey = (): JSX.Element => {
         });
     };
 
-    // const resetCheckboxColors = (): void => {
-    //     $('.ms-Checkbox-checkbox').each((i, el) => {
-    //         var checkedParent: JQuery<HTMLElement> = $(el).parents().eq(1);
-    //         var classes: string | undefined = $(checkedParent).attr('class');
-    //         if (!classes!.includes('is-checked')) {
-    //             $(el).css('background', initialCheckboxColor);
-    //         }
-    //     });
-    // };
-
-    // const changeCheckboxColor = (): void => {
-    //     $('.ms-Checkbox-checkbox').each((i, el) => {
-    //         var checkedParent: JQuery<HTMLElement> = $(el).parents().eq(1);
-    //         var classes: string | undefined = $(checkedParent).attr('class');
-    //         if (!classes!.includes('is-checked')) {
-    //             setInitialCheckboxColor($(el).css('background'));
-    //             //$(el).css('background', '#49494D');
-    //             return;
-    //         }
-    //         // $(el).css('background', '#005a9e');
-    //     });
-    // };
-
     const isCheckboxLimitSurpassed = (): boolean => {
         const checkedboxes = $('div.ms-Checkbox.is-checked').length;
         return checkedboxes === MAX_CHECKBOX_CHECKED_NUMBER;

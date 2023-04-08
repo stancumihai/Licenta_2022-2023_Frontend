@@ -1,5 +1,5 @@
 import React from 'react'
-import { SURVEY_USER_ANSWER_ENDPOINT, SURVEY_ANSWERS_ENDPONT, USER_ENDPOINT, SURVEY_QUESTIONS_ENDPONT, MOVIE_ENDPOINT, MOVIE_RATING_ENDPOINT, PERSON_ENDPOINT, KNOWN_FOR_ENDPOINT } from '../Library/constants';
+import { SURVEY_USER_ANSWER_ENDPOINT, SURVEY_ANSWERS_ENDPONT, USER_ENDPOINT, SURVEY_QUESTIONS_ENDPONT, MOVIE_ENDPOINT, MOVIE_RATING_ENDPOINT, PERSON_ENDPOINT, KNOWN_FOR_ENDPOINT, LIKED_MOVIE_ENDPOINT, MOVIE_SUBSCRIPTIONS_ENDPOINT, SEEN_MOVIE_ENDPOINT } from '../Library/constants';
 import AuthenticationService from '../Services/authenticationService';
 import KnownForService from '../Services/knownForService';
 import MovieRatingsService from '../Services/movieRatingsService';
@@ -9,6 +9,9 @@ import SurveyAnswersService from '../Services/surveyAnswersService';
 import SurveyQuestionsService from '../Services/surveyQuestionsService';
 import SurveyUserAnswerService from '../Services/surveyUserAnswerService';
 import UsersService from '../Services/userService';
+import LikedMoviesService from '../Services/likedMoviesService';
+import MovieSubscriptionsService from '../Services/movieSubscriptionsService';
+import SeenMoviesService from '../Services/seenMovieService';
 
 export class ServiceContext {
     private _surveyQuestionsService?: SurveyQuestionsService;
@@ -20,6 +23,9 @@ export class ServiceContext {
     private _moviesRatingService?: MovieRatingsService;
     private _personsService?: PersonsService;
     private _knownForService?: KnownForService;
+    private _likedMoviesService?: LikedMoviesService;
+    private _movieSubscriptionsService?: MovieSubscriptionsService;
+    private _seenMoviesService?: SeenMoviesService;
 
     get SurveyUserAnswerService(): SurveyUserAnswerService {
         if (this._surveyUserAnswerService == null) {
@@ -83,6 +89,27 @@ export class ServiceContext {
             this._knownForService = new KnownForService(KNOWN_FOR_ENDPOINT);
         }
         return this._knownForService;
+    };
+
+    get LikedMoviesService(): LikedMoviesService {
+        if (this._likedMoviesService == null) {
+            this._likedMoviesService = new LikedMoviesService(LIKED_MOVIE_ENDPOINT);
+        }
+        return this._likedMoviesService;
+    };
+
+    get MovieSubscriptionsService(): MovieSubscriptionsService {
+        if (this._movieSubscriptionsService == null) {
+            this._movieSubscriptionsService = new MovieSubscriptionsService(MOVIE_SUBSCRIPTIONS_ENDPOINT);
+        }
+        return this._movieSubscriptionsService;
+    };
+
+    get SeenMoviesService(): SeenMoviesService {
+        if (this._seenMoviesService == null) {
+            this._seenMoviesService = new SeenMoviesService(SEEN_MOVIE_ENDPOINT);
+        }
+        return this._seenMoviesService;
     };
 };
 

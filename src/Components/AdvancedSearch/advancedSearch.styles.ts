@@ -9,6 +9,7 @@ import {
     mergeStyles
 } from '@fluentui/react';
 import {
+    ICalloutContentStyles,
     IDropdownStyles,
     IModalStyles,
     ISpinButtonStyles
@@ -31,12 +32,12 @@ export const contentStyles = mergeStyleSets({
         theme.fonts.xLargePlus,
         {
             flex: '1 1 auto',
-            border: `4px solid rgb(37, 65, 104)`,
+            border: `2px solid rgb(37, 65, 104)`,
             borderBottom: 'none',
             display: 'flex',
             alignItems: 'center',
             fontWeight: FontWeights.semibold,
-            padding: '12px 12px 14px 24px',
+            padding: '3vh 1.5vw 1.5vh 1.5vw',
         },
     ],
     heading: {
@@ -72,10 +73,10 @@ export const iconButtonStyles: Partial<IButtonStyles> = {
         backgroundColor: 'transparent',
     }
 };
-export const choiceGroupIconButtonStyles: Partial<IButtonStyles> = {
+export const pressForMoreIconButtonStyles: Partial<IButtonStyles> = {
     root: {
+        marginLeft: '1vw',
         backgroundColor: 'transparent',
-        color: "#769bce"
     },
     rootHovered: {
         color: 'rgb(61,87,116)',
@@ -83,11 +84,21 @@ export const choiceGroupIconButtonStyles: Partial<IButtonStyles> = {
     },
     rootPressed: {
         backgroundColor: 'transparent',
+    },
+    icon: {
+        fontSize: '20px'
+    }
+};
+export const choiceGroupIconButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        backgroundColor: 'transparent',
+        color: "#769bce",
     }
 };
 export const releaseDateSpinButtonsContainerClassName: string = mergeStyles({
     display: 'flex',
-    marginLeft: '-1vw'
+    marginLeft: '-1vw',
+    marginTop: '1.5vh'
 });
 export const spinButtonStyles: Partial<ISpinButtonStyles> = {
     root: {
@@ -131,6 +142,8 @@ export const choiceGroupStyles: Partial<IChoiceGroupStyles> = {
 export const dropdownStyles: Partial<IDropdownStyles> = {
     root: {
         border: 'none',
+        borderBottom: '2px solid black',
+        color: 'white',
         width: '17.5vw',
         background: 'transparent'
     },
@@ -139,17 +152,27 @@ export const dropdownStyles: Partial<IDropdownStyles> = {
         background: 'transparent',
         selectors: {
             ':hover': {
-                color: 'white',
                 border: 'none',
+            },
+            ":hover.ms-Dropdown-title": {
+                border: 'none',
+                color: 'white'
             }
         }
     },
     title: {
+        borderStyle: 'none',
+        border: 'none',
         background: 'transparent',
         color: 'white',
         selectors: {
             ':hover': {
                 border: 'none',
+                color: 'white'
+            },
+            ":hover.ms-Dropdown-title": {
+                border: 'none',
+                color: 'white'
             }
         }
     }
@@ -157,12 +180,19 @@ export const dropdownStyles: Partial<IDropdownStyles> = {
 export const buttonClassName: string = mergeStyles({
     display: 'grid',
     gridTemplateColumns: 'auto auto',
-    marginTop: '1.5vh',
+    marginTop: '2.5vh',
     gridGap: '3vw',
     justifyContent: 'start'
 });
 export const buttonStyles: Partial<IButtonStyles> = {
-
+    root: {
+        borderRadius: '5px',
+        border: "none",
+        color: 'white'
+    },
+    rootPressed: {
+        background: '#5f5f5f'
+    }
 };
 
 export const searchBoxStyle: Partial<ISearchBoxStyles> = {
@@ -192,14 +222,32 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
         marginLeft: '0.5w',
         width: '0',
         selectors: {
-            ':hover': {
-                color: '#769bce'
-            },
             '.ms-SearchBox-icon': {
-                color: '#769bce'
-            }, '.ms-SearchBox-icon::hover': {
                 color: '#769bce'
             }
         }
+    },
+    clearButton: {
+        display: 'none'
     }
 };
+export const calloutTootltipStyles: Partial<ICalloutContentStyles> = {
+    root: {
+        fontFamily: FONT_FAMILY,
+        width: 'auto',
+        height: 'auto',
+    },
+    beak: {
+        display: 'none',
+    },
+    container: {
+        opacity: '0.8',
+    }
+};
+export const orderByOptionsRootClassName: string = mergeStyles(
+    {
+        display: 'flex',
+        alignItems: 'center',
+        pointerEvents: 'none'
+    }
+);
