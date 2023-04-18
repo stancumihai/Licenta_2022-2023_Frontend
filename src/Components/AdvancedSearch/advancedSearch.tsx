@@ -230,7 +230,7 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
             />
         </div>
         <div className={contentStyles.body}>
-            <Label className={labelClassName}>Order by</Label>
+            <Label className={labelClassName}>Order by</Label> 
             <Dropdown defaultSelectedKey={orderByDropdownOptions[0].key.toString()}
                 onChange={handleOrderBySelection}
                 options={orderByDropdownOptions}

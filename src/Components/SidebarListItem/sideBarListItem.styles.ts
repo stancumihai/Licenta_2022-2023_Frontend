@@ -3,6 +3,7 @@ import { FONT_FAMILY } from '../../Library/constants';
 
 export const sidebarListItemClassName: string = mergeStyles({
     display: 'inline-flex',
+    cursor: 'pointer',
     transition: '0.5s',
     fontFamily: FONT_FAMILY,
     width: "15vw",
@@ -41,6 +42,7 @@ export const iconButtonStyles: Partial<IButtonStyles> = {
 
 export const sidebarListItemTextClassName: string = mergeStyles({
     marginLeft: '10px',
+    cursor: 'pointer',
     height: '4vh',
     boxSizing: 'border-box',
     paddingTop: '10px',

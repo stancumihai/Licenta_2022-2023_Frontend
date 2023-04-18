@@ -14,7 +14,6 @@
     "@types/react-dom": "^18.0.9",
     "@types/react-icons": "^3.0.0",
     "@types/validator": "^13.7.12",
-    "deepai": "^1.0.21",
     "jquery": "^3.6.3",
     "office-ui-fabric-react": "^7.204.0",
     "react": "^18.2.0",

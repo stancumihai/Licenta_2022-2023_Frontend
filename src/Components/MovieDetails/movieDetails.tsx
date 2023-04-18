@@ -212,6 +212,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
         }, 500);
     };
     const handleRatingChange = (event: React.FormEvent<HTMLElement>, rating?: number | undefined): void => {
+        console.log('asd');
         console.log(rating);
     };
     //(votesCount  * rating + newRating)/votesCount+1

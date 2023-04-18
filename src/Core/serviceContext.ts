@@ -1,5 +1,18 @@
 import React from 'react'
-import { SURVEY_USER_ANSWER_ENDPOINT, SURVEY_ANSWERS_ENDPONT, USER_ENDPOINT, SURVEY_QUESTIONS_ENDPONT, MOVIE_ENDPOINT, MOVIE_RATING_ENDPOINT, PERSON_ENDPOINT, KNOWN_FOR_ENDPOINT, LIKED_MOVIE_ENDPOINT, MOVIE_SUBSCRIPTIONS_ENDPOINT, SEEN_MOVIE_ENDPOINT } from '../Library/constants';
+import {
+    SURVEY_ANSWERS_ENDPONT,
+    USER_ENDPOINT,
+    SURVEY_QUESTIONS_ENDPONT,
+    MOVIE_ENDPOINT,
+    MOVIE_RATING_ENDPOINT,
+    PERSON_ENDPOINT,
+    KNOWN_FOR_ENDPOINT,
+    LIKED_MOVIE_ENDPOINT,
+    MOVIE_SUBSCRIPTIONS_ENDPOINT,
+    SEEN_MOVIE_ENDPOINT,
+    USER_MOVIE_RATING_ENDPOINT,
+    SURVEY_USER_ANSWER_ENDPOINT
+} from '../Library/constants';
 import AuthenticationService from '../Services/authenticationService';
 import KnownForService from '../Services/knownForService';
 import MovieRatingsService from '../Services/movieRatingsService';
@@ -12,6 +25,7 @@ import UsersService from '../Services/userService';
 import LikedMoviesService from '../Services/likedMoviesService';
 import MovieSubscriptionsService from '../Services/movieSubscriptionsService';
 import SeenMoviesService from '../Services/seenMovieService';
+import UserMovieRatingsService from '../Services/userMovieRatings';
 
 export class ServiceContext {
     private _surveyQuestionsService?: SurveyQuestionsService;
@@ -26,6 +40,7 @@ export class ServiceContext {
     private _likedMoviesService?: LikedMoviesService;
     private _movieSubscriptionsService?: MovieSubscriptionsService;
     private _seenMoviesService?: SeenMoviesService;
+    private _userMovieRatingsService?: UserMovieRatingsService;
 
     get SurveyUserAnswerService(): SurveyUserAnswerService {
         if (this._surveyUserAnswerService == null) {
@@ -33,6 +48,7 @@ export class ServiceContext {
         }
         return this._surveyUserAnswerService;
     };
+
 
     get SurveyQuestionsService(): SurveyQuestionsService {
         if (this._surveyQuestionsService == null) {
@@ -110,6 +126,13 @@ export class ServiceContext {
             this._seenMoviesService = new SeenMoviesService(SEEN_MOVIE_ENDPOINT);
         }
         return this._seenMoviesService;
+    };
+
+    get UserMovieRatings(): UserMovieRatingsService {
+        if (this._userMovieRatingsService == null) {
+            this._userMovieRatingsService = new UserMovieRatingsService(USER_MOVIE_RATING_ENDPOINT);
+        }
+        return this._userMovieRatingsService;
     };
 };
 

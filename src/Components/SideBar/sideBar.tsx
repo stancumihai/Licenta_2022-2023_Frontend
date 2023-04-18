@@ -15,7 +15,15 @@ import Cookies from 'universal-cookie';
 import {
     JWT_TOKEN,
     REFRESH_TOKEN,
-    LOGIN_PATH
+    LOGIN_PATH,
+    WATCH_LATER_PATH,
+    MY_COLLECTION_PATH,
+    TRENDING_PATH,
+    MY_HISTORY_PATH,
+    CHARTS_PATH,
+    RECOMMENDATIONS_PATH,
+    TOP_GENRES_PATH,
+    ARTISTS_OF_THE_MONTH_PATH
 } from '../../Library/constants';
 import { CustomDialog } from '../CustomDialog/customDialog';
 import { SideBarListItem } from '../SidebarListItem/sideBarListItem';
@@ -25,19 +33,21 @@ export const SideBar = (): JSX.Element => {
     const [isLogoutDialogHidden, setIsLogoutDialogHidden] = useState<boolean>(true);
     const navigate: NavigateFunction = useNavigate();
     const sidebarListItems = [
-        { iconName: 'Heart', text: 'My Collection', count: 100, function: () => handleSidebarNavigation('/profile') },
-        { iconName: 'Trending12', text: 'Trending Movies', count: 100, function: () => handleSidebarNavigation('/profile') },
-        { iconName: 'History', text: 'History', count: 100, function: () => handleSidebarNavigation('/profile') },
-        { iconName: 'BarChartVertical', text: 'Charts', function: () => handleSidebarNavigation('/profile') },
-        { iconName: 'Calendar', text: 'Watch Later', function: () => handleSidebarNavigation('/profile') },
+        { iconName: 'Heart', text: 'My Collection', count: 100, function: () => handleSidebarNavigation(MY_COLLECTION_PATH) },
+        { iconName: 'Trending12', text: 'Trending Movies', count: 100, function: () => handleSidebarNavigation(TRENDING_PATH) },
+        { iconName: 'History', text: 'History', count: 100, function: () => handleSidebarNavigation(MY_HISTORY_PATH) },
+        { iconName: 'BarChartVertical', text: 'Charts', function: () => handleSidebarNavigation(CHARTS_PATH) },
+        { iconName: 'Calendar', text: 'Watch Later', function: () => handleSidebarNavigation(WATCH_LATER_PATH) },
     ];
     const sidebarCalculatedListItems = [
-        { iconName: 'Touch', text: 'Recommendations', function: () => handleSidebarNavigation('/profile') },
-        { iconName: 'FavoriteList', text: 'Top Genres', function: () => handleSidebarNavigation('/profile') },
-        { iconName: 'Flashlight', text: 'Arist Of The Month', function: () => handleSidebarNavigation('/profile') },
+        { iconName: 'Touch', text: 'Recommendations', function: () => handleSidebarNavigation(RECOMMENDATIONS_PATH) },
+        { iconName: 'FavoriteList', text: 'Top Genres', function: () => handleSidebarNavigation(TOP_GENRES_PATH) },
+        { iconName: 'Flashlight', text: 'Arists Of The Month', function: () => handleSidebarNavigation(ARTISTS_OF_THE_MONTH_PATH) },
     ];
 
     const handleSidebarNavigation = (page: string): void => {
+        console.log(window.location.href);
+
         navigate(page);
     };
     const handleLogout = (): void => {
