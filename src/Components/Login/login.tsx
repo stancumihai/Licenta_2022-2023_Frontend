@@ -118,6 +118,7 @@ export const Login = (): JSX.Element => {
                 return;
             }
             if (data.Data! !== undefined && data.Status === 200) {
+                cookie.remove(JWT_TOKEN);
                 cookie.set(JWT_TOKEN, data.Data.accessToken);
                 services.AuthenticationService.GetLoggedInUser().then((data: IResponse<IUser>) => {
                     authenticationContext.SetUpdatedUser(data.Data!);

@@ -24,7 +24,11 @@ import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import {
     MAX_MOVIES_PER_PAGE,
-    SPINNER_LOADING_MOVIES_MESSAGE
+    MY_COLLECTION_PATH,
+    MY_HISTORY_PATH,
+    SPINNER_LOADING_MOVIES_MESSAGE,
+    START_PAGE_INDEX,
+    WATCH_LATER_PATH
 } from '../../Library/constants';
 import { Spinner } from '@fluentui/react';
 
@@ -37,6 +41,20 @@ export const HomePage = (): JSX.Element => {
     const [moviesToDisplayInPage, setMoviesToDisplayInPage] = useState<IMovie[]>([]);
 
     useEffect(() => {
+        if (window.location.href !== 'http://localhost:3000/home') {
+            const page: string = window.location.href.split('/')[4];
+            handleSidebarClick(page);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (window.location.href !== 'http://localhost:3000/home') {
+            setMoviesToDisplayInPage([]);
+            const page: string = window.location.href.split('/')[4];
+            setAreMoviesLoaded(false);
+            handleSidebarClick(page);
+            return;
+        }
         if (movieData.isLoading) {
             return;
         }
@@ -60,6 +78,48 @@ export const HomePage = (): JSX.Element => {
         setIsPageEdited(false);
     };
 
+    const handleSidebarClick = (page: string): void => {
+        setMoviesToDisplayInPage([]);
+        switch (page) {
+            case MY_COLLECTION_PATH: {
+                services.MovieService.GetMoviesCollection(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
+                    if (data.Data! === undefined) {
+                        setMoviesToDisplayInPage([]);
+                        return;
+                    }
+                    setMoviesToDisplayInPage(data.Data!);
+                });
+                break;
+            }
+            case MY_HISTORY_PATH: {
+                services.MovieService.GetMoviesHistory(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
+                    if (data.Data! === undefined) {
+                        setMoviesToDisplayInPage([]);
+                        return;
+                    }
+                    setMoviesToDisplayInPage(data.Data!);
+                });
+                break;
+            }
+            case WATCH_LATER_PATH: {
+                services.MovieService.GetMoviesSubscription(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
+                    if (data.Data! === undefined) {
+                        setMoviesToDisplayInPage([]);
+                        return;
+                    }
+                    setMoviesToDisplayInPage(data.Data!);
+                });
+                break;
+            }
+            default: {
+                console.log('Nothing');
+            }
+        }
+        setTimeout(() => {
+            setAreMoviesLoaded(true);
+        }, 2000);
+    };
+
     return <div className={containerClassName}>
         <Navbar areMoviesLoaded={areMoviesLoaded} />
         {!areMoviesLoaded ?
@@ -74,7 +134,7 @@ export const HomePage = (): JSX.Element => {
                     <Logo mainLogoClassName={mainLogoClassName}
                         mainTextClassName={mainTextClassName} />
                 </div>
-                <SideBar />
+                <SideBar handleSidebarClick={handleSidebarClick} />
                 {areMoviesLoaded && <MovieCardsContainer
                     moviesToDisplayInPage={moviesToDisplayInPage} />}
                 <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}

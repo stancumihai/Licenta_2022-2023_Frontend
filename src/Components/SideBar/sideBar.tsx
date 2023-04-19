@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ISidebarListItem } from '../../UiModels/ISidebarListItem';
 import {
     containerClassName,
@@ -27,11 +27,13 @@ import {
 } from '../../Library/constants';
 import { CustomDialog } from '../CustomDialog/customDialog';
 import { SideBarListItem } from '../SidebarListItem/sideBarListItem';
+import { ISidebarProps } from './sideBar.types';
 
-export const SideBar = (): JSX.Element => {
+export const SideBar = (props: ISidebarProps): JSX.Element => {
     const cookie = new Cookies();
     const [isLogoutDialogHidden, setIsLogoutDialogHidden] = useState<boolean>(true);
     const navigate: NavigateFunction = useNavigate();
+
     const sidebarListItems = [
         { iconName: 'Heart', text: 'My Collection', count: 100, function: () => handleSidebarNavigation(MY_COLLECTION_PATH) },
         { iconName: 'Trending12', text: 'Trending Movies', count: 100, function: () => handleSidebarNavigation(TRENDING_PATH) },
@@ -46,9 +48,8 @@ export const SideBar = (): JSX.Element => {
     ];
 
     const handleSidebarNavigation = (page: string): void => {
-        console.log(window.location.href);
-
-        navigate(page);
+        props.handleSidebarClick(page);
+        navigate(`/home/${page}`);
     };
     const handleLogout = (): void => {
         cookie.remove(JWT_TOKEN);

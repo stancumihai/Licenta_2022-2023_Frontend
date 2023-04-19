@@ -11,4 +11,16 @@ export default class MoviesService extends BaseService<IMovie>  {
     async GetMovieGenres(): Promise<IResponse<string[]>> {
         return await APIHelper.request(`${this._endpoint}/${'genres'}`, 'GET')
     };
+
+    async GetMoviesHistory(pageNumber: number, pageSize: number): Promise<IResponse<IMovie[]>> {
+        return await APIHelper.request(`${this._endpoint}/${'history'}/${pageNumber}/${pageSize}`, 'GET')
+    };
+
+    async GetMoviesSubscription(pageNumber: number, pageSize: number): Promise<IResponse<IMovie[]>> {
+        return await APIHelper.request(`${this._endpoint}/${'subscription'}/${pageNumber}/${pageSize}`, 'GET')
+    };
+
+    async GetMoviesCollection(pageNumber: number, pageSize: number): Promise<IResponse<IMovie[]>> {
+        return await APIHelper.request(`${this._endpoint}/${'collection'}/${pageNumber}/${pageSize}`, 'GET')
+    };
 };
