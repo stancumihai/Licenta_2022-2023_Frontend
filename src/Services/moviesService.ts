@@ -12,15 +12,27 @@ export default class MoviesService extends BaseService<IMovie>  {
         return await APIHelper.request(`${this._endpoint}/${'genres'}`, 'GET')
     };
 
-    async GetMoviesHistory(pageNumber: number, pageSize: number): Promise<IResponse<IMovie[]>> {
+    async GetMoviesHistoryPaginated(pageNumber: number, pageSize: number): Promise<IResponse<IMovie[]>> {
         return await APIHelper.request(`${this._endpoint}/${'history'}/${pageNumber}/${pageSize}`, 'GET')
     };
 
-    async GetMoviesSubscription(pageNumber: number, pageSize: number): Promise<IResponse<IMovie[]>> {
+    async GetMoviesSubscriptionPaginated(pageNumber: number, pageSize: number): Promise<IResponse<IMovie[]>> {
         return await APIHelper.request(`${this._endpoint}/${'subscription'}/${pageNumber}/${pageSize}`, 'GET')
     };
 
-    async GetMoviesCollection(pageNumber: number, pageSize: number): Promise<IResponse<IMovie[]>> {
+    async GetMoviesCollectionPaginated(pageNumber: number, pageSize: number): Promise<IResponse<IMovie[]>> {
         return await APIHelper.request(`${this._endpoint}/${'collection'}/${pageNumber}/${pageSize}`, 'GET')
+    };
+
+    async GetMoviesHistory(): Promise<IResponse<IMovie[]>> {
+        return await APIHelper.request(`${this._endpoint}/${'history'}`, 'GET')
+    };
+
+    async GetMoviesSubscription(): Promise<IResponse<IMovie[]>> {
+        return await APIHelper.request(`${this._endpoint}/${'subscription'}`, 'GET')
+    };
+
+    async GetMoviesCollection(): Promise<IResponse<IMovie[]>> {
+        return await APIHelper.request(`${this._endpoint}/${'collection'}`, 'GET')
     };
 };

@@ -23,7 +23,8 @@ import {
     CHARTS_PATH,
     RECOMMENDATIONS_PATH,
     TOP_GENRES_PATH,
-    ARTISTS_OF_THE_MONTH_PATH
+    ARTISTS_OF_THE_MONTH_PATH,
+    HOME_PATH
 } from '../../Library/constants';
 import { CustomDialog } from '../CustomDialog/customDialog';
 import { SideBarListItem } from '../SidebarListItem/sideBarListItem';
@@ -35,24 +36,53 @@ export const SideBar = (props: ISidebarProps): JSX.Element => {
     const navigate: NavigateFunction = useNavigate();
 
     const sidebarListItems = [
-        { iconName: 'Heart', text: 'My Collection', count: 100, function: () => handleSidebarNavigation(MY_COLLECTION_PATH) },
-        { iconName: 'Trending12', text: 'Trending Movies', count: 100, function: () => handleSidebarNavigation(TRENDING_PATH) },
-        { iconName: 'History', text: 'History', count: 100, function: () => handleSidebarNavigation(MY_HISTORY_PATH) },
+        { iconName: 'Home', text: 'Home', count: 100, function: () => handleSidebarNavigation(HOME_PATH) },
+        { iconName: 'Heart', text: 'My Collection', count: 100, function: () => handleSidebarNavigation(MY_COLLECTION_PATH), function2: () => handleSendDataCount(MY_COLLECTION_PATH) },
+        { iconName: 'Trending12', text: 'Trending Movies', count: 100, function: () => handleSidebarNavigation(TRENDING_PATH), function2: () => handleSendDataCount(TRENDING_PATH) },
+        { iconName: 'History', text: 'History', count: 100, function: () => handleSidebarNavigation(MY_HISTORY_PATH), function2: () => handleSendDataCount(MY_HISTORY_PATH) },
         { iconName: 'BarChartVertical', text: 'Charts', function: () => handleSidebarNavigation(CHARTS_PATH) },
-        { iconName: 'Calendar', text: 'Watch Later', function: () => handleSidebarNavigation(WATCH_LATER_PATH) },
+        { iconName: 'Calendar', text: 'Watch Later', function: () => handleSidebarNavigation(WATCH_LATER_PATH), function2: () => handleSendDataCount(WATCH_LATER_PATH) },
     ];
-    const sidebarCalculatedListItems = [
+    const sidebarCalculatedListItems: ISidebarListItem[] = [
         { iconName: 'Touch', text: 'Recommendations', function: () => handleSidebarNavigation(RECOMMENDATIONS_PATH) },
         { iconName: 'FavoriteList', text: 'Top Genres', function: () => handleSidebarNavigation(TOP_GENRES_PATH) },
         { iconName: 'Flashlight', text: 'Arists Of The Month', function: () => handleSidebarNavigation(ARTISTS_OF_THE_MONTH_PATH) },
     ];
 
+    const handleSendDataCount = (page: string): number => {
+        if (props.countMapper !== undefined) {
+            switch (page) {
+                case MY_COLLECTION_PATH: {
+                    return props.countMapper!.collectionCount;
+                }
+                case TRENDING_PATH: {
+                    return 1000;
+                }
+                case MY_HISTORY_PATH: {
+                    return props.countMapper!.historyCount;
+                }
+                case WATCH_LATER_PATH: {
+                    return props.countMapper!.watchLaterCount;
+                }
+                default: {
+                    return 0;
+                }
+            }
+        }
+        return 0;
+    };
     const handleSidebarNavigation = (page: string): void => {
+        if (window.location.href === 'http://localhost:3000/home' && page === HOME_PATH) {
+            return;
+        }
+        if (page === HOME_PATH) {
+            navigate(-1);
+        }
         props.handleSidebarClick(page);
         navigate(`/home/${page}`);
     };
     const handleLogout = (): void => {
-        cookie.remove(JWT_TOKEN);
+        cookie.getAll();
         cookie.remove(REFRESH_TOKEN);
         navigate(LOGIN_PATH);
     };
