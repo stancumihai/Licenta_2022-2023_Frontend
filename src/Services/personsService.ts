@@ -10,4 +10,7 @@ export default class PersonsService extends BaseService<IPerson>  {
     async GetPaginatedPersonsByProfession(profession: string, pageNumber: number): Promise<IResponse<IPerson[]>> {
         return await APIHelper.request(`${this._endpoint}/${'profession'}/${profession}/${pageNumber}`, 'GET')
     };
+    async GetAristsOfTheMonth(): Promise<IResponse<IPerson[]>> {
+        return await APIHelper.request(`${this._endpoint}/${'artistOfTheMonth'}`, 'GET')
+    };
 };

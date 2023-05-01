@@ -48,7 +48,6 @@ export const searchContainer: CSSProperties = {
 
 export const searchBoxStyle: Partial<ISearchBoxStyles> = {
     root: {
-        backgroundImage: "linear-gradient(to right, #49494D, #0C0B0F)",
         boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25)',
         borderRadius: '5px',
         border: 'none',
@@ -63,7 +62,8 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
         fontFamily: FONT_FAMILY,
         paddingLeft: '15px',
         fontSize: '12.5px',
-        color: 'white',
+        width: '25vh',
+        pointerEvents: 'none'
     },
     iconContainer: {
         marginRight: '1.5vw',

@@ -39,6 +39,7 @@ export const HomePage = (): JSX.Element => {
     const [movies, setMovies] = useState<IMovie[]>([]);
     const [areMoviesLoaded, setAreMoviesLoaded] = useState<boolean>(false);
     const movieData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetAll());
+
     const [isPageEdited, setIsPageEdited] = useState<boolean>(false);
     const [moviesToDisplayInPage, setMoviesToDisplayInPage] = useState<IMovie[] | undefined>(undefined);
     const [pageUrl, setPageUrl] = useState<string>(window.location.href);
@@ -62,7 +63,6 @@ export const HomePage = (): JSX.Element => {
             handleSidebarClick(page);
             return;
         }
-        console.log('Page changed');
         setPageUrl(window.location.href);
         onPageChange(1);
     }, [pageUrl]);
@@ -141,13 +141,6 @@ export const HomePage = (): JSX.Element => {
 
     useEffect(() => {
         if (areHistoryMoviesLoaded && areWatchLaterMoviesLoaded && areCollectionMoviesLoaded) {
-            console.log('they loaded all');
-
-            // const countMapper: ICountMapper = {
-            //     historyCount: 1,
-            //     watchLaterCount: 2,
-            //     collectionCount: 3
-            // };
             const countMapper: ICountMapper = {
                 historyCount: historyMovies.length,
                 watchLaterCount: watchLaterMovies.length,
@@ -160,7 +153,9 @@ export const HomePage = (): JSX.Element => {
     const onPageChange = (selectedPageIndex: number): void => {
         fetch('https://localhost:7145/api/Movies/' + selectedPageIndex + `/${MAX_MOVIES_PER_PAGE}`)
             .then((response) => response.json())
-            .then((data) => { setMoviesToDisplayInPage(data) });
+            .then((data) => {
+                setMoviesToDisplayInPage(data)
+            });
         setIsPageEdited(false);
     };
 
@@ -177,7 +172,6 @@ export const HomePage = (): JSX.Element => {
                         setMoviesToDisplayInPage(data.Data!);
                     }, 1000);
                     setTimeout(() => {
-                        debugger;
                         setAreMoviesLoaded(true);
                     }, 2000);
                 });
@@ -192,7 +186,6 @@ export const HomePage = (): JSX.Element => {
             }
             case MY_HISTORY_PATH: {
                 services.MovieService.GetMoviesHistoryPaginated(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
-                    console.log(data);
                     if (data.Data! === undefined) {
                         setMoviesToDisplayInPage(undefined);
                         return;
@@ -208,7 +201,6 @@ export const HomePage = (): JSX.Element => {
             }
             case WATCH_LATER_PATH: {
                 services.MovieService.GetMoviesSubscriptionPaginated(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
-                    console.log(data);
                     if (data.Data! === undefined) {
                         setMoviesToDisplayInPage([]);
                         return;
@@ -221,7 +213,8 @@ export const HomePage = (): JSX.Element => {
                 break;
             }
             default: {
-                console.log('Nothing');
+                onPageChange(1);
+                break;
             }
         }
     };
@@ -244,7 +237,8 @@ export const HomePage = (): JSX.Element => {
                     <Logo mainLogoClassName={mainLogoClassName}
                         mainTextClassName={mainTextClassName} />
                 </div>
-                <SideBar countMapper={countMapper !== undefined ? countMapper : undefined} handleSidebarClick={handleSidebarClick} />
+                <SideBar countMapper={countMapper !== undefined ? countMapper : undefined}
+                    handleSidebarClick={handleSidebarClick} />
                 {areMoviesLoaded && moviesToDisplayInPage !== undefined && <MovieCardsContainer
                     moviesToDisplayInPage={moviesToDisplayInPage !== undefined ? moviesToDisplayInPage : []} />}
                 <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}

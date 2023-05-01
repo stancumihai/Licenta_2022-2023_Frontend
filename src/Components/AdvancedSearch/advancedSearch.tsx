@@ -53,13 +53,15 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
     const [actorsSearchPageNumber, setActorsSearchPageNumber] = useState<number>(1);
     const [actors, setActors] = useState<IPerson[]>([]);
     const [areActorsLoaded, setAreActorsLoaded] = useState<boolean>(false);
-    const actorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() => services.PersonsService.GetPaginatedPersonsByProfession('actor', actorsSearchPageNumber));
+    const actorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() =>
+        services.PersonsService.GetPaginatedPersonsByProfession('actor', actorsSearchPageNumber));
     const [actorsSuggestions, setActorSuggestions] = useState<string[] | undefined>([]);
 
     const [directorsSearchPageNumber, setDirectorsSearchPageNumber] = useState<number>(1);
     const [directors, setDirectors] = useState<IPerson[]>([]);
     const [areDirectorsLoaded, setAreDirectorsLoaded] = useState<boolean>(false);
-    const directorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() => services.PersonsService.GetPaginatedPersonsByProfession('director', directorsSearchPageNumber));
+    const directorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() =>
+        services.PersonsService.GetPaginatedPersonsByProfession('director', directorsSearchPageNumber));
     const [directorSuggestions, setDirectorSuggestions] = useState<string[] | undefined>([]);
 
     const [genres, setGenres] = useState<string[]>([]);
@@ -230,7 +232,7 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
             />
         </div>
         <div className={contentStyles.body}>
-            <Label className={labelClassName}>Order by</Label> 
+            <Label className={labelClassName}>Order by</Label>
             <Dropdown defaultSelectedKey={orderByDropdownOptions[0].key.toString()}
                 onChange={handleOrderBySelection}
                 options={orderByDropdownOptions}

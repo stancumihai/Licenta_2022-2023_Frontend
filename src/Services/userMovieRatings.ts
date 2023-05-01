@@ -5,7 +5,10 @@ import { IUserMovieRatingRead } from '../Models/UserMovieRating/IUserMovieRating
 import BaseService from './baseService';
 
 export default class UserMovieRatingsService extends BaseService<IUserMovieRatingCreate | IUserMovieRatingRead>  {
-    async GetAllByLoggedUser(): Promise<IResponse<IUserMovieRatingRead>> {
+    async GetAllByLoggedUser(): Promise<IResponse<IUserMovieRatingRead[]>> {
         return await APIHelper.request(`${this._endpoint}/user}`, 'GET')
+    };
+    async GetByMovieAndUser(movieUid: string): Promise<IResponse<IUserMovieRatingRead>> {
+        return await APIHelper.request(`${this._endpoint}/movie/${movieUid}`, 'GET')
     };
 };

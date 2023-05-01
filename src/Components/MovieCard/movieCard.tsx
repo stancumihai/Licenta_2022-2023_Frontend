@@ -14,7 +14,7 @@ import {
     NavigateOptions,
     useNavigate
 } from 'react-router';
-import { MOVIE_NOT_FOUND_IMAGE_LOCATION, MOVIE_WRAPPER_PATH } from '../../Library/constants';
+import { MOVIE_NOT_FOUND_IMAGE_LOCATION, MOVIE_WRAPPER_PATH, MY_COLLECTION_PATH, MY_HISTORY_PATH, WATCH_LATER_PATH } from '../../Library/constants';
 
 export const MovieCard = (props: IMovieCardProps): JSX.Element => {
     const MOVIE_QUERY_URL: string = 'https://api.themoviedb.org/3/search/movie?api_key=aa32df38f33efcf6781400cf7584d8bb&query='
@@ -75,7 +75,12 @@ export const MovieCard = (props: IMovieCardProps): JSX.Element => {
                 imageSource: imageSource,
             }
         };
-        navigate(`${MOVIE_WRAPPER_PATH}/${props.name}`, navigateOptions);
+        const page: string = window.location.href.split('/')[4];
+        if (page === undefined) {
+            navigate(`${MOVIE_WRAPPER_PATH}/${props.name}`, navigateOptions);
+            return;
+        }
+        navigate(`${MOVIE_WRAPPER_PATH}/${props.name}?${page}`, navigateOptions);
     };
 
     return <div className={cardClassName}

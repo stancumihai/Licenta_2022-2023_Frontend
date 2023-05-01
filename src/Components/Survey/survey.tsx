@@ -2,9 +2,13 @@ import {
     Checkbox,
     ChoiceGroup,
     DefaultButton,
+    DirectionalHint,
     IChoiceGroupOption,
+    ITooltipProps,
+    IconButton,
     Label,
-    Spinner
+    Spinner,
+    TooltipHost
 } from '@fluentui/react';
 import {
     useContext,
@@ -46,7 +50,9 @@ import {
     mainLogoDivClassName,
     mainLogoClassName,
     mainTextClassName,
-    choiceGroupOptionStyle
+    choiceGroupOptionStyle,
+    pressForMoreIconButtonStyles,
+    calloutTootltipStyles
 } from './survey.styles';
 import $ from 'jquery';
 import { AutocompleteSearchBox } from '../../libs/AutocompleteSearchBox/autocompleteSearchBox';
@@ -58,6 +64,10 @@ import { IResponse } from '../../Models/IResponse';
 import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
 import AuthentificationContext from '../../Authentication/authenticationContext';
 import { Logo } from '../Logo/logo';
+import { IMovie } from '../../Models/IMovie';
+import { IPerson } from '../../Models/IPerson';
+import { useId } from '@fluentui/react-hooks';
+import { ISurveyUserAnswerBatch } from '../../Models/ISurveyUserAnswerBatch';
 
 export const Survey = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
@@ -67,37 +77,79 @@ export const Survey = (): JSX.Element => {
     const [multiselectMessage, setMultiselectMessage] = useState<string>('');
     const [surveyCreatedMessage, setSurveyCreatedMessage] = useState<string>('');
     const [checkedCheckboxes, setCheckedCheckboxes] = useState<string[]>([]);
-    const [movieSuggestions, setMovieSuggestions] = useState<string[] | undefined>();
-    const [actorSuggestions, setActorSuggestions] = useState<string[] | undefined>();
-    const [directorSuggestions, setDirectorSuggestions] = useState<string[] | undefined>();
+    const [movieSuggestions, setMovieSuggestions] = useState<string[] | undefined>([]);
+    const [actorSuggestions, setActorSuggestions] = useState<string[] | undefined>([]);
+    const [directorSuggestions, setDirectorSuggestions] = useState<string[] | undefined>([]);
     const [mappedSuggestions, setMappedSuggestions] = useState<string[]>([]);
     const [surveyErrorMessage, setSurveyErrorMessage] = useState<string>('');
     const [collectedData, setCollectedData] = useState<ISurveyUserRowResponse[]>([]);
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
-
     const navigate: NavigateFunction = useNavigate();
 
-    const moviesData: string[] = [
-        "Movie1",
-        "Movie2",
-        "Movie3",
-        "Movie4",
-        "Movie5",
-    ];
-    const actorsData: string[] = [
-        "Actor1",
-        "Actor2",
-        "Actor3",
-        "Actor4",
-        "Actor5",
-    ];
-    const directorsData: string[] = [
-        "Director1",
-        "Director2",
-        "Director3",
-        "Director4",
-        "Director5",
-    ];
+    const [movieSearchPageNumber, setMoviePageSearchNumber] = useState<number>(1);
+    const [movies, setMovies] = useState<IMovie[]>([]);
+    const [areMoviesLoaded, setAreMoviesLoaded] = useState<boolean>(false);
+    const moviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetPaginatedMovies(movieSearchPageNumber, 5));
+
+    const [actorsSearchPageNumber, setActorsSearchPageNumber] = useState<number>(1);
+    const [actors, setActors] = useState<IPerson[]>([]);
+    const [areActorsLoaded, setAreActorsLoaded] = useState<boolean>(false);
+    const actorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() =>
+        services.PersonsService.GetPaginatedPersonsByProfession('actor', actorsSearchPageNumber));
+
+    const [directorsSearchPageNumber, setDirectorsSearchPageNumber] = useState<number>(1);
+    const [directors, setDirectors] = useState<IPerson[]>([]);
+    const [areDirectorsLoaded, setAreDirectorsLoaded] = useState<boolean>(false);
+    const directorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() =>
+        services.PersonsService.GetPaginatedPersonsByProfession('director', directorsSearchPageNumber));
+    const tooltipId = useId('tooltip');
+    const tooltipProps: ITooltipProps = {
+        onRenderContent: () => (
+            <p>Load Others</p>
+        ),
+    };
+
+    useEffect(() => {
+        if (moviesData.isLoading) {
+            return;
+        }
+        if (moviesData.errors !== "" ||
+            moviesData.data?.Error !== undefined ||
+            moviesData.data == null ||
+            moviesData.data.Data === undefined) {
+            return;
+        }
+        setMovies(moviesData.data!.Data!);
+        setAreMoviesLoaded(true);
+    }, [moviesData]);
+
+    useEffect(() => {
+        if (actorsData.isLoading) {
+            return;
+        }
+        if (actorsData.errors !== "" ||
+            actorsData.data?.Error !== undefined ||
+            actorsData.data == null ||
+            actorsData.data.Data === undefined) {
+            return;
+        }
+        setActors(actorsData.data!.Data!);
+        setAreActorsLoaded(true);
+    }, [actorsData]);
+
+    useEffect(() => {
+        if (directorsData.isLoading) {
+            return;
+        }
+        if (directorsData.errors !== "" ||
+            directorsData.data?.Error !== undefined ||
+            directorsData.data == null ||
+            directorsData.data.Data === undefined) {
+            return;
+        }
+        setDirectors(directorsData.data!.Data!);
+        setAreDirectorsLoaded(true);
+    }, [directorsData]);
 
     useEffect(() => {
         if (surveyQuestionsData.isLoading) {
@@ -117,9 +169,9 @@ export const Survey = (): JSX.Element => {
             } return 1;
         })
         setSurveyQuestions(surveyQuestionsData.data.Data!);
-        //setTimeout(() => {
-        setAreSurveyQuestionsLoaded(true);
-        //}, 2000);
+        setTimeout(() => {
+            setAreSurveyQuestionsLoaded(true);
+        }, 2000);
     }, [surveyQuestionsData]);
 
     const mapAnswersToOptions = (surveyAnswers: ISurveyAnswer[]): IChoiceGroupOption[] => {
@@ -176,6 +228,76 @@ export const Survey = (): JSX.Element => {
         setMappedSuggestions(current => [...current, suggestion]);
     };
 
+    const isSearchDataLoaded = (): boolean => {
+        return areActorsLoaded && areDirectorsLoaded && areMoviesLoaded;
+    };
+
+    const handleDivClick = (event: any): void => {
+        const surveyQuestionCategory = Number($($(event.currentTarget).find('input')).attr('id')!.split('/')[1]);
+        if (surveyQuestionCategory === 0) {
+            setMovieSuggestions(movies.map(m => m.title));
+
+        }
+        if (surveyQuestionCategory === 1) {
+            setActorSuggestions(actors.map(a => a.name));
+        }
+        if (surveyQuestionCategory === 2) {
+            setDirectorSuggestions(directors.map(d => d.name));
+        }
+    };
+    const handleLoadMoreMovies = (): void => {
+        const nextPageNumber: number = movieSearchPageNumber + 1;
+        services.MovieService.GetPaginatedMovies(nextPageNumber, 5).then((data: IResponse<IMovie[]>) => {
+            setMovies(data.Data!);
+            setMovieSuggestions(undefined);
+        });
+        setMoviePageSearchNumber(nextPageNumber);
+    };
+    const handleLoadMoreDirectors = (): void => {
+        const nextPageNumber: number = directorsSearchPageNumber + 1;
+        fetch(`https://localhost:7145/api/Persons/profession/director/${nextPageNumber}`)
+            .then((response) => response.json())
+            .then((data: IPerson[]) => {
+                setDirectors(data);
+                setDirectorSuggestions(undefined);
+            });
+        setDirectorsSearchPageNumber(nextPageNumber);
+    };
+    const handleLoadMoreActors = (): void => {
+        const nextPageNumber: number = actorsSearchPageNumber + 1;
+        fetch(`https://localhost:7145/api/Persons/profession/actor/${nextPageNumber}`)
+            .then((response) => response.json())
+            .then((data: IPerson[]) => {
+                setActors(data);
+                setActorSuggestions(undefined);
+            });
+        setActorsSearchPageNumber(nextPageNumber);
+    };
+    const handleLoadMoreData = (event: any): void => {
+        const surveyCategoy: number = Number($($(event.currentTarget).parent()).parent().find('input').attr('id')!.split("/")[1]);
+        if (surveyCategoy === 0) {
+            handleLoadMoreMovies();
+            setActorsSearchPageNumber(1);
+            setDirectorsSearchPageNumber(1);
+            setActorSuggestions(undefined);
+            setDirectorSuggestions(undefined);
+        }
+        if (surveyCategoy === 1) {
+            handleLoadMoreActors();
+            setActorsSearchPageNumber(1);
+            setDirectorsSearchPageNumber(1);
+            setActorSuggestions(undefined);
+            setDirectorSuggestions(undefined);
+        }
+        if (surveyCategoy === 2) {
+            handleLoadMoreDirectors();
+            setMoviePageSearchNumber(1);
+            setActorsSearchPageNumber(1);
+            setMovieSuggestions(undefined);
+            setActorSuggestions(undefined);
+        }
+    };
+
     const mapAnswersToQuestions = (): JSX.Element[] => {
         return mapQuestionToType(surveyQuestions).map((surveyQuestion: ISurveyQuestion): JSX.Element => {
             if (surveyQuestion.Type! === SurveyQuestionType.SINGLELINE) {
@@ -186,15 +308,27 @@ export const Survey = (): JSX.Element => {
                             src={REQUIRED_ASSET_LOCATION}
                             alt='Loading...'></img>
                     </div>
-                    <AutocompleteSearchBox
-                        id={surveyQuestion.uid!}
-                        mapClickedSuggestion={mapClickedSuggestion}
-                        key={surveyQuestion.uid!}
-                        onChange={(_, newValue) => {
-                            handleSearchboxOnChange(surveyQuestion.category!, newValue);
-                        }}
-                        suggestions={mapCategoryToSuggestion(surveyQuestion.category!)}>
-                    </AutocompleteSearchBox>
+                    {isSearchDataLoaded() &&
+                        <div style={{ display: 'inline-flex' }} onClick={handleDivClick}>
+                            <AutocompleteSearchBox
+                                id={surveyQuestion.uid! + "/" + surveyQuestion.category}
+                                mapClickedSuggestion={mapClickedSuggestion}
+                                key={surveyQuestion.uid! + "/" + surveyQuestion.category}
+                                onChange={(_, newValue) => {
+                                    handleSearchboxOnChange(surveyQuestion.category!, newValue);
+                                }}
+                                suggestions={mapCategoryToSuggestion(surveyQuestion.category!)}>
+                            </AutocompleteSearchBox>
+                            <TooltipHost id={tooltipId}
+                                calloutProps={{ styles: calloutTootltipStyles }}
+                                tooltipProps={tooltipProps}
+                                directionalHint={DirectionalHint.rightCenter}>
+                                <IconButton onClick={handleLoadMoreData}
+                                    styles={pressForMoreIconButtonStyles}
+                                    iconProps={{ iconName: "More" }} />
+                            </TooltipHost>
+                        </div>
+                    }
                 </div>
             }
             if (surveyQuestion.Type! === SurveyQuestionType.MULTICHOICE) {
@@ -243,18 +377,26 @@ export const Survey = (): JSX.Element => {
             return;
         }
         if (surveyQuestionCategory === SurveyQuestionCategory.Movie) {
-            setMovieSuggestions(moviesData);
+            setMovieSuggestions(movieSuggestions);
+            setActorsSearchPageNumber(1);
+            setDirectorsSearchPageNumber(1);
             setActorSuggestions(undefined);
             setDirectorSuggestions(undefined);
-        } else if (surveyQuestionCategory === SurveyQuestionCategory.Actor) {
-            setMovieSuggestions(undefined);
-            setActorSuggestions(actorsData);
-            setDirectorSuggestions(undefined);
-        } else {
-            setMovieSuggestions(undefined);
-            setActorSuggestions(undefined);
-            setDirectorSuggestions(directorsData);
+            return;
         }
+        if (surveyQuestionCategory === SurveyQuestionCategory.Actor) {
+            setActorSuggestions(actorSuggestions);
+            setMoviePageSearchNumber(1);
+            setDirectorsSearchPageNumber(1);
+            setMovieSuggestions(undefined);
+            setDirectorSuggestions(undefined);
+            return;
+        }
+        setDirectorSuggestions(directorSuggestions);
+        setActorsSearchPageNumber(1);
+        setMoviePageSearchNumber(1);
+        setMovieSuggestions(undefined);
+        setActorSuggestions(undefined);
     };
 
     const handleCheckboxCheck = (ev?: React.FormEvent<HTMLElement | HTMLInputElement> | undefined, checked?: boolean | undefined): void => {
@@ -308,13 +450,11 @@ export const Survey = (): JSX.Element => {
         if (isCheckboxLimitSurpassed()) {
             setMultiselectMessage(MAX_CHECKBOX_CHECKED_NUMBER_ERROR);
             setTimeout(() => {
-                //changeCheckboxColor();
             }, 200)
             return;
         }
         setMultiselectMessage('');
         setTimeout(() => {
-            // resetCheckboxColors();
         }, 200)
     };
 
@@ -342,7 +482,7 @@ export const Survey = (): JSX.Element => {
         const textData: ISurveyUserRowResponse[] = [];
         $('.ms-SearchBox').each((i, el) => {
             const input = $(el).find('input');
-            const surveyQuestionId = $(input).attr('id');
+            const surveyQuestionId = $(input).attr('id')!.split('/')[0];
             const surveyAnswerValue = $(input).attr('value');
             const surveyUserRowResponse: ISurveyUserRowResponse = {
                 surveyAnswerUid: "00000000-0000-0000-0000-000000000000",
@@ -355,6 +495,21 @@ export const Survey = (): JSX.Element => {
         return textData;
     };
 
+    // const createOperation = (surveyUserAnswer: ISurveyUserAnswer): void => {
+    //     if (!canCreateNewSurveyUserAnswer) {
+    //         setTimeout(() => {
+    //             createOperation(surveyUserAnswer);
+    //             return;
+    //         }, 200)
+    //         return;
+    //     }
+    //     if (canCreateNewSurveyUserAnswer) {
+    //         services.SurveyUserAnswerService.Add(surveyUserAnswer).then(() => {
+    //             setCanCreateNewSurveyUserAnswer(true);
+    //         });
+    //     }
+    // };
+
     const handleSendClick = () => {
         setMappedSuggestions([]);
         if (!isReadyToSend()) {
@@ -362,6 +517,7 @@ export const Survey = (): JSX.Element => {
         }
         let textFieldData: ISurveyUserRowResponse[] = getTextfieldData();
         textFieldData = textFieldData.concat(collectedData);
+        const surveyUserAnswers: ISurveyUserAnswer[] = [];
         textFieldData.forEach((data: ISurveyUserRowResponse) => {
             const surveyUserAnswer: ISurveyUserAnswer = {
                 surveyAnswerUid: data.surveyAnswerUid!,
@@ -369,12 +525,21 @@ export const Survey = (): JSX.Element => {
                 userUid: authenticationContext.User.uid!,
                 value: data.value
             };
-            services.SurveyUserAnswerService.Add(surveyUserAnswer);
+            surveyUserAnswers.push(surveyUserAnswer);
+        });
+        const surveyUserAnswerBatch: ISurveyUserAnswerBatch = {
+            surveyUserAnswers: surveyUserAnswers
+        };
+        debugger;
+        services.SurveyUserAnswerService.AddInSuperBatches(surveyUserAnswerBatch).then((data: IResponse<ISurveyUserAnswerBatch>) => {
+            console.log(data);
         });
         setMultiselectMessage('');
         setSurveyErrorMessage('');
         setSurveyCreatedMessage('User survey created');
-        navigate(HOME_PATH);
+        setTimeout(() => {
+            navigate(HOME_PATH);
+        }, 1000);
     };
 
     return (
@@ -398,7 +563,7 @@ export const Survey = (): JSX.Element => {
                         <p className={informationClassName}>{surveyErrorMessage}</p>
                         <p className={informationClassName}>{surveyCreatedMessage}</p>
                     </div>
-                    {areSurveyQuestionsLoaded && mapAnswersToQuestions()}
+                    {areSurveyQuestionsLoaded && isSearchDataLoaded() && mapAnswersToQuestions()}
                     <DefaultButton onClick={handleSendClick}
                         styles={sendButtonStyles}
                         text='Send' />

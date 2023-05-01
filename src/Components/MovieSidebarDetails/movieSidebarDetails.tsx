@@ -14,15 +14,21 @@ import { FcDvdLogo } from "react-icons/fc";
 import { BiDisc } from "react-icons/bi";
 import { IMovieSidebarDetailsProps } from './movieSidebarDetails.types';
 import { ratingStyles } from '../MovieWrapper/movieWrapper.styles';
+import {
+    NavigateFunction,
+    useNavigate
+} from 'react-router';
+import { HOME_PATH } from '../../Library/constants';
 
 export const MovieSidebarDetails = (props: IMovieSidebarDetailsProps): JSX.Element => {
-    
+    const navigate: NavigateFunction = useNavigate();
+
     const getNormalizedRating = (): number => {
         return props.movieRating / 10 * 5;
     };
 
     return <div className={detailsSidebarClassName}>
-        <img className={imageClassName} src={props.imageSource} alt='Loading'></img>
+        <img onClick={() => { navigate(HOME_PATH); }} className={imageClassName} src={props.imageSource} alt='Loading'></img>
         <div className={movieDetailsContainerClassName}>
             <ul className={listClassName}>
                 <IconContext.Provider

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ISidebarListItem } from '../../UiModels/ISidebarListItem';
 import {
     containerClassName,
@@ -8,12 +8,11 @@ import {
 } from './sideBar.styles';
 import {
     NavigateFunction,
-    useNavigate
+    useNavigate,
 } from 'react-router';
 import { DefaultButton } from 'office-ui-fabric-react';
 import Cookies from 'universal-cookie';
 import {
-    JWT_TOKEN,
     REFRESH_TOKEN,
     LOGIN_PATH,
     WATCH_LATER_PATH,
@@ -45,8 +44,8 @@ export const SideBar = (props: ISidebarProps): JSX.Element => {
     ];
     const sidebarCalculatedListItems: ISidebarListItem[] = [
         { iconName: 'Touch', text: 'Recommendations', function: () => handleSidebarNavigation(RECOMMENDATIONS_PATH) },
-        { iconName: 'FavoriteList', text: 'Top Genres', function: () => handleSidebarNavigation(TOP_GENRES_PATH) },
-        { iconName: 'Flashlight', text: 'Arists Of The Month', function: () => handleSidebarNavigation(ARTISTS_OF_THE_MONTH_PATH) },
+        { iconName: 'FavoriteList', text: 'Top Genres', function: () => navigate(TOP_GENRES_PATH) },
+        { iconName: 'Flashlight', text: 'Arists Of The Month', function: () => navigate(ARTISTS_OF_THE_MONTH_PATH) },
     ];
 
     const handleSendDataCount = (page: string): number => {
@@ -76,7 +75,7 @@ export const SideBar = (props: ISidebarProps): JSX.Element => {
             return;
         }
         if (page === HOME_PATH) {
-            navigate(-1);
+            window.location.replace('http://localhost:3000/home');
         }
         props.handleSidebarClick(page);
         navigate(`/home/${page}`);

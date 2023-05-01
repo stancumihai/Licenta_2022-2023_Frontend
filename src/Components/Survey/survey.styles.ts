@@ -5,7 +5,7 @@ import {
     ISpinnerStyles,
     mergeStyles
 } from '@fluentui/react';
-import { IButtonStyles, IChoiceGroupOptionStyles } from 'office-ui-fabric-react';
+import { IButtonStyles, ICalloutContentStyles, IChoiceGroupOptionStyles } from 'office-ui-fabric-react';
 import { FONT_FAMILY } from '../../Library/constants';
 
 export const mainLogoDivClassName: string = mergeStyles({
@@ -28,7 +28,8 @@ export const containerClassName: string = mergeStyles({
     width: '100vw',
     height: '100vh',
     background: 'linear-gradient(90deg, rgba(20,20,32,1), rgba(37,65,104,1) 65%, rgba(36,45,69,1) 100%)',
-    position: 'absolute'
+    position: 'absolute',
+    overflow: 'hidden'
 });
 export const surveyContentClassName: string = mergeStyles({
     marginLeft: '12.5%',
@@ -141,10 +142,11 @@ export const sendButtonStyles: Partial<IButtonStyles> = {
 };
 export const informationClassName: string = mergeStyles({
     fontFamily: FONT_FAMILY,
+    fontSize: '20px',
     display: 'block',
     position: 'absolute',
-    color: 'red',
-    top: '15vh'
+    color: '#AAA',
+    top: '14.5vh'
 });
 export const loadingSpinnerStyle: Partial<ISpinnerStyles> = {
     root: {
@@ -169,3 +171,34 @@ export const requiredAssetClassName: string = mergeStyles({
 export const requiredAssetContainerClassName: string = mergeStyles({
     display: 'flex'
 });
+export const calloutTootltipStyles: Partial<ICalloutContentStyles> = {
+    root: {
+        fontFamily: FONT_FAMILY,
+        width: 'auto',
+        height: 'auto',
+    },
+    beak: {
+        display: 'none',
+    },
+    container: {
+        opacity: '0.8',
+    }
+};
+export const pressForMoreIconButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        marginLeft: '1vw',
+        backgroundColor: 'transparent',
+        color:'rgb(81, 73, 219)'
+    },
+    rootHovered: {
+        color: 'rgb(61,87,116)',
+        backgroundColor: 'transparent',
+
+    },
+    rootPressed: {
+        backgroundColor: 'transparent',
+    },
+    icon: {
+        fontSize: '20px'
+    }
+};

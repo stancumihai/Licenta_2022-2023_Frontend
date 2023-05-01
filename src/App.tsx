@@ -85,6 +85,9 @@ export default function App(): JSX.Element {
         var refreshToken = cookie.get(REFRESH_TOKEN);
         if ((refreshToken === undefined || refreshToken === "")) {
           if (!authenticationContext.IsAuthenticated()) {
+            if (NON_AUTH_PAGES.includes(trimmedUrl)) {
+              return;
+            }
             window.alert(SESSION_EXPIRED_MESSAGE);
             cookie.remove(JWT_TOKEN);
             cookie.remove(REFRESH_TOKEN)
@@ -131,7 +134,6 @@ export default function App(): JSX.Element {
   useEffect(() => {
     document.body.style.margin = "0";
     document.body.style.padding = "0";
-    //document.body.style.overflow = "hidden";
   }, []);
 
   return (<div>
@@ -140,7 +142,8 @@ export default function App(): JSX.Element {
       <Route path={SIGN_UP_PATH} element={<Register />} />
       <Route path={SURVEY_PATH} element={
         <AuthenticatedRoute unaunthenticatedRedirectUrl={LOGIN_PATH} permissions={SURVEY_PATH_PERMISSIONS}>
-          {!userHasSurveyAnswers ? <Survey /> : <Navigate to={HOME_PATH} />}
+          {/* {!userHasSurveyAnswers ? <Survey /> : <Navigate to={HOME_PATH} />} */}
+          {<Survey />}
         </AuthenticatedRoute>
       } />
       <Route path={HOME_PATH} element={
