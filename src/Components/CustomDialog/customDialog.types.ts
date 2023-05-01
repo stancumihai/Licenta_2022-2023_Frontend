@@ -3,4 +3,5 @@ export interface ICustomDialogProps {
     isHidden: boolean;
     acceptedText: string;
     cancelText: string;
+    mainText: string;
 };

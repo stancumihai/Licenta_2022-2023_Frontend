@@ -17,7 +17,7 @@ export const CustomDialog = (props: ICustomDialogProps): JSX.Element => {
 
     const dialogContentProps = {
         type: DialogType.normal,
-        title: 'Are you sure you want to logout?',
+        title: props.mainText,
         closeButtonAriaLabel: 'Close',
         styles: dialogContentStyles
     };

@@ -3,7 +3,13 @@ import {
     useEffect,
     useState
 } from 'react';
-import { containerClassName, contentContainerClassName, goBackIconStyles, homePageTextClassName, loadingSpinnerStyle } from './topGenres.styles';
+import {
+    containerClassName,
+    contentContainerClassName,
+    goBackIconStyles,
+    homePageTextClassName,
+    loadingSpinnerStyle
+} from './topGenres.styles';
 import {
     NavigateFunction,
     useNavigate
@@ -14,8 +20,14 @@ import {
 } from '../../Core/serviceContext';
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
-import { IconButton, Spinner } from '@fluentui/react';
-import { HOME_PATH, SPINNER_LOADING_DATA_MESSAGE } from '../../Library/constants';
+import {
+    IconButton,
+    Spinner
+} from '@fluentui/react';
+import {
+    HOME_PATH,
+    SPINNER_LOADING_DATA_MESSAGE
+} from '../../Library/constants';
 import { TopGenresCard } from '../TopGenresCard/topGenresCard';
 
 export const TopGenres = (): JSX.Element => {
@@ -40,9 +52,7 @@ export const TopGenres = (): JSX.Element => {
             setAreGenresLoaded(true);
         }, 2000)
     }, [genresData]);
-    useEffect(() => {
 
-    }, [])
     return <div className={containerClassName}>
         {!areGenresLoaded ?
             <div>

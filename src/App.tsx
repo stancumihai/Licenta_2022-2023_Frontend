@@ -28,7 +28,8 @@ import {
   SESSION_EXPIRED_MESSAGE,
   SIGN_UP_PATH,
   SURVEY_PATH,
-  TOP_GENRES_PATH
+  TOP_GENRES_PATH,
+  USER_PROFILE_PATH
 } from './Library/constants';
 import { ForgotPassword } from './Components/ForgotPassword/forgotPassword';
 import { RenewPassword } from './Components/RenewPassword/renewPassword';
@@ -51,6 +52,8 @@ import { SURVEY_PATH_PERMISSIONS } from './Authentication/pagePermissions';
 import { AuthenticatedRoute } from './Components/AuthenticatedRoute/authenticatedRoute';
 import { Survey } from './Components/Survey/survey';
 import { ITokenModel } from './Models/User/ITokenModel';
+import { UserProfile } from './Components/UserProfile/userProfile';
+import { UserProfileWrapper } from './Components/UserProfileWrapper/userProfileWrapper';
 
 initializeIcons(undefined, { disableWarnings: true });
 
@@ -159,6 +162,7 @@ export default function App(): JSX.Element {
       <Route path={RECOMMENDATIONS_PATH} element={<Recommendations />} ></Route>
       <Route path={TOP_GENRES_PATH} element={<TopGenres />} ></Route>
       <Route path={ARTISTS_OF_THE_MONTH_PATH} element={<ArtistsOfTheMonth />} ></Route>
+      <Route path={USER_PROFILE_PATH} element={<UserProfileWrapper />} ></Route>
     </Routes>
   </div>
   );

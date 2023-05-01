@@ -108,7 +108,8 @@ export const SideBar = (props: ISidebarProps): JSX.Element => {
             iconProps={{ iconName: 'PowerButton' }}
             text='Logout'
             onClick={() => { setIsLogoutDialogHidden(false) }} />
-        <CustomDialog isHidden={isLogoutDialogHidden}
+        <CustomDialog mainText='Are you sure you want to logout?'
+            isHidden={isLogoutDialogHidden}
             handleCloseDialog={handleCloseDialog}
             acceptedText="Yes"
             cancelText='Cancel' />

@@ -61,7 +61,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const [movieRating, setMovieRating] = useState<number>(0);
     const [isMovieRatingLoaded, setIsMovieRatingLoaded] = useState<boolean>(false);
     const movieRatingData: IFetchResult<IUserMovieRatingRead> = useFetch<IUserMovieRatingRead>(() =>
-        services.UserMovieRatings.GetByMovieAndUser(props.movieRating.movie.uid!));
+        services.UserMovieRatingsService.GetByMovieAndUser(props.movieRating.movie.uid!));
 
     useEffect(() => {
         if (movieRatingData.isLoading) {
@@ -263,7 +263,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
                 movieUid: props.movieRating.movie.uid!,
                 rating: rating!
             };
-            services.UserMovieRatings.Add(userMovieRating);
+            services.UserMovieRatingsService.Add(userMovieRating);
             processGlobalMovieRatingChange(props.movieRating, rating! * 2);
             return;
         }
@@ -274,7 +274,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
                 movieUid: props.movieRating.movie.uid!,
                 rating: rating!
             };
-            services.UserMovieRatings.Update(userMovieRating);
+            services.UserMovieRatingsService.Update(userMovieRating);
             //oldMyRating este pentru update
             processGlobalMovieRatingChange(props.movieRating, rating! * 2, oldMyRating * 2);
         }

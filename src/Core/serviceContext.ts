@@ -11,7 +11,8 @@ import {
     MOVIE_SUBSCRIPTIONS_ENDPOINT,
     SEEN_MOVIE_ENDPOINT,
     USER_MOVIE_RATING_ENDPOINT,
-    SURVEY_USER_ANSWER_ENDPOINT
+    SURVEY_USER_ANSWER_ENDPOINT,
+    USER_PROFILE_ENDPOINT
 } from '../Library/constants';
 import AuthenticationService from '../Services/authenticationService';
 import KnownForService from '../Services/knownForService';
@@ -26,6 +27,7 @@ import LikedMoviesService from '../Services/likedMoviesService';
 import MovieSubscriptionsService from '../Services/movieSubscriptionsService';
 import SeenMoviesService from '../Services/seenMovieService';
 import UserMovieRatingsService from '../Services/userMovieRatings';
+import UserProfilesService from '../Services/userProfilesService';
 
 export class ServiceContext {
     private _surveyQuestionsService?: SurveyQuestionsService;
@@ -41,6 +43,7 @@ export class ServiceContext {
     private _movieSubscriptionsService?: MovieSubscriptionsService;
     private _seenMoviesService?: SeenMoviesService;
     private _userMovieRatingsService?: UserMovieRatingsService;
+    private _userProfilesService?: UserProfilesService;
 
     get SurveyUserAnswerService(): SurveyUserAnswerService {
         if (this._surveyUserAnswerService == null) {
@@ -128,11 +131,18 @@ export class ServiceContext {
         return this._seenMoviesService;
     };
 
-    get UserMovieRatings(): UserMovieRatingsService {
+    get UserMovieRatingsService(): UserMovieRatingsService {
         if (this._userMovieRatingsService == null) {
             this._userMovieRatingsService = new UserMovieRatingsService(USER_MOVIE_RATING_ENDPOINT);
         }
         return this._userMovieRatingsService;
+    };
+
+    get UserProfilesService(): UserProfilesService {
+        if (this._userProfilesService == null) {
+            this._userProfilesService = new UserProfilesService(USER_PROFILE_ENDPOINT);
+        }
+        return this._userProfilesService;
     };
 };
 
