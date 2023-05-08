@@ -2,8 +2,6 @@ import { IDialogStyles } from '@fluentui/react';
 import { IButtonStyles, IDialogContentStyles, mergeStyles } from 'office-ui-fabric-react';
 
 export const dialogStyles: Partial<IDialogStyles> = {
-    root: {
-    },
     main: {
         maxWidth: 450,
         borderTop: `4px solid rgb(81, 73, 219)`

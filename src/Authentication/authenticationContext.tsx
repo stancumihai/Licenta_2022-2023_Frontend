@@ -17,15 +17,18 @@ const defaultUser: IUser = {
 
 const AuthentificationContext: React.Context<IAuthentificationContext> = createContext<IAuthentificationContext>({
     User: defaultUser,
+    HasNotifications: false,
     SetUpdatedUser: () => { },
     IsAuthenticated: () => { return false; },
     IsLoading: () => { return false; },
     IsForbidden: () => { return false; },
+    setUpdatedNotifications: () => { }
 });
 
 export const AuthentificationContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
     const [user, setUser] = useState<IUser>(defaultUser);
+    const [hasNotifications, setHasNotifications] = useState<boolean>();
     const cookies = new Cookies();
 
     const authenticatedUserFetchResult: IFetchResult<IUser> = useFetch(services.AuthenticationService.GetLoggedInUser);
@@ -57,37 +60,27 @@ export const AuthentificationContextProvider = ({ children }: PropsWithChildren<
         setUser(newUser);
     };
 
-    // if (forbidden === true && !isLoading() &&
-    //     cookies.get(REFRESH_TOKEN) !== undefined &&
-    //     window.location.href !== "http://localhost:3000/login") {
-    //     if (authenticatedUserFetchResult.data?.Data?.refreshToken === "") {
-    //         setUser(defaultUser);
-    //     }
-    //     const tokenModel: ITokenModel = {
-    //         refreshToken: cookies.get(REFRESH_TOKEN),
-    //         accessToken: cookies.get(JWT_TOKEN)
-    //     };
-    //     services.AuthenticationService.RefreshToken(tokenModel).then((data: IResponse<ITokenModel>) => {
-    //         cookies.set(REFRESH_TOKEN, data.Data!.refreshToken);
-    //         cookies.set(JWT_TOKEN, data.Data!.accessToken)
-    //     });
-    // }
-
     const isForbidden = (): boolean | undefined => {
         return forbidden === true && !isLoading();
-    }
+    };
 
     const isAuthenticated = (): boolean => {
         return user!.email !== defaultUser.email &&
             user!.password !== defaultUser.password;
     };
 
+    const setUpdatedNotifications = (hasNotifications: boolean): void => {
+        setHasNotifications(hasNotifications);
+    };
+
     return (<AuthentificationContext.Provider value={{
         User: user!,
+        HasNotifications: hasNotifications!,
         SetUpdatedUser: setUpdatedUser,
         IsAuthenticated: isAuthenticated,
         IsLoading: isLoading,
-        IsForbidden: isForbidden
+        IsForbidden: isForbidden,
+        setUpdatedNotifications: setUpdatedNotifications
     }}>
         {user !== undefined && children}</AuthentificationContext.Provider>);
 }

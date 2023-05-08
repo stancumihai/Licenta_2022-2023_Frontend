@@ -12,7 +12,7 @@ import {
 } from '@fluentui/react';
 import { IAdvancedSearchProps } from './advancedSearch.types';
 import {
-    buttonClassName,
+    buttonContainerClassName,
     cancelIcon,
     choiceGroupIconButtonStyles,
     choiceGroupStyles,
@@ -37,6 +37,7 @@ import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContex
 import { IPerson } from '../../Models/IPerson';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import { useFetch } from '../../Hooks/useFetch';
+import $ from 'jquery';
 
 export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
@@ -73,6 +74,7 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
         { key: 'releaseDate', text: 'Release Date' },
         { key: 'rating', text: 'Rating' },
     ];
+    const [selectedOrderByDropdownOption, setSelectedOrderByDropdownOption] = useState<IDropdownOption>(orderByDropdownOptions[0]);
     const orderByOptions: IChoiceGroupOption[] = [
         {
             key: 'A',
@@ -151,7 +153,10 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
     }, [genresData]);
 
     const handleOrderBySelection = (event: React.FormEvent<HTMLDivElement>, newOption?: IDropdownOption): void => {
-        setOrderBy(newOption!.key.toString());
+        setSelectedOrderByDropdownOption(newOption!);
+        setTimeout(() => {
+            $(event.target).parent().parent().click();
+        }, 100);
     };
     const handleChoiceGroupOrderingClick = (ev?: React.FormEvent<HTMLElement | HTMLInputElement> | undefined, newOption?: IChoiceGroupOption | undefined): void => {
         setChoiceGroupOrdering(newOption!.key.toString());
@@ -234,6 +239,7 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
         <div className={contentStyles.body}>
             <Label className={labelClassName}>Order by</Label>
             <Dropdown defaultSelectedKey={orderByDropdownOptions[0].key.toString()}
+                selectedKey={selectedOrderByDropdownOption ? selectedOrderByDropdownOption.key : undefined}
                 onChange={handleOrderBySelection}
                 options={orderByDropdownOptions}
                 styles={dropdownStyles}
@@ -317,7 +323,7 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
                     step={1}
                     styles={spinButtonStyles} />
             </div>
-            <div className={buttonClassName}>
+            <div className={buttonContainerClassName}>
                 <DefaultButton style={{ background: '#769bce' }}
                     onClick={handleSearchClick}
                     styles={buttonStyles}

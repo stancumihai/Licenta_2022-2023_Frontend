@@ -1,6 +1,7 @@
 export interface IUserProfileCreate {
     userUid: string;
-    dateOfBirth: Date;
-    contry: string;
+    fullName: string;
     city: string;
+    country: string;
+    dateOfBirth: Date;
 };

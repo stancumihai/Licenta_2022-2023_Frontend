@@ -143,44 +143,40 @@ export const dropdownStyles: Partial<IDropdownStyles> = {
     root: {
         border: 'none',
         borderBottom: '2px solid black',
-        color: 'white',
         width: '17.5vw',
-        background: 'transparent'
+        background: 'transparent',
+        color: 'white',
     },
     dropdown: {
         color: 'white',
-        background: 'transparent',
         selectors: {
-            ':hover': {
-                border: 'none',
+            ":hover": {
+                color: 'white'
             },
-            ":hover.ms-Dropdown-title": {
-                border: 'none',
+            ":focus::after": {
+                color: 'white',
+                border: '2px solid rgb(37, 65, 104)'
+            },
+            ':hover.ms-Dropdown-title': {
                 color: 'white'
             }
         }
     },
     title: {
-        borderStyle: 'none',
-        border: 'none',
-        background: 'transparent',
+        background: 'gray',
         color: 'white',
         selectors: {
             ':hover': {
-                border: 'none',
-                color: 'white'
-            },
-            ":hover.ms-Dropdown-title": {
-                border: 'none',
                 color: 'white'
             }
         }
-    }
+    },
 };
-export const buttonClassName: string = mergeStyles({
+export const buttonContainerClassName: string = mergeStyles({
     display: 'grid',
     gridTemplateColumns: 'auto auto',
     marginTop: '2.5vh',
+    marginLeft: '2vw',
     gridGap: '3vw',
     justifyContent: 'start'
 });

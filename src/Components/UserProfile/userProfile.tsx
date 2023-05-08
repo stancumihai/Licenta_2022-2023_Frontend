@@ -4,11 +4,15 @@ import {
     TextField
 } from '@fluentui/react';
 import {
+    acceptedButtonStyles,
     containerClassName,
     contentClassName,
+    dialogStyles,
+    editButtonStyles,
     goBackIconStyles,
     homePageTextClassName,
     labelClassName,
+    profileSettingsTitleClassName,
     textFieldStyles
 } from './userProfile.styles';
 import { useContext, useEffect, useState } from 'react';
@@ -23,6 +27,9 @@ import { DefaultButton } from 'office-ui-fabric-react';
 import { CustomDialog } from '../CustomDialog/customDialog';
 import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
 import { IUserProfileUpdate } from '../../Models/UserProfile/IUserProfileUpdate';
+import { IUserProfileCreate } from '../../Models/UserProfile/IUserProfileCreate';
+import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
+import AuthentificationContext from '../../Authentication/authenticationContext';
 
 export const UserProfile = (props: IUserProfileProps): JSX.Element => {
     const defaultUserProfile: IUserProfileRead = {
@@ -33,6 +40,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         country: '',
         city: ''
     };
+    const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
     const [fullName, setFullName] = useState<string>(defaultUserProfile.fullName);
     const [city, setCity] = useState<string>(defaultUserProfile.city);
     const [country, setCountry] = useState<string>(defaultUserProfile.country);
@@ -48,8 +56,10 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
             setFullName(props.userProfile!.fullName);
             setCity(props.userProfile.city);
             setCountry(props.userProfile.country);
+            return;
         }
-    }, []);
+        setIsFormDisabled(false);
+    }, [isPushSettingsClicked]);
 
     const onFullNameChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newFullName?: string | undefined): void => {
         setFullName(newFullName!);
@@ -63,9 +73,27 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         setCountry(newCountry!);
     };
 
-    const handleButtonClick = (): void => {
-        setIsFormDisabled(false);
-        setIsEditButtonClicked(true);
+    const handleEditButtonClick = (): void => {
+        if (props.userProfile === undefined) {
+            const userProfile: IUserProfileCreate = {
+                userUid: authenticationContext.User.uid!,
+                fullName,
+                city,
+                country,
+                dateOfBirth: new Date()
+            };
+            services.UserProfilesService.Add(userProfile);
+            setTimeout(() => {
+                setIsPushSettingsClicked(true);
+            }, 500)
+            return;
+        }
+        setIsFormDisabled((prev) => !prev);
+        if (isFormDisabled === true) {
+            setIsEditButtonClicked(true);
+            return;
+        }
+        setIsEditButtonClicked(false);
     };
 
     const handlePushSettingsClick = (): void => {
@@ -76,18 +104,25 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         }, 500);
     };
     const handleCloseDialog = (accepted?: boolean): void => {
-        if (accepted === true) {
+        if (accepted === false) {
             setTimeout(() => {
                 setIsPushSettingsClicked(false);
-                const newUserProfile: IUserProfileUpdate = {
-                    uid: props.userProfile?.uid,
-                    fullName,
-                    city,
-                    country,
-                };
-                services.UserProfilesService.Update(newUserProfile);
             }, 500);
+            return;
         }
+        setTimeout(() => {
+            setIsPushSettingsClicked(false);
+            if (fullName === props.userProfile?.fullName && city === props.userProfile.city && country === props.userProfile.country) {
+                return;
+            }
+            const newUserProfile: IUserProfileUpdate = {
+                uid: props.userProfile?.uid,
+                fullName,
+                city,
+                country
+            };
+            services.UserProfilesService.Update(newUserProfile);
+        }, 500);
     };
 
     return <div className={containerClassName}>
@@ -99,6 +134,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
             </div>
         </div>
         <div className={contentClassName}>
+            <h1 className={profileSettingsTitleClassName}>Profile Settings</h1>
             <Label className={labelClassName}>Full Name</Label>
             <TextField value={fullName}
                 disabled={isFormDisabled}
@@ -119,11 +155,16 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
                 underlined={true}
                 onChange={onCountryChange} />
             <DefaultButton text={props.userProfile === undefined ? 'Create' : 'Edit'}
-                onClick={handleButtonClick} />
-            {isEditButtonClicked && <DefaultButton text="Push Settings"
+                styles={editButtonStyles}
+                onClick={handleEditButtonClick} />
+            {isEditButtonClicked && props.userProfile !== undefined && <DefaultButton text="Push Settings"
                 onClick={handlePushSettingsClick} />}
             <div style={{ position: 'absolute' }}>
-                <CustomDialog mainText="Are you sure of updates?"
+                <CustomDialog acceptedButtonStyles={acceptedButtonStyles}
+                    dialogStyles={dialogStyles}
+                    mainText={props.userProfile === undefined ?
+                        "Are you sure?" :
+                        "Are you sure of updates?"}
                     isHidden={!isPushSettingsClicked}
                     handleCloseDialog={handleCloseDialog}
                     acceptedText="Yes"

@@ -29,10 +29,10 @@ export const CustomDialog = (props: ICustomDialogProps): JSX.Element => {
             dialogContentProps={dialogContentProps}
             isBlocking={true}
             isDarkOverlay={false}
-            styles={dialogStyles}>
+            styles={props.dialogStyles === undefined ? dialogStyles : props.dialogStyles!}>
             <DialogFooter>
                 <div style={{ marginRight: '2.5vw' }}>
-                    <DefaultButton styles={acceptedButtonStyles}
+                    <DefaultButton styles={props.acceptedButtonStyles === undefined ? acceptedButtonStyles : props.acceptedButtonStyles}
                         onClick={() => props.handleCloseDialog(true)}
                         text={props.acceptedText} />
                     <DefaultButton style={{ marginLeft: '10px', marginTop: '3.5vh' }}

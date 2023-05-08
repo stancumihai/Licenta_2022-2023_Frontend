@@ -16,10 +16,17 @@ import {
     useNavigate
 } from 'react-router';
 import { IconButton } from '@fluentui/react';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
+import { useContext, useEffect, useState } from 'react';
+import AuthentificationContext from '../../Authentication/authenticationContext';
+import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
+import { NotificationsHoverCard } from '../NotificationsHoverCard/notificationsHoverCard';
 
 export const ProfileSettings = (): JSX.Element => {
     const navigate: NavigateFunction = useNavigate();
-    const hasNotifications = false;
+    const [connection, setConnection] = useState<HubConnection | null>(null);
+    const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
+    const [showHoverCard, setShowHoverCard] = useState<boolean>(false);
 
     const handleProfileSettingsClick = () => {
         navigate("/profile")
@@ -43,11 +50,42 @@ export const ProfileSettings = (): JSX.Element => {
         }
     };
 
-    const handleNotificationClick = (): void => {
+    useEffect(() => {
+        setTimeout(() => {
+            try {
+                const webSocketUrl = "https://localhost:7145/notification";
+                const connection: HubConnection = new HubConnectionBuilder()
+                    .withUrl(webSocketUrl)
+                    .configureLogging(LogLevel.Information)
+                    .build();
+                setConnection(connection);
+            } catch (e) {
+                console.log(e);
+            }
+        }, 5000)
+    });
 
+    useEffect(() => {
+        if (connection) {
+            connection.start()
+                .then(result => {
+                    console.log('Connected!');
+                    connection.on('ReceiveNotification', (message: string) => {
+                        authenticationContext.setUpdatedNotifications(true);
+                    });
+                })
+        }
+    }, [connection]);
+
+    const handleNotificationClick = (): void => {
+        authenticationContext.setUpdatedNotifications(false);
+        setShowHoverCard(false);
     };
 
     const handleOnNotificationMouseEnter = (): void => {
+        if (authenticationContext.HasNotifications) {
+            setShowHoverCard(true);
+        }
     };
 
     return <div className={containerClassName}>
@@ -55,8 +93,10 @@ export const ProfileSettings = (): JSX.Element => {
             <IconButton styles={iconButtonStyles}
                 iconProps={notificationIcon}
                 onClick={handleNotificationClick}
-                onMouseEnter={handleOnNotificationMouseEnter} />
-            {hasNotifications && <div className={notificationDotClassName}></div>}
+                onMouseEnter={handleOnNotificationMouseEnter}
+                onMouseLeave={() => setShowHoverCard(false)} />
+            {authenticationContext.HasNotifications && <div className={notificationDotClassName}></div>}
+            {showHoverCard && <NotificationsHoverCard />}
         </div>
         <CommandButton iconProps={userIcon}
             styles={commandButtonStyles}

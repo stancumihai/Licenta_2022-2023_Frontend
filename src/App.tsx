@@ -5,7 +5,6 @@ import {
   useState
 } from 'react';
 import {
-  Navigate,
   Route,
   Routes
 } from 'react-router-dom';
@@ -52,7 +51,6 @@ import { SURVEY_PATH_PERMISSIONS } from './Authentication/pagePermissions';
 import { AuthenticatedRoute } from './Components/AuthenticatedRoute/authenticatedRoute';
 import { Survey } from './Components/Survey/survey';
 import { ITokenModel } from './Models/User/ITokenModel';
-import { UserProfile } from './Components/UserProfile/userProfile';
 import { UserProfileWrapper } from './Components/UserProfileWrapper/userProfileWrapper';
 
 initializeIcons(undefined, { disableWarnings: true });
@@ -62,6 +60,7 @@ export default function App(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();
   const services = useContext<ServiceContext>(ServiceContextInstance);
   const [userHasSurveyAnswers, setUserHasSurveyAnswers] = useState<boolean | undefined>(undefined);
+
   const cookie = new Cookies();
 
   const handleAuthorizationExpired = (): void => {
