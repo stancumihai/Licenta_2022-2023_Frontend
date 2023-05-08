@@ -42,6 +42,13 @@ import { IUserMovieRatingCreate } from '../../Models/UserMovieRating/IUserMovieR
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import { IMovieRating } from '../../Models/IMovieRating';
+import { CustomDialog } from '../CustomDialog/customDialog';
+import { acceptedButtonStyles, dialogStyles } from '../HomePage/homePage.styles';
+import {
+    NavigateFunction,
+    useNavigate
+} from 'react-router';
+import { HOME_PATH } from '../../Library/constants';
 
 export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -62,6 +69,8 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const [isMovieRatingLoaded, setIsMovieRatingLoaded] = useState<boolean>(false);
     const movieRatingData: IFetchResult<IUserMovieRatingRead> = useFetch<IUserMovieRatingRead>(() =>
         services.UserMovieRatingsService.GetByMovieAndUser(props.movieRating.movie.uid!));
+    const [isConfirmationSeenDialogOpen, setIsConfirmationSeenDialogOpen] = useState<boolean>(false);
+    const navigate: NavigateFunction = useNavigate();
 
     useEffect(() => {
         if (movieRatingData.isLoading) {
@@ -218,6 +227,10 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     };
 
     const handleSeenClick = (): void => {
+        if (isWatchLaterPath()) {
+            setIsConfirmationSeenDialogOpen(true);
+            return;
+        }
         const seenMovie: ISeenMovieCreate = {
             movieUid: props.movieRating.movie.uid!,
             userUid: authenticationContext.User.uid!
@@ -280,38 +293,67 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
         }
     };
 
+    const isWatchLaterPath = (): boolean => {
+        return window.location.href.includes('watchLater');
+    };
+
+    const handleCloseDialog = (accepted?: boolean): void => {
+        setIsConfirmationSeenDialogOpen(false);
+        if (accepted === true) {
+            services.MovieSubscriptionsService.GetByUserAndMovie(props.movieRating.movie.uid!).then((data: IResponse<IMovieSubscriptionRead>) => {
+                services.MovieSubscriptionsService.Delete(data.Data!.uid!);
+                const seenMovie: ISeenMovieCreate = {
+                    movieUid: props.movieRating.movie.uid!,
+                    userUid: authenticationContext.User.uid!
+                };
+                services.SeenMoviesService.Add(seenMovie);
+                setTimeout(() => {
+                    navigate(HOME_PATH);
+                }, 500);
+            });
+        }
+    };
+
     return <div className={containerClassName}>
         <div className={iconContainerClassName}>
             <div style={{ display: 'flex' }}>
-                <div>
-                    <MdWatchLater onClick={handleWatchLaterClick}
-                        className={!isWatchLaterChecked ?
-                            iconClassName :
-                            disabledIconClassName} />
-                    <p style={{ bottom: '1.5vh' }} className={!isWatchLaterChecked ?
-                        buttonTextClassName :
-                        disabledButtonTextClassName}>Save to Watch Later</p>
-                </div>
+                {!isWatchLaterPath() &&
+                    <div>
+                        <MdWatchLater onClick={handleWatchLaterClick}
+                            className={!isWatchLaterChecked ?
+                                iconClassName :
+                                disabledIconClassName} />
+                        <p style={{ bottom: '1.5vh' }} className={!isWatchLaterChecked ?
+                            buttonTextClassName :
+                            disabledButtonTextClassName}>Save to Watch Later</p>
+                    </div>
+                }
             </div>
             <div style={{ display: 'flex' }}>
-                <AiOutlineLike onClick={handleMovieLikeClick}
-                    className={!isMovieLiked ?
-                        iconClassName :
-                        disabledIconClassName} />
-                <p className={!isMovieLiked ?
-                    buttonTextClassName :
-                    disabledButtonTextClassName}>Like</p>
+                {!isWatchLaterPath() &&
+                    <div>
+                        <AiOutlineLike onClick={handleMovieLikeClick}
+                            className={!isMovieLiked ?
+                                iconClassName :
+                                disabledIconClassName} />
+                        <p className={!isMovieLiked ?
+                            buttonTextClassName :
+                            disabledButtonTextClassName}>Like</p>
+                    </div>
+                }
             </div>
             <div style={{ display: 'flex' }}>
-                <div>
-                    <BiCheckCircle onClick={handleSeenClick}
-                        className={!isMovieSeen ?
-                            iconClassName :
-                            disabledIconClassName} />
-                    <p style={{ bottom: '1.5vh' }} className={!isMovieSeen ?
-                        buttonTextClassName :
-                        disabledButtonTextClassName}>Seen</p>
-                </div>
+                {isWatchLaterPath() &&
+                    <div>
+                        <BiCheckCircle onClick={handleSeenClick}
+                            className={!isMovieSeen || isWatchLaterPath() ?
+                                iconClassName :
+                                disabledIconClassName} />
+                        <p style={{ bottom: '1.5vh' }} className={!isMovieSeen || isWatchLaterPath() ?
+                            buttonTextClassName :
+                            disabledButtonTextClassName}>Seen</p>
+                    </div>
+                }
             </div>
         </div>
         {isMovieRatingLoaded && <div> <h3 className={titleClassName}>Movie Details</h3>
@@ -355,6 +397,13 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
                     />
                 </li>
             </ul>
+            <CustomDialog acceptedButtonStyles={acceptedButtonStyles}
+                dialogStyles={dialogStyles}
+                mainText={"Are you sure you have seen this movie?"}
+                isHidden={!isConfirmationSeenDialogOpen}
+                handleCloseDialog={handleCloseDialog}
+                acceptedText="Yes"
+                cancelText='No' />
         </div>
         }
     </div>

@@ -25,6 +25,7 @@ import {
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import {
+    HOME_PATH,
     MAX_MOVIES_PER_PAGE,
     MY_COLLECTION_PATH,
     MY_HISTORY_PATH,
@@ -36,6 +37,7 @@ import {
 import { Spinner } from '@fluentui/react';
 import { ICountMapper } from './homePage.types';
 import { CustomDialog } from '../CustomDialog/customDialog';
+import { IResponse } from '../../Models/IResponse';
 
 export const HomePage = (): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
@@ -64,14 +66,15 @@ export const HomePage = (): JSX.Element => {
     const [isAdvancedMoviesSpinnerLoading, setIsAdvancedMoviesSpinnerLoading] = useState<boolean>(false);
     const [isAdvancedSearchClosed, setIsAdvancedSearchClosed] = useState<boolean | undefined>(undefined);
     const [loadFromPage, setLoadFromPage] = useState<boolean>(true);
+    const [homeMovies, setHomeMovies] = useState<IMovie[]>([]);
+
     useEffect(() => {
         if (window.location.href !== 'http://localhost:3000/home') {
             const page: string = window.location.href.split('/')[4];
-            handleSidebarClick(page);
+            //handleSidebarClick(page);
             return;
         }
         setPageUrl(window.location.href);
-        //onPageChange(1);
     }, [pageUrl]);
 
     useEffect(() => {
@@ -93,6 +96,7 @@ export const HomePage = (): JSX.Element => {
         }
         setIsPageEdited(true);
         setMovies(movieData.data!.Data!);
+        setHomeMovies(movieData.data!.Data!);
         setTimeout(() => {
             setAreMoviesLoaded(true);
         }, 2000);
@@ -158,18 +162,34 @@ export const HomePage = (): JSX.Element => {
     }, [areCollectionMoviesLoaded, areHistoryMoviesLoaded, areWatchLaterMoviesLoaded])
 
     const onPageChange = (selectedPageIndex: number, loadMoviesFromPage?: boolean): void => {
-        debugger;
         if (loadMoviesFromPage === undefined) {
-            fetch('https://localhost:7145/api/Movies/' + selectedPageIndex + `/${MAX_MOVIES_PER_PAGE}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    setMoviesToDisplayInPage(data)
+            const url: string = window.location.href;
+            if (url === 'http://localhost:3000/home') {
+                fetch('https://localhost:7145/api/Movies/' + selectedPageIndex + `/${MAX_MOVIES_PER_PAGE}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        setMoviesToDisplayInPage(data);
+                    });
+                setIsPageEdited(false);
+                return;
+            }
+            if (url.includes('myHistory')) {
+                services.MovieService.GetMoviesHistoryPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
+                    setMoviesToDisplayInPage(data.Data);
                 });
+                setIsPageEdited(false);
+                return;
+            }
+            services.MovieService.GetMoviesSubscriptionPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
+                setMoviesToDisplayInPage(data.Data);
+            });
             setIsPageEdited(false);
+            return;
         }
     };
 
     const handleSidebarClick = (page: string): void => {
+        debugger;
         setMoviesToDisplayInPage(undefined);
         switch (page) {
             case MY_COLLECTION_PATH: {
@@ -180,10 +200,13 @@ export const HomePage = (): JSX.Element => {
                     }
                     setTimeout(() => {
                         setMoviesToDisplayInPage(data.Data!);
-                    }, 1000);
+                        services.MovieService.GetMoviesCollection().then((data: IResponse<IMovie[]>) => {
+                            setMovies(data.Data!)
+                        })
+                    }, 3000);
                     setTimeout(() => {
                         setAreMoviesLoaded(true);
-                    }, 2000);
+                    }, 5000);
                 });
                 break;
             }
@@ -202,10 +225,13 @@ export const HomePage = (): JSX.Element => {
                     }
                     setTimeout(() => {
                         setMoviesToDisplayInPage(data.Data!);
-                    }, 1000);
+                        services.MovieService.GetMoviesHistory().then((data: IResponse<IMovie[]>) => {
+                            setMovies(data.Data!);
+                        });
+                    }, 3000);
                     setTimeout(() => {
                         setAreMoviesLoaded(true);
-                    }, 2000);
+                    }, 5000);
                 });
                 break;
             }
@@ -217,12 +243,19 @@ export const HomePage = (): JSX.Element => {
                     }
                     setTimeout(() => {
                         setMoviesToDisplayInPage(data.Data!);
+                        services.MovieService.GetMoviesSubscription().then((data: IResponse<IMovie[]>) => {
+                            setMovies(data.Data!);
+                            console.log(movies);
+                        });
+                    }, 3000);
+                    setTimeout(() => {
                         setAreMoviesLoaded(true);
-                    }, 1000);
+                    }, 5000);
                 });
                 break;
             }
             default: {
+                setMovies(homeMovies);
                 onPageChange(1);
                 break;
             }
@@ -288,7 +321,7 @@ export const HomePage = (): JSX.Element => {
                     isHidden={!refreshMoviesConfirmation}
                     handleCloseDialog={handleCloseDialog}
                     acceptedText="Yes"
-                    cancelText='Cancel' />}
+                    cancelText='No' />}
                 <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}
                     totalItemsCount={movies.length}
                     onPageChange={onPageChange}

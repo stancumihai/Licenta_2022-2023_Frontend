@@ -62,7 +62,9 @@ export const MovieWrapper = (): JSX.Element => {
                     {isMovieRatingLoaded && <MovieSidebarDetails imageSource={imageSource}
                         movieRating={movieRating!.averageRating}
                         votesNumber={movieRating!.votesNumber} />}
-                    {areMoviePersonsLoaded && isMovieRatingLoaded && <MovieDetails movieRating={movieRating!} moviePersons={moviePersons} />}
+                    {areMoviePersonsLoaded &&
+                        isMovieRatingLoaded &&
+                        <MovieDetails movieRating={movieRating!} moviePersons={moviePersons} />}
                 </div>
             </div>
         </div>
