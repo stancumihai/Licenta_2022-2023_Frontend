@@ -89,7 +89,7 @@ export const Survey = (): JSX.Element => {
     const [movieSearchPageNumber, setMoviePageSearchNumber] = useState<number>(1);
     const [movies, setMovies] = useState<IMovie[]>([]);
     const [areMoviesLoaded, setAreMoviesLoaded] = useState<boolean>(false);
-    const moviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetPaginatedMovies(movieSearchPageNumber, 5));
+    const moviesPaginatedDataData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetPaginatedMovies(movieSearchPageNumber, 5));
 
     const [actorsSearchPageNumber, setActorsSearchPageNumber] = useState<number>(1);
     const [actors, setActors] = useState<IPerson[]>([]);
@@ -102,6 +102,19 @@ export const Survey = (): JSX.Element => {
     const [areDirectorsLoaded, setAreDirectorsLoaded] = useState<boolean>(false);
     const directorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() =>
         services.PersonsService.GetPaginatedPersonsByProfession('director', directorsSearchPageNumber));
+
+    const personsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() => services.PersonsService.GetAll());
+    const [persons, setPersons] = useState<IPerson[]>([]);
+    const [arePersonsLoaded, setArePersonsLoaded] = useState<boolean>(false);
+
+    const [allMovies, setAllMovies] = useState<IMovie[]>([]);
+    const [areAllMoviesLoaded, setAreAllMoviesLoaded] = useState<boolean>(false);
+    const allMovieData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetAll());
+
+    const [firstPageDirectors, setFirstPageDirectors] = useState<IPerson[]>([]);
+    const [firstPageActors, setFirstPageActors] = useState<IPerson[]>([]);
+    const [firstPageMovies, setFirstPageMovies] = useState<IMovie[]>([]);
+
     const tooltipId = useId('tooltip');
     const tooltipProps: ITooltipProps = {
         onRenderContent: () => (
@@ -110,18 +123,19 @@ export const Survey = (): JSX.Element => {
     };
 
     useEffect(() => {
-        if (moviesData.isLoading) {
+        if (moviesPaginatedDataData.isLoading) {
             return;
         }
-        if (moviesData.errors !== "" ||
-            moviesData.data?.Error !== undefined ||
-            moviesData.data == null ||
-            moviesData.data.Data === undefined) {
+        if (moviesPaginatedDataData.errors !== "" ||
+            moviesPaginatedDataData.data?.Error !== undefined ||
+            moviesPaginatedDataData.data == null ||
+            moviesPaginatedDataData.data.Data === undefined) {
             return;
         }
-        setMovies(moviesData.data!.Data!);
+        setMovies(moviesPaginatedDataData.data!.Data!);
         setAreMoviesLoaded(true);
-    }, [moviesData]);
+        setFirstPageMovies(moviesPaginatedDataData.data.Data!.slice(0, 5));
+    }, [moviesPaginatedDataData]);
 
     useEffect(() => {
         if (actorsData.isLoading) {
@@ -135,6 +149,7 @@ export const Survey = (): JSX.Element => {
         }
         setActors(actorsData.data!.Data!);
         setAreActorsLoaded(true);
+        setFirstPageActors(actorsData.data.Data!.slice(0, 5));
     }, [actorsData]);
 
     useEffect(() => {
@@ -149,6 +164,7 @@ export const Survey = (): JSX.Element => {
         }
         setDirectors(directorsData.data!.Data!);
         setAreDirectorsLoaded(true);
+        setFirstPageDirectors(directorsData.data.Data!.slice(0, 5));
     }, [directorsData]);
 
     useEffect(() => {
@@ -173,6 +189,34 @@ export const Survey = (): JSX.Element => {
             setAreSurveyQuestionsLoaded(true);
         }, 2000);
     }, [surveyQuestionsData]);
+
+    useEffect(() => {
+        if (personsData.isLoading) {
+            return;
+        }
+        if (personsData.errors !== "" ||
+            personsData.data?.Error !== undefined ||
+            personsData.data == null ||
+            personsData.data.Data === undefined) {
+            return;
+        }
+        setPersons(personsData.data!.Data!);
+        setArePersonsLoaded(true);
+    }, [personsData]);
+
+    useEffect(() => {
+        if (allMovieData.isLoading) {
+            return;
+        }
+        if (allMovieData.errors !== "" ||
+            allMovieData.data?.Error !== undefined ||
+            allMovieData.data == null ||
+            allMovieData.data.Data === undefined) {
+            return;
+        }
+        setAllMovies(allMovieData.data!.Data!);
+        setAreAllMoviesLoaded(true);
+    }, [allMovieData]);
 
     const mapAnswersToOptions = (surveyAnswers: ISurveyAnswer[]): IChoiceGroupOption[] => {
         const results = surveyAnswers.map((surveyAnswer: ISurveyAnswer) => {
@@ -229,54 +273,72 @@ export const Survey = (): JSX.Element => {
     };
 
     const isSearchDataLoaded = (): boolean => {
-        return areActorsLoaded && areDirectorsLoaded && areMoviesLoaded;
+        return areActorsLoaded &&
+            areDirectorsLoaded &&
+            areMoviesLoaded &&
+            areAllMoviesLoaded &&
+            arePersonsLoaded;
     };
 
     const handleDivClick = (event: any): void => {
         const surveyQuestionCategory = Number($($(event.currentTarget).find('input')).attr('id')!.split('/')[1]);
         if (surveyQuestionCategory === 0) {
+            setActorsSearchPageNumber(1);
+            setDirectorsSearchPageNumber(1);
             setMovieSuggestions(movies.map(m => m.title));
-
         }
         if (surveyQuestionCategory === 1) {
+            setActorsSearchPageNumber(1);
+            setMoviePageSearchNumber(1);
             setActorSuggestions(actors.map(a => a.name));
         }
         if (surveyQuestionCategory === 2) {
+            setActorsSearchPageNumber(1);
+            setMoviePageSearchNumber(1);
             setDirectorSuggestions(directors.map(d => d.name));
         }
     };
+
     const handleLoadMoreMovies = (): void => {
         const nextPageNumber: number = movieSearchPageNumber + 1;
-        services.MovieService.GetPaginatedMovies(nextPageNumber, 5).then((data: IResponse<IMovie[]>) => {
-            setMovies(data.Data!);
-            setMovieSuggestions(undefined);
-        });
+        services.MovieService.GetPaginatedMovies(nextPageNumber, 5)
+            .then((data: IResponse<IMovie[]>) => {
+                setMovieSuggestions(data.Data!.map((d: IMovie) => {
+                    return d.title
+                }));
+            });
         setMoviePageSearchNumber(nextPageNumber);
     };
+
     const handleLoadMoreDirectors = (): void => {
         const nextPageNumber: number = directorsSearchPageNumber + 1;
         fetch(`https://localhost:7145/api/Persons/profession/director/${nextPageNumber}`)
             .then((response) => response.json())
             .then((data: IPerson[]) => {
-                setDirectors(data);
-                setDirectorSuggestions(undefined);
+                setDirectorSuggestions(data.map((d: IPerson) => {
+                    return d.name
+                }));
             });
         setDirectorsSearchPageNumber(nextPageNumber);
     };
+
     const handleLoadMoreActors = (): void => {
         const nextPageNumber: number = actorsSearchPageNumber + 1;
         fetch(`https://localhost:7145/api/Persons/profession/actor/${nextPageNumber}`)
             .then((response) => response.json())
             .then((data: IPerson[]) => {
-                setActors(data);
-                setActorSuggestions(undefined);
+                setActorSuggestions(data.map((d: IPerson) => {
+                    return d.name;
+                }));
             });
         setActorsSearchPageNumber(nextPageNumber);
     };
+
     const handleLoadMoreData = (event: any): void => {
         const surveyCategoy: number = Number($($(event.currentTarget).parent()).parent().find('input').attr('id')!.split("/")[1]);
         if (surveyCategoy === 0) {
             handleLoadMoreMovies();
+            setMovieSuggestions(firstPageMovies.map((d: IMovie) => d.title))
             setActorsSearchPageNumber(1);
             setDirectorsSearchPageNumber(1);
             setActorSuggestions(undefined);
@@ -284,12 +346,14 @@ export const Survey = (): JSX.Element => {
         }
         if (surveyCategoy === 1) {
             handleLoadMoreActors();
+            setActorSuggestions(firstPageActors.map((d: IPerson) => d.name))
             setActorsSearchPageNumber(1);
             setDirectorsSearchPageNumber(1);
             setActorSuggestions(undefined);
             setDirectorSuggestions(undefined);
         }
         if (surveyCategoy === 2) {
+            setDirectorSuggestions(firstPageDirectors.map((d: IPerson) => d.name));
             handleLoadMoreDirectors();
             setMoviePageSearchNumber(1);
             setActorsSearchPageNumber(1);
@@ -377,7 +441,8 @@ export const Survey = (): JSX.Element => {
             return;
         }
         if (surveyQuestionCategory === SurveyQuestionCategory.Movie) {
-            setMovieSuggestions(movieSuggestions);
+            const suggestions: string[] = allMovies.filter(d => d.title.toLowerCase().includes(newText!)).map(d => d.title).slice(0, 5);
+            setMovieSuggestions(suggestions);
             setActorsSearchPageNumber(1);
             setDirectorsSearchPageNumber(1);
             setActorSuggestions(undefined);
@@ -385,14 +450,16 @@ export const Survey = (): JSX.Element => {
             return;
         }
         if (surveyQuestionCategory === SurveyQuestionCategory.Actor) {
-            setActorSuggestions(actorSuggestions);
+            const suggestions: string[] = persons.filter(d => d.name.toLowerCase().includes(newText!)).map(d => d.name).slice(0, 5);
+            setActorSuggestions(suggestions);
             setMoviePageSearchNumber(1);
             setDirectorsSearchPageNumber(1);
             setMovieSuggestions(undefined);
             setDirectorSuggestions(undefined);
             return;
         }
-        setDirectorSuggestions(directorSuggestions);
+        const suggestions: string[] = persons.filter(d => d.name.toLowerCase().includes(newText!)).map(d => d.name).slice(0, 5);
+        setDirectorSuggestions(suggestions);
         setActorsSearchPageNumber(1);
         setMoviePageSearchNumber(1);
         setMovieSuggestions(undefined);
@@ -495,21 +562,6 @@ export const Survey = (): JSX.Element => {
         return textData;
     };
 
-    // const createOperation = (surveyUserAnswer: ISurveyUserAnswer): void => {
-    //     if (!canCreateNewSurveyUserAnswer) {
-    //         setTimeout(() => {
-    //             createOperation(surveyUserAnswer);
-    //             return;
-    //         }, 200)
-    //         return;
-    //     }
-    //     if (canCreateNewSurveyUserAnswer) {
-    //         services.SurveyUserAnswerService.Add(surveyUserAnswer).then(() => {
-    //             setCanCreateNewSurveyUserAnswer(true);
-    //         });
-    //     }
-    // };
-
     const handleSendClick = () => {
         setMappedSuggestions([]);
         if (!isReadyToSend()) {
@@ -530,7 +582,6 @@ export const Survey = (): JSX.Element => {
         const surveyUserAnswerBatch: ISurveyUserAnswerBatch = {
             surveyUserAnswers: surveyUserAnswers
         };
-        debugger;
         services.SurveyUserAnswerService.AddInSuperBatches(surveyUserAnswerBatch).then((data: IResponse<ISurveyUserAnswerBatch>) => {
             console.log(data);
         });

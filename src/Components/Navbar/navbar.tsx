@@ -4,6 +4,7 @@ import {
     advancedSearchIconClassName,
     containerClassName,
     iconProps,
+    iconStyles,
     searchBoxStyles,
     searchContainer
 } from './navbar.styles';
@@ -11,6 +12,7 @@ import { TbListSearch } from "react-icons/tb";
 import { useEffect, useState } from 'react';
 import { AdvancedSearch } from '../AdvancedSearch/advancedSearch';
 import { INavbarProps } from './navbar.types';
+import { IconButton } from '@fluentui/react';
 
 export const Navbar = (props: INavbarProps): JSX.Element => {
     const [showAdvancedSearch, setShowAdvancedSearch] = useState<boolean>(false);
@@ -38,11 +40,16 @@ export const Navbar = (props: INavbarProps): JSX.Element => {
                 <TbListSearch className={advancedSearchIconClassName}
                     onClick={handleOnAdvancedSearchClick} />
             </div>
-            <AdvancedSearch isOpen={showAdvancedSearch}
-                handleCloseDialog={handleCloseDialog} />
+            <AdvancedSearch isOpen={props.isAdvancedSearchClosed !== undefined ? false : showAdvancedSearch}
+                handleCloseDialog={handleCloseDialog}
+                collectAdvancedSearchedMovies={props.collectAdvancedSearchedMovies}
+            />
+            <IconButton iconProps={{ iconName: "Refresh" }}
+                onClick={props.handleRefreshMovies}
+                styles={iconStyles} />
         </div>
         <div style={!isAdvancedSearchEnabled ? { pointerEvents: 'none' } : {}}>
             <ProfileSettings />
         </div>
     </div>
-};
+}; 

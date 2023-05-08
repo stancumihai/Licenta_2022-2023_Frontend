@@ -163,7 +163,7 @@ export const dropdownStyles: Partial<IDropdownStyles> = {
         }
     },
     title: {
-        background: 'gray',
+        background: '#212121',
         color: 'white',
         selectors: {
             ':hover': {

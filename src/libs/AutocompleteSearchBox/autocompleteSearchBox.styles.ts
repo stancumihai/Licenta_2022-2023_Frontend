@@ -63,7 +63,7 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
         paddingLeft: '15px',
         fontSize: '12.5px',
         width: '25vh',
-        pointerEvents: 'none'
+        //pointerEvents: 'none'
     },
     iconContainer: {
         marginRight: '1.5vw',

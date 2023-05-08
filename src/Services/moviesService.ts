@@ -1,6 +1,7 @@
 import { APIHelper } from '../Configuration/apiHelper';
 import { IMovie } from '../Models/IMovie';
 import { IResponse } from '../Models/IResponse';
+import { ISearchModel } from '../UiModels/ISearchModel';
 import BaseService from './baseService';
 
 export default class MoviesService extends BaseService<IMovie>  {
@@ -46,5 +47,9 @@ export default class MoviesService extends BaseService<IMovie>  {
 
     async GetAllByPersonUid(personUid: string): Promise<IResponse<IMovie[]>> {
         return await APIHelper.request(`${this._endpoint}/person/${personUid}`, 'GET')
+    };
+
+    async GetAdvancedSearchMovieData(searchModel: ISearchModel): Promise<IResponse<IMovie[]>> {
+        return await APIHelper.request(`${this._endpoint}/advancedSearch/`, 'POST', searchModel)
     };
 };

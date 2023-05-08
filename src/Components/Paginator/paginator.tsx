@@ -17,7 +17,9 @@ export const Paginator = (props: IPaginatorProps): JSX.Element => {
     const [selectedPageIndex, setSelectedPageIndex] = useState<number>(START_PAGE_INDEX);
 
     useEffect(() => {
-        props.onPageChange(selectedPageIndex);
+        if (props.loadFromPage) {
+            props.onPageChange(selectedPageIndex);
+        }
     }, [props.totalItemsCount, props.isPageEdited]);
 
     const getNumberOfPages = (): number => {

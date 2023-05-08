@@ -7,7 +7,7 @@ import { JWT_TOKEN } from '../Library/constants';
 
 class ApiHelper {
 
-    request = async<T,>(endpoint: string, method: Methods, body?: T): Promise<IResponse<T>> => {
+    request = async<T, T1>(endpoint: string, method: Methods, body?: T1): Promise<IResponse<T>> => {
         try {
             const cookies = new Cookies();
             const responseBody: IResponseBody = {

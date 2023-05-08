@@ -38,37 +38,45 @@ import { IPerson } from '../../Models/IPerson';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import { useFetch } from '../../Hooks/useFetch';
 import $ from 'jquery';
+import { ISearchModel } from '../../UiModels/ISearchModel';
+import { IMovie } from '../../Models/IMovie';
+import { IResponse } from '../../Models/IResponse';
 
 export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
-    const [orderBy, setOrderBy] = useState<string>('');
     const [director, setDirector] = useState<string>('');
     const [actor, setActor] = useState<string>('');
     const [genre, setGenre] = useState<string>('');
     const [minDateSpinButton, setMinDateSpinButton] = useState<number>(1900);
     const [maxDateSpinButton, setMaxDateSpinButton] = useState<number>(new Date().getFullYear());
-    const [choiceGroupOrdering, setChoiceGroupOrdering] = useState<string>('');
+    const [choiceGroupOrdering, setChoiceGroupOrdering] = useState<string>('A');
     const [itemsPerPage, setItemsPerPage] = useState<number>(1);
     const tooltipId = useId('tooltip');
 
     const [actorsSearchPageNumber, setActorsSearchPageNumber] = useState<number>(1);
-    const [actors, setActors] = useState<IPerson[]>([]);
     const [areActorsLoaded, setAreActorsLoaded] = useState<boolean>(false);
     const actorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() =>
         services.PersonsService.GetPaginatedPersonsByProfession('actor', actorsSearchPageNumber));
     const [actorsSuggestions, setActorSuggestions] = useState<string[] | undefined>([]);
 
     const [directorsSearchPageNumber, setDirectorsSearchPageNumber] = useState<number>(1);
-    const [directors, setDirectors] = useState<IPerson[]>([]);
     const [areDirectorsLoaded, setAreDirectorsLoaded] = useState<boolean>(false);
     const directorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() =>
         services.PersonsService.GetPaginatedPersonsByProfession('director', directorsSearchPageNumber));
     const [directorSuggestions, setDirectorSuggestions] = useState<string[] | undefined>([]);
 
+    const [genresSearchPageNumber, setGenresSearchPageNumber] = useState<number>(1);
     const [genres, setGenres] = useState<string[]>([]);
     const [areGenresLoaded, setAreGenresLoaded] = useState<boolean>(false);
     const genresData: IFetchResult<string[]> = useFetch<string[]>(() => services.MovieService.GetMovieGenres());
     const [genresSuggestions, setGenresSuggestions] = useState<string[] | undefined>([]);
+
+    const personsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() => services.PersonsService.GetAll());
+    const [persons, setPersons] = useState<IPerson[]>([]);
+    const [arePersonsLoaded, setArePersonsLoaded] = useState<boolean>(false);
+
+    const [firstPageDirectors, setFirstPageDirectors] = useState<IPerson[]>([]);
+    const [firstPageActors, setFirstPageActors] = useState<IPerson[]>([]);
 
     const orderByDropdownOptions: IDropdownOption[] = [
         { key: 'releaseDate', text: 'Release Date' },
@@ -120,8 +128,8 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
             actorsData.data.Data === undefined) {
             return;
         }
-        setActors(actorsData.data!.Data!);
         setAreActorsLoaded(true);
+        setFirstPageActors(actorsData.data.Data.slice(0, 5));
     }, [actorsData]);
 
     useEffect(() => {
@@ -134,8 +142,8 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
             directorsData.data.Data === undefined) {
             return;
         }
-        setDirectors(directorsData.data!.Data!);
         setAreDirectorsLoaded(true);
+        setFirstPageDirectors(directorsData.data.Data!.slice(0, 5));
     }, [directorsData]);
 
     useEffect(() => {
@@ -152,11 +160,22 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
         setAreGenresLoaded(true);
     }, [genresData]);
 
+    useEffect(() => {
+        if (personsData.isLoading) {
+            return;
+        }
+        if (personsData.errors !== "" ||
+            personsData.data?.Error !== undefined ||
+            personsData.data == null ||
+            personsData.data.Data === undefined) {
+            return;
+        }
+        setPersons(personsData.data!.Data!);
+        setArePersonsLoaded(true);
+    }, [personsData]);
+
     const handleOrderBySelection = (event: React.FormEvent<HTMLDivElement>, newOption?: IDropdownOption): void => {
         setSelectedOrderByDropdownOption(newOption!);
-        setTimeout(() => {
-            $(event.target).parent().parent().click();
-        }, 100);
     };
     const handleChoiceGroupOrderingClick = (ev?: React.FormEvent<HTMLElement | HTMLInputElement> | undefined, newOption?: IChoiceGroupOption | undefined): void => {
         setChoiceGroupOrdering(newOption!.key.toString());
@@ -170,61 +189,122 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
     const handleItemsPerPageChange = (event: React.SyntheticEvent<HTMLElement, Event>, newItemsPerPage?: string | undefined): void => {
         setItemsPerPage(Number.parseInt(newItemsPerPage!));
     };
-    const handleDirectorSearch = (newDirector?: string): void => {
-        setActorSuggestions(undefined);
-        setGenresSuggestions(undefined);
-        setDirector(newDirector!)
-    };
-    const handleActorSearch = (newActor?: string): void => {
-        setDirectorSuggestions(undefined);
-        setGenresSuggestions(undefined);
-        setActor(newActor!)
-    };
-    const handleGenreSearch = (newGenre?: string): void => {
-        setActorSuggestions(undefined);
-        setDirectorSuggestions(undefined);
-        setGenre(newGenre!)
-    };
+
     const handleResetClick = (): void => {
-        setOrderBy(orderByDropdownOptions[0].key.toString());
+        setSelectedOrderByDropdownOption(orderByDropdownOptions[0]);
         setDirector('');
         setActor('');
         setGenre('');
         setMinDateSpinButton(1900);
         setMaxDateSpinButton(2023);
         setItemsPerPage(1);
+        setDirectorsSearchPageNumber(0);
+        setActorsSearchPageNumber(0);
+        setGenresSearchPageNumber(0);
     };
-    const handleSearchClick = (): void => {
 
-    };
     const handleLoadMoreDirectors = (): void => {
         const nextPageNumber: number = directorsSearchPageNumber + 1;
         fetch(`https://localhost:7145/api/Persons/profession/director/${nextPageNumber}`)
             .then((response) => response.json())
             .then((data: IPerson[]) => {
-                setDirectors(data);
-                setDirectorSuggestions(undefined);
+                setDirectorSuggestions(data.map((d: IPerson) => {
+                    return d.name
+                }));
             });
         setDirectorsSearchPageNumber(nextPageNumber);
     };
+
     const handleLoadMoreActors = (): void => {
         const nextPageNumber: number = actorsSearchPageNumber + 1;
         fetch(`https://localhost:7145/api/Persons/profession/actor/${nextPageNumber}`)
             .then((response) => response.json())
             .then((data: IPerson[]) => {
-                setActors(data);
-                setActorSuggestions(undefined);
+                setActorSuggestions(data.map((d: IPerson) => {
+                    return d.name;
+                }));
             });
         setActorsSearchPageNumber(nextPageNumber);
     };
+
+    const handleLoadMoreGenres = (): void => {
+        let nextPageNumber: number = genresSearchPageNumber + 1;
+        setGenresSuggestions(genres.slice(5 * (genresSearchPageNumber - 1), 5 * (nextPageNumber - 1)));
+        setGenresSearchPageNumber(nextPageNumber);
+        if (nextPageNumber === 4) {
+            setGenresSearchPageNumber(1);
+            nextPageNumber = 2;
+        }
+    };
+
     const handleCloseDialog = (): void => {
         props.handleCloseDialog();
-        setActorsSearchPageNumber(1);
-        setDirectorsSearchPageNumber(1);
+        setActorsSearchPageNumber(0);
+        setDirectorsSearchPageNumber(0);
+    };
+
+    const mapClickedSuggestion = (suggestion: string, e: any): void => {
+        const personId: string | undefined = $(e.target)
+            .closest('[id]')
+            .parent()
+            .closest('[id]')
+            .attr('id');
+        if (personId !== undefined) {
+            if (personId === 'actor') {
+                setActor(suggestion);
+                return;
+            }
+            if (personId === 'director') {
+                setDirector(suggestion);
+                return;
+            }
+            setGenre(suggestion);
+        }
+    };
+
+    const handleDropDownMouseEnter = (event: any): void => {
+        $(event.target).css('color', 'white');
+    };
+
+    const handleSearchClick = (): void => {
+        const searchModel: ISearchModel = {
+            minYear: minDateSpinButton,
+            maxYear: maxDateSpinButton,
+            ordering: choiceGroupOrdering,
+            genre: genre === "" ? "" : genre,
+            director: director === "" ? "" : director,
+            actor: actor === "" ? "" : actor,
+            orderBy: selectedOrderByDropdownOption.text,
+            itemsPerPage: itemsPerPage,
+        };
+        props.collectAdvancedSearchedMovies(null);
+        services.MovieService.GetAdvancedSearchMovieData(searchModel).then((data: IResponse<IMovie[]>) => {
+            if (data.Status === 200) {
+                props.collectAdvancedSearchedMovies(data.Data!);
+                handleCloseDialog();
+                handleResetClick();
+                return;
+            }
+            props.collectAdvancedSearchedMovies(null);
+        });
+    };
+
+    const handleDirectorSearch = (newDirector?: string): void => {
+        if (newDirector !== "") {
+            const suggestions: string[] = persons.filter(d => d.name.toLowerCase().includes(newDirector!)).map(d => d.name).slice(0, 5);
+            setDirectorSuggestions(suggestions);
+        }
+    };
+
+    const handleActorSearch = (newActor?: string): void => {
+        if (newActor !== '') {
+            const suggestions: string[] = persons.filter(d => d.name.toLowerCase().includes(newActor!)).map(d => d.name).slice(0, 5);
+            setActorSuggestions(suggestions);
+        }
     };
     return <Modal isOpen={props.isOpen}
         onDismiss={handleCloseDialog}
-        isBlocking={false}
+        isBlocking={true}
         styles={modalStyles}>
         <div className={contentStyles.header}>
             <h2 className={contentStyles.heading} >
@@ -238,10 +318,10 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
         </div>
         <div className={contentStyles.body}>
             <Label className={labelClassName}>Order by</Label>
-            <Dropdown defaultSelectedKey={orderByDropdownOptions[0].key.toString()}
-                selectedKey={selectedOrderByDropdownOption ? selectedOrderByDropdownOption.key : undefined}
+            <Dropdown selectedKey={selectedOrderByDropdownOption ? selectedOrderByDropdownOption.key : undefined}
                 onChange={handleOrderBySelection}
                 options={orderByDropdownOptions}
+                onMouseEnter={handleDropDownMouseEnter}
                 styles={dropdownStyles}
             />
             <ChoiceGroup onChange={handleChoiceGroupOrderingClick}
@@ -249,13 +329,19 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
                 styles={choiceGroupStyles}
                 options={orderByOptions} />
             <Label className={labelClassName}>Director</Label>
-            <div onClick={() => setDirectorSuggestions(directorsData.data!.Data!.map(d => d.name))} style={{ display: 'flex' }}>
-                {areDirectorsLoaded && < AutocompleteSearchBox
+            <div id='director' onClick={() => {
+                setActorsSearchPageNumber(1);
+                setDirectorSuggestions(firstPageDirectors.map((d: IPerson) => d.name));
+                setActorSuggestions(undefined);
+            }}
+                style={{ display: 'flex' }}>
+                {areDirectorsLoaded && arePersonsLoaded && < AutocompleteSearchBox
                     suggestions={directorSuggestions}
+                    styles={searchBoxStyle}
+                    mapClickedSuggestion={mapClickedSuggestion}
                     onChange={(_, newValue) => {
                         handleDirectorSearch(newValue)
                     }}
-                    styles={searchBoxStyle}
                 />}
                 <TooltipHost id={tooltipId}
                     calloutProps={{ styles: calloutTootltipStyles }}
@@ -267,13 +353,19 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
                 </TooltipHost>
             </div>
             <Label className={labelClassName}>Actor</Label>
-            <div onClick={() => setActorSuggestions(actorsData.data!.Data!.map(d => d.name))} style={{ display: 'flex' }}>
-                {areActorsLoaded && <AutocompleteSearchBox
+            <div id='actor' onClick={() => {
+                setDirectorsSearchPageNumber(1);
+                setActorSuggestions(firstPageActors.map((d: IPerson) => d.name));
+                setDirectorSuggestions(undefined);
+            }}
+                style={{ display: 'flex' }}>
+                {areActorsLoaded && arePersonsLoaded && <AutocompleteSearchBox
                     suggestions={actorsSuggestions}
+                    styles={searchBoxStyle}
+                    mapClickedSuggestion={mapClickedSuggestion}
                     onChange={(_, newValue) => {
                         handleActorSearch(newValue)
                     }}
-                    styles={searchBoxStyle}
                 />}
                 <TooltipHost
                     id={tooltipId}
@@ -286,22 +378,26 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
                 </TooltipHost>
             </div>
             <Label className={labelClassName}>Genre</Label>
-            <div onClick={() => setGenresSuggestions(genresData.data!.Data!)}>
+            <div id='genres' onClick={() => { }} style={{ display: 'flex' }}>
                 {areGenresLoaded && <AutocompleteSearchBox
                     suggestions={genresSuggestions}
-                    onChange={(_, newValue) => {
-                        handleGenreSearch(newValue)
-                    }}
                     styles={searchBoxStyle}
-                />
-                }
+                    mapClickedSuggestion={mapClickedSuggestion}
+                />}
+                <TooltipHost id={tooltipId}
+                    calloutProps={{ styles: calloutTootltipStyles }}
+                    tooltipProps={tooltipProps}
+                    directionalHint={DirectionalHint.rightCenter}>
+                    <IconButton onClick={handleLoadMoreGenres}
+                        styles={pressForMoreIconButtonStyles}
+                        iconProps={{ iconName: "More" }} />
+                </TooltipHost>
             </div>
             <Label className={labelClassName}>Release Date (Min. - Max.)</Label>
             <div className={releaseDateSpinButtonsContainerClassName}>
                 <SpinButton styles={spinButtonStyles}
                     onChange={handleMinReleaseDateSpinButtonChange}
                     step={1}
-                    defaultValue='1900'
                     value={minDateSpinButton.toString()}
                     min={1900}
                     max={maxDateSpinButton} />
@@ -309,7 +405,6 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
                     onChange={handleMaxReleaseDateSpinButtonChange}
                     step={1}
                     value={maxDateSpinButton.toString()}
-                    defaultValue={new Date().getFullYear().toString()}
                     min={minDateSpinButton}
                     max={new Date().getFullYear()} />
             </div>
@@ -318,7 +413,6 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
                 <SpinButton min={1}
                     onChange={handleItemsPerPageChange}
                     max={8}
-                    defaultValue='1'
                     value={itemsPerPage.toString()}
                     step={1}
                     styles={spinButtonStyles} />

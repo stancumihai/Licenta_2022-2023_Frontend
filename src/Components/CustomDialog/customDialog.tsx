@@ -27,8 +27,10 @@ export const CustomDialog = (props: ICustomDialogProps): JSX.Element => {
         <Dialog hidden={props.isHidden}
             onDismiss={() => props.handleCloseDialog()}
             dialogContentProps={dialogContentProps}
-            isBlocking={true}
-            isDarkOverlay={false}
+            modalProps={{
+                isBlocking: true,
+                isDarkOverlay: true
+            }}
             styles={props.dialogStyles === undefined ? dialogStyles : props.dialogStyles!}>
             <DialogFooter>
                 <div style={{ marginRight: '2.5vw' }}>

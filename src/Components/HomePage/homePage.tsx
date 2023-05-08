@@ -1,5 +1,7 @@
 import {
+    acceptedButtonStyles,
     containerClassName,
+    dialogStyles,
     loadingSpinnerStyle,
     mainLogoClassName,
     mainLogoDivClassName,
@@ -33,6 +35,7 @@ import {
 } from '../../Library/constants';
 import { Spinner } from '@fluentui/react';
 import { ICountMapper } from './homePage.types';
+import { CustomDialog } from '../CustomDialog/customDialog';
 
 export const HomePage = (): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
@@ -57,6 +60,10 @@ export const HomePage = (): JSX.Element => {
     const [areWatchLaterMoviesLoaded, setAreWatchLaterMoviesLoaded] = useState<boolean>(false);
     const watchLaterMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesSubscription());
 
+    const [refreshMoviesConfirmation, setRefreshMoviesConfirmation] = useState<boolean>(false);
+    const [isAdvancedMoviesSpinnerLoading, setIsAdvancedMoviesSpinnerLoading] = useState<boolean>(false);
+    const [isAdvancedSearchClosed, setIsAdvancedSearchClosed] = useState<boolean | undefined>(undefined);
+    const [loadFromPage, setLoadFromPage] = useState<boolean>(true);
     useEffect(() => {
         if (window.location.href !== 'http://localhost:3000/home') {
             const page: string = window.location.href.split('/')[4];
@@ -64,7 +71,7 @@ export const HomePage = (): JSX.Element => {
             return;
         }
         setPageUrl(window.location.href);
-        onPageChange(1);
+        //onPageChange(1);
     }, [pageUrl]);
 
     useEffect(() => {
@@ -150,13 +157,16 @@ export const HomePage = (): JSX.Element => {
         }
     }, [areCollectionMoviesLoaded, areHistoryMoviesLoaded, areWatchLaterMoviesLoaded])
 
-    const onPageChange = (selectedPageIndex: number): void => {
-        fetch('https://localhost:7145/api/Movies/' + selectedPageIndex + `/${MAX_MOVIES_PER_PAGE}`)
-            .then((response) => response.json())
-            .then((data) => {
-                setMoviesToDisplayInPage(data)
-            });
-        setIsPageEdited(false);
+    const onPageChange = (selectedPageIndex: number, loadMoviesFromPage?: boolean): void => {
+        debugger;
+        if (loadMoviesFromPage === undefined) {
+            fetch('https://localhost:7145/api/Movies/' + selectedPageIndex + `/${MAX_MOVIES_PER_PAGE}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setMoviesToDisplayInPage(data)
+                });
+            setIsPageEdited(false);
+        }
     };
 
     const handleSidebarClick = (page: string): void => {
@@ -220,12 +230,43 @@ export const HomePage = (): JSX.Element => {
     };
 
     const isDataLoaded = (): boolean => {
-        return areHistoryMoviesLoaded && areWatchLaterMoviesLoaded && areCollectionMoviesLoaded && areMoviesLoaded
+        return areHistoryMoviesLoaded &&
+            areWatchLaterMoviesLoaded &&
+            areCollectionMoviesLoaded &&
+            areMoviesLoaded
+    };
+
+    const collectAdvancedSearchedMovies = (movies: IMovie[] | null): void => {
+        if (movies === null) {
+            setIsAdvancedMoviesSpinnerLoading(true);
+            setIsAdvancedSearchClosed(true);
+            return;
+        }
+        onPageChange(0, true);
+        setLoadFromPage(false);
+        setIsAdvancedSearchClosed(undefined);
+        setMoviesToDisplayInPage(movies!);
+        setIsAdvancedMoviesSpinnerLoading(false);
+    };
+
+    const handleRefreshMovies = (): void => {
+        setRefreshMoviesConfirmation(true);
+    };
+
+    const handleCloseDialog = (accepted?: boolean): void => {
+        setRefreshMoviesConfirmation(false);
+        if (accepted === true) {
+            onPageChange(1, undefined);
+        }
     };
 
     return <div className={containerClassName}>
-        <Navbar areMoviesLoaded={areMoviesLoaded} />
-        {!isDataLoaded() && moviesToDisplayInPage === undefined ?
+        <Navbar collectAdvancedSearchedMovies={collectAdvancedSearchedMovies}
+            handleRefreshMovies={handleRefreshMovies}
+            areMoviesLoaded={areMoviesLoaded}
+            isAdvancedSearchClosed={isAdvancedSearchClosed}
+        />
+        {(!isDataLoaded() && moviesToDisplayInPage === undefined) || isAdvancedMoviesSpinnerLoading ?
             <div>
                 <Spinner styles={loadingSpinnerStyle}
                     label={SPINNER_LOADING_MOVIES_MESSAGE}
@@ -241,9 +282,17 @@ export const HomePage = (): JSX.Element => {
                     handleSidebarClick={handleSidebarClick} />
                 {areMoviesLoaded && moviesToDisplayInPage !== undefined && <MovieCardsContainer
                     moviesToDisplayInPage={moviesToDisplayInPage !== undefined ? moviesToDisplayInPage : []} />}
+                {<CustomDialog dialogStyles={dialogStyles}
+                    acceptedButtonStyles={acceptedButtonStyles}
+                    mainText={"Are you sure you want to refresh movies?"}
+                    isHidden={!refreshMoviesConfirmation}
+                    handleCloseDialog={handleCloseDialog}
+                    acceptedText="Yes"
+                    cancelText='Cancel' />}
                 <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}
                     totalItemsCount={movies.length}
                     onPageChange={onPageChange}
+                    loadFromPage={loadFromPage}
                     isPageEdited={isPageEdited} />
             </div>
         }

@@ -4,4 +4,5 @@ export interface IPaginatorProps {
     totalItemsCount: number;
     onPageChange: (selectedPageIndex: number) => void;
     isPageEdited: boolean;
+    loadFromPage: boolean;
 };

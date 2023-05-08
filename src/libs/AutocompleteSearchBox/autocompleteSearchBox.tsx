@@ -77,7 +77,7 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
 
     const onSuggestionClicked = (e: any, suggestion: string | ISuggestionItem) => {
         if (props.mapClickedSuggestion !== undefined) {
-            props.mapClickedSuggestion(e.target.textContent.trim());
+            props.mapClickedSuggestion(e.target.textContent.trim(), e);
         }
         let query = typeof suggestion === "string" ? suggestion : suggestion.getSearchText();
         setSuggestionClicked(true);

@@ -1,4 +1,4 @@
-import { ISpinnerStyles, mergeStyles } from 'office-ui-fabric-react';
+import { IButtonStyles, IDialogStyles, ISpinnerStyles, mergeStyles } from 'office-ui-fabric-react';
 import { FONT_FAMILY } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
@@ -39,5 +39,28 @@ export const loadingSpinnerStyle: Partial<ISpinnerStyles> = {
     label: {
         color: '#CCCCCC',
         fontSize: '900',
+    }
+};
+
+export const dialogStyles: Partial<IDialogStyles> = {
+    main: {
+        maxWidth: 450,
+        borderTop: `4px solid #5b86c3`
+    }
+};
+
+export const acceptedButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        marginTop: '3.5vh',
+        color: 'white',
+        background: '#5b86c3'
+    },
+    rootHovered: {
+        color: 'white',
+        background: '#4273b7'
+    },
+    rootPressed: {
+        color: 'white',
+        background: '#38629c'
     }
 };

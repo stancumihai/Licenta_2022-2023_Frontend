@@ -1,5 +1,5 @@
 import { ISearchBoxStyles } from '@fluentui/react';
-import { mergeStyles } from 'office-ui-fabric-react';
+import { IButtonStyles, mergeStyles } from 'office-ui-fabric-react';
 
 export const containerClassName: string = mergeStyles({
     padding: '2vh',
@@ -60,3 +60,34 @@ export const searchContainer: string = mergeStyles({
     display: 'flex',
     justifyContent: 'flex-start'
 });
+
+export const iconStyles: Partial<IButtonStyles> = {
+    root: {
+        backgroundColor: 'transparent',
+        transition: '0.5s',
+        display: "inline-block",
+        color: 'white',
+        marginTop: '0.3vh',
+        marginLeft: "1vw",
+    },
+    icon: {
+        fontSize: '20px',
+        selectors: {
+            ':hover': {
+                fontSize: '25px',
+            }
+        }
+    },
+    rootHovered: {
+        backgroundColor: 'transparent',
+        color: "#888",
+        marginTop: '0',
+        transition: '0.5s',
+        fontSize: '25px',
+        marginLeft: "1.2vw",
+    },
+    rootPressed: {
+        backgroundColor: 'transparent',
+    }
+};
+
