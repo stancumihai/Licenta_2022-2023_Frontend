@@ -583,7 +583,6 @@ export const Survey = (): JSX.Element => {
             surveyUserAnswers: surveyUserAnswers
         };
         services.SurveyUserAnswerService.AddInSuperBatches(surveyUserAnswerBatch).then((data: IResponse<ISurveyUserAnswerBatch>) => {
-            console.log(data);
         });
         setMultiselectMessage('');
         setSurveyErrorMessage('');

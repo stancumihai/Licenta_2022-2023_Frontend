@@ -25,7 +25,6 @@ import {
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import {
-    HOME_PATH,
     MAX_MOVIES_PER_PAGE,
     MY_COLLECTION_PATH,
     MY_HISTORY_PATH,
@@ -67,6 +66,7 @@ export const HomePage = (): JSX.Element => {
     const [isAdvancedSearchClosed, setIsAdvancedSearchClosed] = useState<boolean | undefined>(undefined);
     const [loadFromPage, setLoadFromPage] = useState<boolean>(true);
     const [homeMovies, setHomeMovies] = useState<IMovie[]>([]);
+    const [previousUrl, setPreviousUrl] = useState<string>('');
 
     useEffect(() => {
         if (window.location.href !== 'http://localhost:3000/home') {
@@ -94,7 +94,7 @@ export const HomePage = (): JSX.Element => {
             movieData.data.Data === undefined) {
             return;
         }
-        setIsPageEdited(true);
+        setIsPageEdited(false);
         setMovies(movieData.data!.Data!);
         setHomeMovies(movieData.data!.Data!);
         setTimeout(() => {
@@ -162,9 +162,9 @@ export const HomePage = (): JSX.Element => {
     }, [areCollectionMoviesLoaded, areHistoryMoviesLoaded, areWatchLaterMoviesLoaded])
 
     const onPageChange = (selectedPageIndex: number, loadMoviesFromPage?: boolean): void => {
+        const currentUrl: string = window.location.href;
         if (loadMoviesFromPage === undefined) {
-            const url: string = window.location.href;
-            if (url === 'http://localhost:3000/home') {
+            if (currentUrl === 'http://localhost:3000/home') {
                 fetch('https://localhost:7145/api/Movies/' + selectedPageIndex + `/${MAX_MOVIES_PER_PAGE}`)
                     .then((response) => response.json())
                     .then((data) => {
@@ -173,7 +173,12 @@ export const HomePage = (): JSX.Element => {
                 setIsPageEdited(false);
                 return;
             }
-            if (url.includes('myHistory')) {
+            if (currentUrl !== previousUrl) {
+                selectedPageIndex = 1;
+                setPreviousUrl(currentUrl);
+                setIsPageEdited(true);
+            }
+            if (currentUrl.includes('myHistory')) {
                 services.MovieService.GetMoviesHistoryPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
                     setMoviesToDisplayInPage(data.Data);
                 });
@@ -189,7 +194,14 @@ export const HomePage = (): JSX.Element => {
     };
 
     const handleSidebarClick = (page: string): void => {
-        debugger;
+        if (window.location.href.includes(page)) {
+            return;
+        }
+        const prevUrl: string = window.location.href;
+        if (prevUrl !== previousUrl) {
+            setPreviousUrl(prevUrl);
+            setIsPageEdited(true);
+        }
         setMoviesToDisplayInPage(undefined);
         switch (page) {
             case MY_COLLECTION_PATH: {
@@ -203,10 +215,10 @@ export const HomePage = (): JSX.Element => {
                         services.MovieService.GetMoviesCollection().then((data: IResponse<IMovie[]>) => {
                             setMovies(data.Data!)
                         })
-                    }, 3000);
+                    }, 2000);
                     setTimeout(() => {
                         setAreMoviesLoaded(true);
-                    }, 5000);
+                    }, 3000);
                 });
                 break;
             }
@@ -228,10 +240,10 @@ export const HomePage = (): JSX.Element => {
                         services.MovieService.GetMoviesHistory().then((data: IResponse<IMovie[]>) => {
                             setMovies(data.Data!);
                         });
-                    }, 3000);
+                    }, 2000);
                     setTimeout(() => {
                         setAreMoviesLoaded(true);
-                    }, 5000);
+                    }, 3000);
                 });
                 break;
             }
@@ -245,12 +257,11 @@ export const HomePage = (): JSX.Element => {
                         setMoviesToDisplayInPage(data.Data!);
                         services.MovieService.GetMoviesSubscription().then((data: IResponse<IMovie[]>) => {
                             setMovies(data.Data!);
-                            console.log(movies);
                         });
-                    }, 3000);
+                    }, 2000);
                     setTimeout(() => {
                         setAreMoviesLoaded(true);
-                    }, 5000);
+                    }, 3000);
                 });
                 break;
             }

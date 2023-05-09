@@ -15,8 +15,18 @@ import { START_PAGE_INDEX } from '../../Library/constants';
 
 export const Paginator = (props: IPaginatorProps): JSX.Element => {
     const [selectedPageIndex, setSelectedPageIndex] = useState<number>(START_PAGE_INDEX);
+    const [previousUrl, setPreviousUrl] = useState<string>('');
 
     useEffect(() => {
+        const currentUrl = window.location.href;
+        if(currentUrl !== previousUrl)
+        {
+            onGoToFirstPageClick();
+        }
+        setPreviousUrl(currentUrl);
+        if (props.isPageEdited === true) {
+            onGoToFirstPageClick();
+        }
         if (props.loadFromPage) {
             props.onPageChange(selectedPageIndex);
         }
