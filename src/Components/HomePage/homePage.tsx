@@ -178,12 +178,17 @@ export const HomePage = (): JSX.Element => {
                 setPreviousUrl(currentUrl);
                 setIsPageEdited(true);
             }
-            if (currentUrl.includes('myHistory')) {
+            if (currentUrl.includes(MY_HISTORY_PATH)) {
                 services.MovieService.GetMoviesHistoryPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
                     setMoviesToDisplayInPage(data.Data);
                 });
                 setIsPageEdited(false);
                 return;
+            }
+            if (currentUrl.includes(MY_COLLECTION_PATH)) {
+                services.MovieService.GetMoviesCollectionPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
+                    setMoviesToDisplayInPage(data.Data);
+                });
             }
             services.MovieService.GetMoviesSubscriptionPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
                 setMoviesToDisplayInPage(data.Data);
@@ -203,6 +208,7 @@ export const HomePage = (): JSX.Element => {
             setIsPageEdited(true);
         }
         setMoviesToDisplayInPage(undefined);
+        debugger;
         switch (page) {
             case MY_COLLECTION_PATH: {
                 services.MovieService.GetMoviesCollectionPaginated(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
