@@ -1,10 +1,11 @@
 import { IDialogStyles } from '@fluentui/react';
 import { IButtonStyles, IDialogContentStyles, mergeStyles } from 'office-ui-fabric-react';
+import { COLOR2, COLOR2_D_20, COLOR2_D_40 } from '../../Library/constants';
 
 export const dialogStyles: Partial<IDialogStyles> = {
     main: {
         maxWidth: 450,
-        borderTop: `4px solid rgb(81, 73, 219)`
+        borderTop: `4px solid ${COLOR2}`
     }
 };
 
@@ -12,15 +13,15 @@ export const acceptedButtonStyles: Partial<IButtonStyles> = {
     root: {
         marginTop: '3.5vh',
         color: 'white',
-        background: 'rgb(81, 73, 219)'
+        background: COLOR2
     },
     rootHovered: {
         color: 'white',
-        background: 'rgba(81, 73, 219,0.9)'
+        background: COLOR2_D_20
     },
     rootPressed: {
         color: 'white',
-        background: 'rgba(81, 73, 219,0.8)'
+        background: COLOR2_D_40
     }
 };
 

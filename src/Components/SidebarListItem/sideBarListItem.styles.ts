@@ -35,13 +35,13 @@ export const iconButtonStyles: Partial<IButtonStyles> = {
     },
     icon: {
         color: 'white',
-        fontSize: '18px',
+        fontSize: '25px',
         marginRight: '-10px'
     }
 };
 
 export const sidebarListItemTextClassName: string = mergeStyles({
-    marginLeft: '10px',
+    marginLeft: '20px',
     cursor: 'pointer',
     height: '4vh',
     boxSizing: 'border-box',
@@ -62,12 +62,12 @@ export const dummySidebarItemDivClassName: string = mergeStyles({
 export const activeSideBarListItemClassName: string = mergeStyles({
     backgroundColor: '#5149DB',
     width: '0.4vw',
-    marginLeft: '-12.7vw'
+    marginLeft: '-13.3vw'
 });
 
 export const countSidebarListItemClassName: string = mergeStyles({
-    left: "12.5vw",
-    marginTop: '1vh',
+    left: "14vw",
+    marginTop: '2.3vh',
     color: 'white',
     position: 'fixed'
 });

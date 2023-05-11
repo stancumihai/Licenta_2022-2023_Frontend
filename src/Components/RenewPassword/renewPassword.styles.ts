@@ -1,5 +1,5 @@
 import { IButtonStyles, ITextFieldStyles, mergeStyles } from 'office-ui-fabric-react';
-import { FONT_FAMILY } from '../../Library/constants';
+import { COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
     position: 'relative',
@@ -21,9 +21,10 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
         top: '2vh',
     },
     revealIcon: {
-        color: '#526ad6'
+        color: COLOR2
     },
     field: {
+        fontFamily: FONT_FAMILY,
         height: '4.5vh',
         borderRadius: '5px',
         border: '3px solid #d3e6ee'
@@ -39,13 +40,15 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
 };
 export const labelClassName: string = mergeStyles({
     top: '2.5vh',
-    marginBottom: '2px',
+    marginTop: '5px',
+    marginBottom: '5px',
     position: 'relative',
+    fontFamily: FONT_FAMILY,
     left: '40vw'
 });
 export const resetPasswordButtonStyles: Partial<IButtonStyles> = {
     root: {
-        background: '#526ad6',
+        background: COLOR2,
         color: 'white',
         position: 'relative',
         left: '40vw',
@@ -56,10 +59,11 @@ export const resetPasswordButtonStyles: Partial<IButtonStyles> = {
         width: '20vw'
     },
     rootHovered: {
-        background: '#d3e6ee',
+        background: COLOR2_D_20,
+        color: 'white',
     },
     rootPressed: {
-        background: '#526ad6',
+        background: COLOR2_D_40,
         color: 'white',
     }
 };
@@ -73,19 +77,20 @@ export const mainTextClassName: string = mergeStyles({
 });
 export const resetPasswordQuestionClassName: string = mergeStyles({
     position: 'relative',
+    fontFamily: FONT_FAMILY,
     left: '44.5vw',
     top: '6vh',
 });
 export const loginSpanClassName: string = mergeStyles({
     marginLeft: '5px',
-    color: '#526ad6',
+    color: COLOR2,
     selectors: {
         ":hover": {
-            'color': '#d3e6ee',
+            'color': COLOR2_D_20,
             cursor: 'pointer'
         },
         ":active": {
-            color: '#526ad6',
+            color: COLOR2_D_40,
         }
     }
 });

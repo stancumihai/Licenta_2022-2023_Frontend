@@ -32,7 +32,7 @@ import { TopGenresCard } from '../TopGenresCard/topGenresCard';
 
 export const TopGenres = (): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
-    const genresData: IFetchResult<string[]> = useFetch<string[]>(() => services.MovieService.GetTopGenres());
+    const genresData: IFetchResult<string[]> = useFetch<string[]>(() => services.MovieService.GetTopLikedGenres());
     const [genres, setGenres] = useState<string[]>();
     const [areGenresLoaded, setAreGenresLoaded] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
@@ -41,6 +41,7 @@ export const TopGenres = (): JSX.Element => {
         if (genresData.isLoading) {
             return;
         }
+        console.log(genresData);
         if (genresData.errors !== "" ||
             genresData.data?.Error !== undefined ||
             genresData.data == null ||

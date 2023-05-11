@@ -254,14 +254,12 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
 
     const processGlobalMovieRatingChange = (movieRating: IMovieRating, newMyRating: number, oldMyRating?: number) => {
         if (oldMyRating === undefined) {
-            //sunt pe create
             const newAverageRating: number = (movieRating.averageRating * movieRating.votesNumber + newMyRating) / (movieRating.votesNumber + 1);
             const newMovieRating: IMovieRating = { ...movieRating, averageRating: newAverageRating, votesNumber: movieRating.votesNumber + 1 };
             services.MovieRatingsService.Update(newMovieRating);
             window.location.reload();
             return;
         }
-        //sunt pe update
         const newAverageRating: number = (movieRating.averageRating * movieRating.votesNumber + newMyRating - oldMyRating) / movieRating.votesNumber;
         const newMovieRating: IMovieRating = { ...movieRating, averageRating: newAverageRating };
         services.MovieRatingsService.Update(newMovieRating);

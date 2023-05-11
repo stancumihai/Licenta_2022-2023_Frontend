@@ -1,5 +1,5 @@
-import { ISearchBoxStyles } from '@fluentui/react';
-import { IButtonStyles, mergeStyles } from 'office-ui-fabric-react';
+import { IButtonStyles, ITextFieldStyles, mergeStyles } from 'office-ui-fabric-react';
+import { COLOR1, COLOR2, FONT_FAMILY } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
     padding: '2vh',
@@ -11,12 +11,10 @@ export const containerClassName: string = mergeStyles({
     top: '1vh'
 });
 
-export const searchBoxStyles: Partial<ISearchBoxStyles> = {
+export const textFieldStyles: Partial<ITextFieldStyles> = {
     root: {
-        borderRadius: '25px',
         border: 'none',
         marginLeft: '-6.3vw',
-        maxWidth: '17.5%',
         width: '17.5%',
         selectors: {
             "::after": {
@@ -24,13 +22,26 @@ export const searchBoxStyles: Partial<ISearchBoxStyles> = {
             }
         },
     },
-    iconContainer: {
-        marginRight: '1.5vw',
-        marginLeft: '0.5vw',
-        width: '0'
+    fieldGroup: {
+        background: COLOR1,
+        borderRadius: '25px',
+        border: 'none',
+        selectors: {
+            ':after': {
+                border: 'none',
+                cursor: "grab"
+            }
+        }
     },
-    clearButton: {
-        display: 'none'
+    field: {
+        color: 'black',
+        borderRadius: '25px',
+        marginLeft: '4vh',
+        fontFamily: FONT_FAMILY,
+    },
+    icon: {
+        marginRight: '11.5vw',
+        width: '0'
     }
 };
 
@@ -42,14 +53,14 @@ export const iconProps = {
 export const advancedSearchIconClassName: string = mergeStyles({
     transition: '0.5s',
     display: "inline-block",
-    color: 'white',
+    color: COLOR1,
     marginTop: '0.5vh',
     fontSize: '25px',
     marginLeft: "3vw",
     selectors: {
         ":hover": {
             marginTop: '0',
-            color: "#888",
+            color: COLOR2,
             transition: '0.5s',
             fontSize: '30px',
         }
@@ -66,7 +77,7 @@ export const iconStyles: Partial<IButtonStyles> = {
         backgroundColor: 'transparent',
         transition: '0.5s',
         display: "inline-block",
-        color: 'white',
+        color: COLOR1,
         marginTop: '0.3vh',
         marginLeft: "1vw",
     },
@@ -80,13 +91,17 @@ export const iconStyles: Partial<IButtonStyles> = {
     },
     rootHovered: {
         backgroundColor: 'transparent',
-        color: "#888",
+        color: COLOR2,
         marginTop: '0',
         transition: '0.5s',
         fontSize: '25px',
         marginLeft: "1.2vw",
     },
     rootPressed: {
+        backgroundColor: 'transparent',
+    },
+    rootDisabled: {
+        pointerEvents: 'none',
         backgroundColor: 'transparent',
     }
 };

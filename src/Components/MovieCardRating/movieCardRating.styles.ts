@@ -1,4 +1,5 @@
 import { mergeStyles } from 'office-ui-fabric-react';
+import { COLOR2 } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
     position: 'fixed',
@@ -6,7 +7,7 @@ export const containerClassName: string = mergeStyles({
     marginLeft: '10.7vw',
     width: '45px',
     height: '45px',
-    background: '#5149DB',
+    background: COLOR2,
     borderRadius: '50px',
     opacity: '0.85'
 });

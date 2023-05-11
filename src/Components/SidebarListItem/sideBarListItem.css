@@ -1,0 +1,36 @@
+li {
+    position: relative;
+    list-style: none;
+    width: 100%;
+}
+
+li.active {
+    background: rgba(18, 19, 36, 1);
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+li:hover {
+    cursor: pointer;
+}
+
+li a {
+    position: relative;
+    width: 100%;
+    display: flex;
+    text-decoration: none;
+    color: white;
+}
+
+li a .title:hover {
+    text-decoration: underline;
+}
+
+li a .icon {
+    position: relative;
+    display: block;
+    min-width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+}

@@ -1,5 +1,8 @@
 import { mergeStyles } from 'office-ui-fabric-react';
-import { FONT_FAMILY } from '../../Library/constants';
+import {
+    COLOR2,
+    FONT_FAMILY
+} from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
     color: 'white',
@@ -24,7 +27,7 @@ export const movieEntryClassName: string = mergeStyles({
     lineHeight: '30px',
     selectors: {
         ':hover': {
-            color: 'rgb(61,87,116)',
+            color: COLOR2,
             cursor: 'pointer'
         }
     }

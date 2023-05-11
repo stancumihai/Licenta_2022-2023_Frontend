@@ -41,7 +41,7 @@ export default class MoviesService extends BaseService<IMovie>  {
         return await APIHelper.request(`${this._endpoint}/collection`, 'GET')
     };
 
-    async GetTopGenres(): Promise<IResponse<string[]>> {
+    async GetTopLikedGenres(): Promise<IResponse<string[]>> {
         return await APIHelper.request(`${this._endpoint}/topGenres`, 'GET')
     };
 

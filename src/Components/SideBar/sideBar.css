@@ -1,0 +1,44 @@
+.navigation {
+    position: fixed;
+    list-style: none;
+    top: 100px;
+    bottom: 20px;
+    left: 20px;
+    background: linear-gradient(180deg, rgba(155, 60, 181, 1) 0%, rgba(158, 86, 177, 1) 38%, rgba(47, 27, 69, 1) 100%);
+    width: 70px;
+    border-radius: 10px;
+    border-left: 5px solid #913fa5;
+    box-sizing: initial;
+    transition: width 0.5s;
+    overflow-x: hidden;
+}
+
+.navigation.active {
+    width: 250px;
+}
+
+.navigation li a .title {
+    display: none;
+}
+
+.navigation.active li a .title {
+    position: relative;
+    display: block;
+    padding-left: 10px;
+    min-width: 60px;
+    height: 60px;
+    line-height: 60px;
+    white-space: normal;
+}
+
+.toggle {
+    position: fixed;
+    top: 3vh;
+    left: 10vw;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+}

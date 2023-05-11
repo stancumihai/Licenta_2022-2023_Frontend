@@ -1,17 +1,31 @@
-import { IDialogStyles, mergeStyles } from 'office-ui-fabric-react';
-import { FONT_FAMILY } from '../../Library/constants';
-import { IButtonStyles, ITextFieldStyles } from '@fluentui/react';
+import {
+    IDatePickerStyles,
+    IDialogStyles,
+    mergeStyles
+} from 'office-ui-fabric-react';
+import {
+    COLOR1,
+    COLOR2,
+    COLOR2_D_20,
+    COLOR2_D_40,
+    FONT_FAMILY
+} from '../../Library/constants';
+import {
+    IButtonStyles,
+    ITextFieldStyles
+} from '@fluentui/react';
 
 export const containerClassName: string = mergeStyles({
     height: '100vh',
-    background: 'linear-gradient(90deg, rgba(20,20,32,1), rgba(37,65,104,1) 65%, rgba(36,45,69,1) 100%)',
-    overflow: 'hidden'
+    background: 'linear-gradient(90deg, rgba(18,19,36,1) 0%, rgba(28,28,66,1) 49%, rgba(38,29,57,1) 100%)',
+    overflow: 'hidden',
 });
 
 export const contentClassName: string = mergeStyles({
-    width: '20%',
+    width: '22.5%',
+    backdropFilter: 'blur(5px)',
     margin: 'auto',
-    height: "60%",
+    height: "65%",
     transform: 'translate(0%, 25%)',
     boxSizing: 'border-box',
     padding: '2%',
@@ -22,17 +36,40 @@ export const labelClassName: string = mergeStyles({
     color: 'white',
     fontFamily: FONT_FAMILY,
     marginLeft: '15%',
-    marginTop: '10px'
+    marginTop: '3vh'
 });
 
 export const textFieldStyles: Partial<ITextFieldStyles> = {
     root: {
-        width: '70%',
+        left: '11px',
+        width: '80%',
         margin: 'auto',
+        borderRadius: '10px'
+    },
+    field: {
+        color: COLOR1,
+        borderRadius: '2px',
+        fontFamily: FONT_FAMILY,
+        background: 'transparent',
+    },
+    wrapper: {
+        background: 'transparent',
+        border: 'none',
+        selectors: {
+            ':after': {
+                borderBottom: `none`
+            }
+        }
     },
     fieldGroup: {
+        border: 'none',
+        background: 'transparent',
         boxSizing: 'border-box',
-        height: '4vh'
+        height: '4vh',
+        borderBottom: `2px solid ${COLOR2_D_20}`,
+        ':hover': {
+            borderBottom: `2px solid ${COLOR2_D_20}`,
+        }
     }
 };
 
@@ -45,10 +82,11 @@ export const goBackIconStyles: Partial<IButtonStyles> = {
         color: 'white'
     },
     rootHovered: {
-        color: 'rgb(61,87,116)',
+        color: COLOR2,
         backgroundColor: 'transparent',
     },
     rootPressed: {
+        color: COLOR2_D_20,
         backgroundColor: 'transparent',
     },
     icon: {
@@ -66,20 +104,45 @@ export const homePageTextClassName: string = mergeStyles({
     fontFamily: FONT_FAMILY,
     selectors: {
         ':hover': {
-            color: 'rgb(61,87,116)',
+            color: COLOR2,
         }
     }
 });
 
 export const editButtonStyles: Partial<IButtonStyles> = {
     root: {
+        color: COLOR1,
+        border: 'none',
+        fontFamily: FONT_FAMILY,
+        background: COLOR2,
+        width: '4vw',
+        height: '4vh',
         margin: '10% 5% 0 15%',
     },
     rootHovered: {
-        background: '#e5e5e5'
+        color: COLOR1,
+        background: COLOR2_D_20
     },
     rootPressed: {
-        background: '#cccccc'
+        color: COLOR1,
+        background: COLOR2_D_40
+    }
+};
+
+export const pushSettingsButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        width: '4vw',
+        height: '4vh',
+        border: 'none',
+        fontFamily: FONT_FAMILY,
+        background: COLOR1,
+        margin: '10% 5% 0 15%',
+    },
+    rootHovered: {
+        background: COLOR1
+    },
+    rootPressed: {
+        background: COLOR1
     }
 };
 
@@ -93,7 +156,7 @@ export const profileSettingsTitleClassName: string = mergeStyles({
 export const dialogStyles: Partial<IDialogStyles> = {
     main: {
         maxWidth: 450,
-        borderTop: `4px solid #5b86c3`
+        borderTop: `4px solid ${COLOR2}`
     }
 };
 
@@ -101,14 +164,93 @@ export const acceptedButtonStyles: Partial<IButtonStyles> = {
     root: {
         marginTop: '3.5vh',
         color: 'white',
-        background: '#5b86c3'
+        background: COLOR2
     },
     rootHovered: {
         color: 'white',
-        background: '#4273b7'
+        background: COLOR2_D_20
     },
     rootPressed: {
         color: 'white',
-        background: '#38629c'
+        background: COLOR2_D_40
+    }
+};
+
+export const datePickerStyles: Partial<IDatePickerStyles> = {
+    root: {
+    },
+    textField: {
+        width: '80%',
+        left: '4vh'
+    },
+    callout: {
+        color: COLOR1,
+        fontFamily: FONT_FAMILY
+    },
+};
+
+export const datePickerTextFieldStyles: Partial<ITextFieldStyles> = {
+    fieldGroup: {
+        height: '4vh',
+        background: "transparent",
+        selectors: {
+            '[data-icon-name="Calendar"]': {
+                color: COLOR1,
+                pointerEvents: 'none'
+            },
+            '.ms-TextField-field': {
+                border: 'none'
+            },
+            '.ms-TextField-field::after': {
+                border: 'none'
+            }
+        }
+    },
+    field: {
+        color: COLOR1,
+        fontFamily: FONT_FAMILY
+    },
+    wrapper: {
+        borderBottom: `2px solid ${COLOR2_D_20}`,
+        selectors: {
+            ':after': {
+                borderBottom: `2px solid ${COLOR2_D_20}`
+            },
+            ':hover': {
+                borderBottom: `2px solid ${COLOR2_D_20}`
+            }
+        },
+    }
+};
+
+export const roundedImageClassName: string = mergeStyles({
+    width: '250px',
+    height: '250px',
+    borderRadius: '100%',
+    opacity: "0.7",
+    position: 'absolute',
+    transform: 'rotate(45deg)',
+    top: '69%',
+    left: '32%',
+
+});
+
+export const roundedContainerImageClassName: string = mergeStyles({
+    position: "absolute"
+});
+
+export const iconButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        position: "absolute",
+        left: '43%',
+        top: '10vh',
+        backgroundColor: 'transparent',
+        color: COLOR2
+    },
+    rootHovered: {
+        backgroundColor: 'transparent',
+    },
+    icon: {
+        fontSize: '150px'
     }
 };

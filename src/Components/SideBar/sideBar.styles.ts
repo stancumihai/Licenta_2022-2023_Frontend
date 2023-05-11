@@ -1,4 +1,12 @@
 import { IButtonStyles, mergeStyles } from 'office-ui-fabric-react';
+import { COLOR1, COLOR1_D_40, COLOR2, COLOR2_D_20, COLOR2_D_40, COLOR3 } from '../../Library/constants';
+
+export const sidebarContainerClassName: string = mergeStyles({
+    // position: 'fixed',
+    // maxWidth: '17.5%',
+    // height: '100vh',
+    //background: '#484874',
+});
 
 export const containerClassName: string = mergeStyles({
     listStyleType: 'none',
@@ -23,7 +31,7 @@ export const calculatedSidebarListItemsContainerClassName: string = mergeStyles(
     justifyContent: 'space-evenly',
 });
 
-export const iconButtonStyles: Partial<IButtonStyles> = {
+export const sidebarIconButtonStyles: Partial<IButtonStyles> = {
     root: {
         color: 'white',
         border: 'none',
@@ -45,6 +53,67 @@ export const iconButtonStyles: Partial<IButtonStyles> = {
         fontSize: '15px',
     }
 };
+
+export const inActiveIconButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        backgroundColor: COLOR2,
+        borderRadius: '10px',
+        width: '50px',
+        height: '50px',
+        marginLeft: '-8vw'
+    },
+    rootHovered: {
+        backgroundColor: COLOR2_D_20,
+        borderRadius: '10px',
+        width: '50px',
+        height: '50px'
+    },
+    rootPressed: {
+        backgroundColor: COLOR2_D_40,
+        borderRadius: '10px',
+        width: '50px',
+        height: '50px'
+    },
+
+    icon: {
+        color: 'white',
+        fontSize: '30px',
+        cursor: 'pointer',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+};
+
+export const activeIconButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        backgroundColor: COLOR1_D_40,
+        borderRadius: '10px',
+        width: '50px',
+        height: '50px',
+        marginLeft: '-8vw'
+    },
+    rootHovered: {
+        backgroundColor: COLOR1_D_40,
+        borderRadius: '10px',
+        width: '50px',
+        height: '50px'
+    },
+    rootPressed: {
+        backgroundColor: COLOR1_D_40,
+        borderRadius: '10px',
+        width: '50px',
+        height: '50px'
+    },
+
+    icon: {
+        color: 'white',
+        fontSize: '30px',
+        cursor: 'pointer',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+};
+
 export const logoutButtonStyles: Partial<IButtonStyles> = {
     root: {
         color: 'white',

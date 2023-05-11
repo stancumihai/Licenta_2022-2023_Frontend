@@ -1,5 +1,6 @@
 import { IContextualMenuItemStyles } from '@fluentui/react';
 import { IButtonStyles, IIconProps, mergeStyles } from 'office-ui-fabric-react';
+import { COLOR1, COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
     maxWidth: '20%',
@@ -23,18 +24,14 @@ export const iconButtonStyles: Partial<IButtonStyles> = {
     },
 
     icon: {
-        color: '#5149DB',
+        color: COLOR1,
         fontSize: '20px',
         selectors: {
             ":hover": {
-                color: 'rgb(0, 120, 212)'
+                color: COLOR2
             }
         }
     }
-};
-
-export const userIcon: IIconProps = {
-    iconName: 'AccountManagement'
 };
 
 export const notificationIcon: IIconProps = {
@@ -59,37 +56,63 @@ export const profileSettingsButtonStyles: Partial<IButtonStyles> = {
 export const contextualMenuStyles: Partial<IContextualMenuItemStyles> = {
     linkContent: {
         display: "none",
-    },
+    }
 };
 
 export const commandButtonStyles: Partial<IButtonStyles> = {
     root: {
         backgroundColor: 'transparent',
-        marginTop: '4px',
+        marginTop: '4px'
     },
-    rootHovered: {
-        backgroundColor: 'transparent',
-    },
+
     icon: {
-        color: '#5149DB',
-        fontSize: '20px',
+        color: COLOR1,
+        fontSize: '20px'
     },
     flexContainer: {
         selectors: {
             '[data-icon-name="ChevronDown"]': {
-                color: '#5149DB'
+                color: COLOR1
             }
         }
     },
+    iconHovered: {
+        color: COLOR2,
+    }
 };
 
 export const notificationDotClassName: string = mergeStyles({
     display: 'inline-block',
     position: 'relative',
     backgroundColor: 'red',
-    width: '4px',
-    height: '4px',
+    width: '4.2px',
+    height: '4.2px',
     borderRadius: '25px',
-    top: '-1.3vh',
-    left: '-0.55vw'
+    top: '-1.5vh',
+    left: '-0.6vw'
 });
+
+export const contextualIconButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        color: COLOR2,
+        fontWeight: '600',
+        selectors: {
+            ':hover': {
+                color: COLOR2_D_20
+            }
+        }
+    },
+    rootHovered: {
+        color: COLOR2_D_20
+    },
+    rootPressed: {
+        color: COLOR2_D_40
+    },
+    icon: {
+        selectors: {
+            ':hover': {
+                color: COLOR2_D_20
+            }
+        }
+    }
+};

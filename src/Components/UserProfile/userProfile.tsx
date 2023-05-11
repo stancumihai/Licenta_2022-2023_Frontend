@@ -7,25 +7,45 @@ import {
     acceptedButtonStyles,
     containerClassName,
     contentClassName,
+    datePickerStyles,
+    datePickerTextFieldStyles,
     dialogStyles,
     editButtonStyles,
     goBackIconStyles,
     homePageTextClassName,
+    iconButtonStyles,
     labelClassName,
     profileSettingsTitleClassName,
+    pushSettingsButtonStyles,
+    roundedImageClassName,
     textFieldStyles
 } from './userProfile.styles';
-import { useContext, useEffect, useState } from 'react';
+import {
+    useContext,
+    useEffect,
+    useState
+} from 'react';
 import { IUserProfileProps } from './userProfile.types';
 import { IUserProfileRead } from '../../Models/UserProfile/IUserProfileRead';
 import {
     NavigateFunction,
     useNavigate
 } from 'react-router-dom';
-import { HOME_PATH } from '../../Library/constants';
-import { DefaultButton } from 'office-ui-fabric-react';
+import {
+    HOME_PATH,
+    IMAGE_NOT_FOUND_ALTERNATE_TEXT,
+    LOGO_IMAGE_LOCATION
+} from '../../Library/constants';
+import {
+    DatePicker,
+    DayOfWeek,
+    DefaultButton
+} from 'office-ui-fabric-react';
 import { CustomDialog } from '../CustomDialog/customDialog';
-import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
+import {
+    ServiceContext,
+    ServiceContextInstance
+} from '../../Core/serviceContext';
 import { IUserProfileUpdate } from '../../Models/UserProfile/IUserProfileUpdate';
 import { IUserProfileCreate } from '../../Models/UserProfile/IUserProfileCreate';
 import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
@@ -44,6 +64,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
     const [fullName, setFullName] = useState<string>(defaultUserProfile.fullName);
     const [city, setCity] = useState<string>(defaultUserProfile.city);
     const [country, setCountry] = useState<string>(defaultUserProfile.country);
+    const [dateOfBirth, setDateOfBirth] = useState<Date>(defaultUserProfile.dateOfBirth);
     const [isFormDisabled, setIsFormDisabled] = useState<boolean>(true);
     const [isEditButtonClicked, setIsEditButtonClicked] = useState<boolean>(false);
     const [isPushSettingsClicked, setIsPushSettingsClicked] = useState<boolean>(false);
@@ -56,6 +77,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
             setFullName(props.userProfile!.fullName);
             setCity(props.userProfile.city);
             setCountry(props.userProfile.country);
+            setDateOfBirth(new Date(props.userProfile.dateOfBirth))
             return;
         }
         setIsFormDisabled(false);
@@ -125,40 +147,77 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         }, 500);
     };
 
+    const handlePeriodChange = (date: Date | undefined | null): void => {
+        setDateOfBirth(date!);
+    };
+
     return <div className={containerClassName}>
+        <div style={{ cursor: 'pointer' }} onClick={() => navigate(HOME_PATH)}>
+            <IconButton iconProps={{ iconName: "Back" }}
+                styles={goBackIconStyles} />
+            <p className={homePageTextClassName}>Home Page</p>
+        </div>
         <div>
-            <div style={{ cursor: 'pointer' }} onClick={() => navigate(HOME_PATH)}>
-                <IconButton iconProps={{ iconName: "Back" }}
-                    styles={goBackIconStyles} />
-                <p className={homePageTextClassName}>Home Page</p>
-            </div>
+            <img className={roundedImageClassName}
+                src={LOGO_IMAGE_LOCATION}
+                alt={IMAGE_NOT_FOUND_ALTERNATE_TEXT} />
+        </div>
+        <div style={{
+            background: 'white',
+            width: '250px',
+            height: '250px',
+            position: 'absolute',
+            borderRadius: '100%',
+            left: '53vw',
+            top: '10px'
+        }}>
+            <IconButton styles={iconButtonStyles}
+                iconProps={{ iconName: 'Contact' }} />
         </div>
         <div className={contentClassName}>
             <h1 className={profileSettingsTitleClassName}>Profile Settings</h1>
             <Label className={labelClassName}>Full Name</Label>
             <TextField value={fullName}
-                disabled={isFormDisabled}
+                readOnly={isFormDisabled}
                 styles={textFieldStyles}
                 underlined={true}
                 onChange={onFullNameChange}
             />
             <Label className={labelClassName}>City</Label>
             <TextField value={city}
-                disabled={isFormDisabled}
+                readOnly={isFormDisabled}
                 styles={textFieldStyles}
                 underlined={true}
                 onChange={onCityChange} />
             <Label className={labelClassName}>Country</Label>
             <TextField value={country}
-                disabled={isFormDisabled}
+                readOnly={isFormDisabled}
                 styles={textFieldStyles}
                 underlined={true}
+                borderless
                 onChange={onCountryChange} />
-            <DefaultButton text={props.userProfile === undefined ? 'Create' : 'Edit'}
-                styles={editButtonStyles}
-                onClick={handleEditButtonClick} />
-            {isEditButtonClicked && props.userProfile !== undefined && <DefaultButton text="Push Settings"
-                onClick={handlePushSettingsClick} />}
+            <Label className={labelClassName}>Date Of Birth</Label>
+            <div style={isFormDisabled ? { pointerEvents: 'none' } : {}}>
+                <DatePicker
+                    onSelectDate={handlePeriodChange}
+                    styles={datePickerStyles}
+                    textField={{ styles: datePickerTextFieldStyles }}
+                    underlined
+                    value={dateOfBirth}
+                    firstDayOfWeek={DayOfWeek.Monday}
+                    borderless={true}
+                    minDate={new Date()}
+                />
+            </div>
+            <div style={{ display: 'flex' }}>
+                <DefaultButton text={props.userProfile === undefined ? 'Create' : 'Edit'}
+                    styles={editButtonStyles}
+                    onClick={handleEditButtonClick} />
+                {isEditButtonClicked && props.userProfile !== undefined &&
+                    <DefaultButton styles={pushSettingsButtonStyles}
+                        text="Save"
+                        onClick={handlePushSettingsClick} />}
+            </div>
             <div style={{ position: 'absolute' }}>
                 <CustomDialog acceptedButtonStyles={acceptedButtonStyles}
                     dialogStyles={dialogStyles}
@@ -168,7 +227,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
                     isHidden={!isPushSettingsClicked}
                     handleCloseDialog={handleCloseDialog}
                     acceptedText="Yes"
-                    cancelText='Cancel' />
+                    cancelText='No' />
             </div>
         </div>
     </div>

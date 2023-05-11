@@ -1,5 +1,6 @@
 import { IButtonStyles } from '@fluentui/react';
 import { mergeStyles } from 'office-ui-fabric-react';
+import { COLOR1, COLOR2, COLOR2_D_20, COLOR2_D_40 } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
     position: 'absolute',
@@ -17,18 +18,18 @@ export const containerClassName: string = mergeStyles({
 
 export const iconStyles: Partial<IButtonStyles> = {
     root: {
-        color: '#5149DB'
+        color: COLOR2
     },
     rootHovered: {
         background: 'transparent',
-        color: '#857fe5'
+        color: COLOR2_D_20
     },
     rootPressed: {
         background: 'transparent',
-        color: "#a7a3ed"
+        color: COLOR2_D_40
     },
     rootDisabled: {
-        background: 'transparent'
+        background: 'transparent',
     }
 };
 
@@ -49,13 +50,13 @@ export const paginatorNumberStyles: Partial<IButtonStyles> = {
         minWidth: '32px',
         height: '32px',
         backgroundColor: 'transparent',
-        color: 'black',
+        color: COLOR1,
         userSelect: 'none',
         minHeight: '32px'
     },
     rootHovered: {
         backgroundColor: 'transparent',
-        color: "white"
+        color: COLOR2
     },
     rootPressed: {
         backgroundColor: 'transparent',

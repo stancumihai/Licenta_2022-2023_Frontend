@@ -5,6 +5,7 @@ import {
   useState
 } from 'react';
 import {
+  Navigate,
   Route,
   Routes
 } from 'react-router-dom';
@@ -15,7 +16,7 @@ import { Login } from './Components/Login/login';
 import { Register } from './Components/Register/register';
 import {
   ARTISTS_OF_THE_MONTH_PATH,
-  CHARTS_PATH,
+  DASHBOARD_PATH,
   FORGOT_PASSWORD_PATH,
   HOME_PATH,
   JWT_TOKEN,
@@ -44,7 +45,6 @@ import { IResponse } from './Models/IResponse';
 import Cookies from 'universal-cookie';
 import { MovieWrapper } from './Components/MovieWrapper/movieWrapper';
 import { ArtistsOfTheMonth } from './Components/ArtistsOfTheMonth/artistsOfTheMonth';
-import { Charts } from './Components/Charts/charts';
 import { Recommendations } from './Components/Recommendations/recommendations';
 import { TopGenres } from './Components/TopGenres/topGenres';
 import { SURVEY_PATH_PERMISSIONS } from './Authentication/pagePermissions';
@@ -52,6 +52,8 @@ import { AuthenticatedRoute } from './Components/AuthenticatedRoute/authenticate
 import { Survey } from './Components/Survey/survey';
 import { ITokenModel } from './Models/User/ITokenModel';
 import { UserProfileWrapper } from './Components/UserProfileWrapper/userProfileWrapper';
+import { Dashboard } from './Components/Dashboard/dashboard';
+import { NavbarTest } from './Components/SidebarTest/sideBarTest';
 
 initializeIcons(undefined, { disableWarnings: true });
 
@@ -144,7 +146,7 @@ export default function App(): JSX.Element {
       <Route path={SIGN_UP_PATH} element={<Register />} />
       <Route path={SURVEY_PATH} element={
         <AuthenticatedRoute unaunthenticatedRedirectUrl={LOGIN_PATH} permissions={SURVEY_PATH_PERMISSIONS}>
-          {/* {!userHasSurveyAnswers ? <Survey /> : <Navigate to={HOME_PATH} />} */}
+          {!userHasSurveyAnswers ? <Survey /> : <Navigate to={HOME_PATH} />}
           {<Survey />}
         </AuthenticatedRoute>
       } />
@@ -157,7 +159,6 @@ export default function App(): JSX.Element {
       <Route path={FORGOT_PASSWORD_PATH} element={<ForgotPassword />} />
       <Route path={`${RENEW_PASSWORD_PATH}/:email`} element={<RenewPassword />} />
       <Route path={`${MOVIE_WRAPPER_PATH}/:movieName`} element={<MovieWrapper />} />
-      <Route path={CHARTS_PATH} element={<Charts />} />
       <Route path={RECOMMENDATIONS_PATH} element={<Recommendations />} ></Route>
       <Route path={TOP_GENRES_PATH} element={<TopGenres />} ></Route>
       <Route path={ARTISTS_OF_THE_MONTH_PATH} element={<ArtistsOfTheMonth />} ></Route>

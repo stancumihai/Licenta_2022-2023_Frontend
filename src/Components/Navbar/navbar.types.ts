@@ -5,4 +5,6 @@ export interface INavbarProps {
     collectAdvancedSearchedMovies: (movies: IMovie[] | null) => void;
     handleRefreshMovies: () => void;
     isAdvancedSearchClosed: boolean | undefined;
+    handleSearchboxText: (searchText: string) => void;
+    isDashboardPageClicked: boolean;
 };

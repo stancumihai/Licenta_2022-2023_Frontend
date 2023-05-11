@@ -54,7 +54,7 @@ export const MovieWrapper = (): JSX.Element => {
         setAreMoviePersonsLoaded(true);
     }, [moviePersonsData]);
 
-    return <div  >
+    return <div>
         {isMovieRatingLoaded && <MovieHeaderPoster movieTitle={movieRating!.movie.title} />}
         <div className={containerClassName}>
             <div className={innerContainer}>
@@ -68,5 +68,5 @@ export const MovieWrapper = (): JSX.Element => {
                 </div>
             </div>
         </div>
-    </div>
+    </div >
 };

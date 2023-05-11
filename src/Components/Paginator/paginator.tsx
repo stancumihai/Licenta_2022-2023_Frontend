@@ -19,8 +19,7 @@ export const Paginator = (props: IPaginatorProps): JSX.Element => {
 
     useEffect(() => {
         const currentUrl = window.location.href;
-        if(currentUrl !== previousUrl)
-        {
+        if (currentUrl !== previousUrl) {
             onGoToFirstPageClick();
         }
         setPreviousUrl(currentUrl);
@@ -28,7 +27,7 @@ export const Paginator = (props: IPaginatorProps): JSX.Element => {
             onGoToFirstPageClick();
         }
         if (props.loadFromPage) {
-            props.onPageChange(selectedPageIndex);
+            props.onPageChange(selectedPageIndex, false);
         }
     }, [props.totalItemsCount, props.isPageEdited]);
 
@@ -39,24 +38,24 @@ export const Paginator = (props: IPaginatorProps): JSX.Element => {
     const onPreviousPageClick = (): void => {
         const newSelectedPageIndex: number = selectedPageIndex - 1;
         setSelectedPageIndex(newSelectedPageIndex);
-        props.onPageChange(newSelectedPageIndex);
+        props.onPageChange(newSelectedPageIndex, false);
     };
 
     const onNextPageClick = (): void => {
         const newSelectedPageIndex: number = selectedPageIndex + 1;
         setSelectedPageIndex(newSelectedPageIndex);
-        props.onPageChange(newSelectedPageIndex);
+        props.onPageChange(newSelectedPageIndex, false);
     };
 
     const onGoToFirstPageClick = (): void => {
         setSelectedPageIndex(START_PAGE_INDEX);
-        props.onPageChange(START_PAGE_INDEX);
+        props.onPageChange(START_PAGE_INDEX, false);
     };
 
     const onGoToLastPageClick = (): void => {
         const lastPageIndex: number = getNumberOfPages();
         setSelectedPageIndex(lastPageIndex);
-        props.onPageChange(lastPageIndex);
+        props.onPageChange(lastPageIndex, false);
     };
 
     const isFirstPage = (): boolean => {
@@ -88,7 +87,7 @@ export const Paginator = (props: IPaginatorProps): JSX.Element => {
                     text={selectedPageIndex.toString()}
                 />
             </div>
-            <div style={{ marginLeft: '20px', display: 'inline' }}>
+            <div style={{ marginLeft: '10px', display: 'inline' }}>
                 <DefaultButton style={selectedPageIndex !== getNumberOfPages() ? { pointerEvents: 'none' } : { display: "none" }}
                     styles={paginatorNumberStyles}
                     text={(selectedPageIndex + 1).toString()}

@@ -1,7 +1,7 @@
 import { ISearchBoxStyles } from '@fluentui/react';
 import { DefaultEffects, ICalloutContentStyles, IProgressIndicatorStyles } from 'office-ui-fabric-react';
 import { CSSProperties } from 'react';
-import { FONT_FAMILY } from '../../Library/constants';
+import { COLOR2, FONT_FAMILY } from '../../Library/constants';
 
 export const ProgressIndicatorStyle: Partial<IProgressIndicatorStyles> = {
     itemProgress: {
@@ -40,6 +40,7 @@ export const defaultSuggestionItem: CSSProperties = {
     width: "100%",
     float: "left",
     padding: "5px",
+    color: COLOR2
 };
 
 export const searchContainer: CSSProperties = {
@@ -51,6 +52,7 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
         boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25)',
         borderRadius: '5px',
         border: 'none',
+        fontFamily: FONT_FAMILY,
         maxWidth: '100%',
         selectors: {
             "::after": {
@@ -59,11 +61,9 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
         }
     },
     field: {
-        fontFamily: FONT_FAMILY,
         paddingLeft: '15px',
         fontSize: '12.5px',
         width: '25vh',
-        //pointerEvents: 'none'
     },
     iconContainer: {
         marginRight: '1.5vw',

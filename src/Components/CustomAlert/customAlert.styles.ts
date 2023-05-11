@@ -5,13 +5,14 @@ import {
     IModalStyles,
     mergeStyleSets
 } from 'office-ui-fabric-react';
+import { COLOR2 } from '../../Library/constants';
 
 export const cancelIcon: IIconProps = { iconName: 'Cancel' };
 
 export const iconButtonStyles: Partial<IButtonStyles> = {
     root: {
         backgroundColor: 'transparent',
-        color: 'rgb(81, 73, 219)',
+        color: COLOR2,
         marginTop: '4px',
     },
     rootHovered: {
@@ -55,7 +56,7 @@ export const contentStyles = mergeStyleSets({
         theme.fonts.xLargePlus,
         {
             flex: '1 1 auto',
-            borderTop: `4px solid rgb(81, 73, 219)`,
+            borderTop: `4px solid ${COLOR2}`,
             color: theme.palette.neutralPrimary,
             display: 'flex',
             alignItems: 'center',

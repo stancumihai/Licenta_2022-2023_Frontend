@@ -27,7 +27,9 @@ import {
     spinButtonStyles,
     searchBoxStyle,
     calloutTootltipStyles,
-    orderByOptionsRootClassName
+    orderByOptionsRootClassName,
+    resetButtonStyles,
+    choiceGroupOptionStyle
 } from './advancedSearch.styles';
 import { AutocompleteSearchBox } from '../../libs/AutocompleteSearchBox/autocompleteSearchBox';
 import { useContext, useEffect, useState } from 'react';
@@ -88,6 +90,7 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
             key: 'A',
             text: '',
             ariaLabel: '',
+            styles: choiceGroupOptionStyle,
             onRenderField: (props, render) => {
                 return (
                     <div className={orderByOptionsRootClassName}>
@@ -418,13 +421,11 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
                     styles={spinButtonStyles} />
             </div>
             <div className={buttonContainerClassName}>
-                <DefaultButton style={{ background: '#769bce' }}
-                    onClick={handleSearchClick}
+                <DefaultButton onClick={handleSearchClick}
                     styles={buttonStyles}
                     text='Search' />
-                <DefaultButton style={{ background: '#888', }}
-                    onClick={handleResetClick}
-                    styles={buttonStyles}
+                <DefaultButton onClick={handleResetClick}
+                    styles={resetButtonStyles}
                     text='Reset' />
             </div>
         </div>

@@ -1,4 +1,5 @@
 import { mergeStyleSets } from '@fluentui/react';
+import { FONT_FAMILY } from '../../Library/constants';
 
 export const compactCardClassNames = mergeStyleSets({
     compactCard: {
@@ -11,8 +12,12 @@ export const compactCardClassNames = mergeStyleSets({
         padding: '16px 24px',
     },
     item: {
+        lineHeight: '20px',
+        fontFamily: FONT_FAMILY,
         display: 'flex',
         position: 'absolute',
+        marginTop: '10px',
+        width: '100px',
         color: 'white'
     },
 });

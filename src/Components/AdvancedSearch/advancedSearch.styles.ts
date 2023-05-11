@@ -10,16 +10,25 @@ import {
 } from '@fluentui/react';
 import {
     ICalloutContentStyles,
+    IChoiceGroupOptionStyles,
     IDropdownStyles,
     IModalStyles,
     ISpinButtonStyles
 } from 'office-ui-fabric-react';
-import { FONT_FAMILY } from '../../Library/constants';
+import {
+    COLOR1,
+    COLOR1_D_20,
+    COLOR1_D_40,
+    COLOR2,
+    COLOR2_D_20,
+    COLOR2_D_40,
+    FONT_FAMILY
+} from '../../Library/constants';
 
 const theme = getTheme();
 export const modalStyles: Partial<IModalStyles> = {
     main: {
-        background: '#212121'
+        background: 'linear-gradient(90deg, rgba(18,19,36,1) 0%, rgba(28,28,66,1) 49%, rgba(38,29,57,1) 100%)',
     }
 };
 export const contentStyles = mergeStyleSets({
@@ -32,7 +41,7 @@ export const contentStyles = mergeStyleSets({
         theme.fonts.xLargePlus,
         {
             flex: '1 1 auto',
-            border: `2px solid rgb(37, 65, 104)`,
+            border: `3px solid ${COLOR2_D_20}`,
             borderBottom: 'none',
             display: 'flex',
             alignItems: 'center',
@@ -41,12 +50,13 @@ export const contentStyles = mergeStyleSets({
         },
     ],
     heading: {
+        fontFamily: FONT_FAMILY,
         color: 'white',
         fontWeight: FontWeights.semibold,
         fontSize: 'inherit',
     },
     body: {
-        border: `4px solid rgb(37, 65, 104)`,
+        border: `3px solid ${COLOR2_D_20}`,
         borderTop: 'none',
         flex: '4 4 auto',
         padding: '0 1.5vw 3vh 1.5vw',
@@ -61,28 +71,33 @@ export const contentStyles = mergeStyleSets({
 export const cancelIcon: IIconProps = { iconName: 'Cancel' };
 export const iconButtonStyles: Partial<IButtonStyles> = {
     root: {
+        color: COLOR2_D_20,
         marginLeft: '5vw',
         backgroundColor: 'transparent',
         marginTop: '-3vh',
     },
     rootHovered: {
-        color: 'rgb(61,87,116)',
+        color: COLOR2_D_40,
         backgroundColor: 'transparent',
     },
     rootPressed: {
+        color: COLOR2_D_20,
         backgroundColor: 'transparent',
     }
 };
 export const pressForMoreIconButtonStyles: Partial<IButtonStyles> = {
     root: {
         marginLeft: '1vw',
+        top: '15px',
+        color: COLOR2,
         backgroundColor: 'transparent',
     },
     rootHovered: {
-        color: 'rgb(61,87,116)',
+        color: COLOR2_D_20,
         backgroundColor: 'transparent',
     },
     rootPressed: {
+        color: COLOR2_D_40,
         backgroundColor: 'transparent',
     },
     icon: {
@@ -92,12 +107,13 @@ export const pressForMoreIconButtonStyles: Partial<IButtonStyles> = {
 export const choiceGroupIconButtonStyles: Partial<IButtonStyles> = {
     root: {
         backgroundColor: 'transparent',
-        color: "#769bce",
+        color: COLOR2_D_20,
     }
 };
 export const releaseDateSpinButtonsContainerClassName: string = mergeStyles({
     display: 'flex',
     marginLeft: '-1vw',
+    fontFamily: FONT_FAMILY,
     marginTop: '1.5vh'
 });
 export const spinButtonStyles: Partial<ISpinButtonStyles> = {
@@ -111,11 +127,11 @@ export const spinButtonStyles: Partial<ISpinButtonStyles> = {
         selectors: {
             ':after': {
                 border: "none",
-                borderBottom: '2px solid black'
+                borderBottom: `2px solid ${COLOR2_D_20}`
             },
             ':hover::after': {
                 border: "none",
-                borderBottom: '2px solid rgb(37, 65, 104)'
+                borderBottom: `2px solid ${COLOR2_D_40}`
             }
         }
     },
@@ -127,7 +143,8 @@ export const spinButtonStyles: Partial<ISpinButtonStyles> = {
 };
 export const labelClassName: string = mergeStyles({
     color: 'white',
-    marginTop: '10px'
+    marginTop: '10px',
+    fontFamily: FONT_FAMILY
 });
 export const choiceGroupStyles: Partial<IChoiceGroupStyles> = {
     root: {
@@ -135,27 +152,51 @@ export const choiceGroupStyles: Partial<IChoiceGroupStyles> = {
         marginLeft: "10.5vw",
         position: 'relative'
     },
+    label: {
+        borderColor: 'red'
+    },
     flexContainer: {
         display: 'flex',
+    }
+};
+export const choiceGroupOptionStyle: Partial<IChoiceGroupOptionStyles> = {
+    field: {
+        selectors: {
+            ':hover .ms-ChoiceFieldLabel': {
+                color: 'white'
+            },
+            ':before': {
+                borderColor: 'none'
+            },
+            ':after': {
+                backgroundColor: COLOR2,
+                borderColor: COLOR2_D_40
+            },
+            ':hover::after': {
+                backgroundColor: COLOR2
+            }
+        }
     }
 };
 export const dropdownStyles: Partial<IDropdownStyles> = {
     root: {
         border: 'none',
-        borderBottom: '2px solid black',
+        borderBottom: `2px solid ${COLOR2_D_20}`,
         width: '17.5vw',
-        background: 'transparent',
         color: 'white',
     },
     dropdown: {
+        fontFamily: FONT_FAMILY,
         color: 'white',
+        border: 'none',
         selectors: {
             ":hover": {
-                color: 'white'
+                color: 'white',
+                border: 'none',
             },
             ":focus::after": {
                 color: 'white',
-                border: '2px solid rgb(37, 65, 104)'
+                border: 'none',
             },
             ':hover.ms-Dropdown-title': {
                 color: 'white'
@@ -163,11 +204,13 @@ export const dropdownStyles: Partial<IDropdownStyles> = {
         }
     },
     title: {
-        background: '#212121',
+        background: 'transparent',
         color: 'white',
+        border: 'none',
         selectors: {
             ':hover': {
-                color: 'white'
+                color: 'white',
+                border: 'none',
             }
         }
     },
@@ -180,22 +223,45 @@ export const buttonContainerClassName: string = mergeStyles({
     gridGap: '3vw',
     justifyContent: 'start'
 });
+
 export const buttonStyles: Partial<IButtonStyles> = {
     root: {
+        background: COLOR2_D_20,
         borderRadius: '5px',
         border: "none",
         color: 'white'
     },
+    rootHovered: {
+        background: COLOR2_D_40,
+        color: 'white'
+    },
     rootPressed: {
-        background: '#5f5f5f'
+        background: COLOR2_D_20,
+        color: 'white'
+    }
+};
+
+export const resetButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        background: COLOR1,
+        borderRadius: '5px',
+        border: "none",
+        color: 'black'
+    },
+    rootHovered: {
+        background: COLOR1_D_20
+    },
+    rootPressed: {
+        background: COLOR1_D_40
     }
 };
 
 export const searchBoxStyle: Partial<ISearchBoxStyles> = {
     root: {
+        marginBottom: '10px',
         background: 'transparent',
         border: 'none',
-        borderBottom: '2px solid black',
+        borderBottom: `2px solid ${COLOR2_D_20}`,
         maxWidth: '100%',
         selectors: {
             ":after": {
@@ -203,7 +269,7 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
             },
             ":hover": {
                 border: 'none',
-                borderBottom: '2px solid rgb(37, 65, 104)'
+                borderBottom: `2px solid ${COLOR2_D_40} `
             }
         }
     },
@@ -219,7 +285,7 @@ export const searchBoxStyle: Partial<ISearchBoxStyles> = {
         width: '0',
         selectors: {
             '.ms-SearchBox-icon': {
-                color: '#769bce'
+                color: COLOR2_D_20
             }
         }
     },
@@ -244,6 +310,6 @@ export const orderByOptionsRootClassName: string = mergeStyles(
     {
         display: 'flex',
         alignItems: 'center',
-        pointerEvents: 'none'
+        pointerEvents: 'none',
     }
 );

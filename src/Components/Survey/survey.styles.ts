@@ -6,12 +6,11 @@ import {
     mergeStyles
 } from '@fluentui/react';
 import { IButtonStyles, ICalloutContentStyles, IChoiceGroupOptionStyles } from 'office-ui-fabric-react';
-import { FONT_FAMILY } from '../../Library/constants';
+import { COLOR1, COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
 
 export const mainLogoDivClassName: string = mergeStyles({
     position: 'relative',
     left: '-26.5%',
-    top: '1.5%'
 });
 export const mainLogoClassName: string = mergeStyles({
     width: '2vw',
@@ -27,7 +26,7 @@ export const mainTextClassName: string = mergeStyles({
 export const containerClassName: string = mergeStyles({
     width: '100vw',
     height: '100vh',
-    background: 'linear-gradient(90deg, rgba(20,20,32,1), rgba(37,65,104,1) 65%, rgba(36,45,69,1) 100%)',
+    background: 'linear-gradient(90deg, rgba(18,19,36,1) 0%, rgba(28,28,66,1) 49%, rgba(38,29,57,1) 100%)',
     position: 'absolute',
     overflow: 'hidden'
 });
@@ -54,9 +53,6 @@ export const choiceGroupStyles: Partial<IChoiceGroupStyles> = {
     }
 };
 export const choiceGroupOptionStyle: Partial<IChoiceGroupOptionStyles> = {
-    root: {
-
-    },
     field: {
         selectors: {
             ':hover .ms-ChoiceFieldLabel': {
@@ -66,11 +62,11 @@ export const choiceGroupOptionStyle: Partial<IChoiceGroupOptionStyles> = {
                 borderColor: 'none'
             },
             ':after': {
-                backgroundColor: '#5149DB',
-                borderColor: '#5149DB'
+                backgroundColor: COLOR2,
+                borderColor: COLOR2_D_40
             },
             ':hover::after': {
-                backgroundColor: '#5149DB'
+                backgroundColor: COLOR2
             }
         }
     }
@@ -88,7 +84,7 @@ export const checkboxItemStyle: Partial<ICheckboxStyles> = {
         marginBottom: '0.5vh',
     },
     checkbox: {
-        border: '1px solid #5149DB',
+        border: `1px solid ${COLOR2_D_20}`,
     },
     label: {
         selectors: {
@@ -106,7 +102,8 @@ export const surveyTitleClassName: string = mergeStyles({
     position: 'relative',
     fontFamily: FONT_FAMILY,
     left: '20vw',
-    marginBottom: '6.5vh',
+    marginBottom: '10vh',
+    bottom: '2vh',
     color: '#CCCCCC',
     overflowWrap: 'break-word',
     wordWrap: 'break-word',
@@ -121,15 +118,16 @@ export const labelStyles: Partial<ILabelStyles> = {
 };
 export const sendButtonStyles: Partial<IButtonStyles> = {
     root: {
-        top: '8vh',
+        top: '5vh',
         fontFamily: FONT_FAMILY,
         width: '8vw',
         height: '4.5vh',
         left: '45%',
-        backgroundColor: '#5149DB',
-        color: 'white',
+        backgroundColor: COLOR1,
+        color: COLOR2,
         borderRadius: '25px',
         border: 'none',
+        fontSize: '17.5px'
     },
     rootHovered: {
         backgroundColor: '#857fe5',
@@ -145,7 +143,7 @@ export const informationClassName: string = mergeStyles({
     fontSize: '20px',
     display: 'block',
     position: 'absolute',
-    color: '#AAA',
+    color: COLOR2_D_20,
     top: '14.5vh'
 });
 export const loadingSpinnerStyle: Partial<ISpinnerStyles> = {
@@ -155,7 +153,7 @@ export const loadingSpinnerStyle: Partial<ISpinnerStyles> = {
     circle: {
         width: '200px',
         height: '200px',
-        borderColor: '#5149DB rgb(199, 224, 244) rgb(199, 224, 244)'
+        borderColor: `${COLOR2} #5d246c`
     },
     label: {
         color: '#CCCCCC',
@@ -188,15 +186,16 @@ export const pressForMoreIconButtonStyles: Partial<IButtonStyles> = {
     root: {
         marginLeft: '1vw',
         backgroundColor: 'transparent',
-        color:'rgb(81, 73, 219)'
+        color: COLOR2
     },
     rootHovered: {
-        color: 'rgb(61,87,116)',
         backgroundColor: 'transparent',
+        color: COLOR2_D_20,
 
     },
     rootPressed: {
         backgroundColor: 'transparent',
+        color: COLOR2_D_40
     },
     icon: {
         fontSize: '20px'

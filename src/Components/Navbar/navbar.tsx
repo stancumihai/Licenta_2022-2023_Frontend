@@ -1,22 +1,28 @@
-import { SearchBox } from 'office-ui-fabric-react';
 import { ProfileSettings } from '../ProfileSettings/profileSettings';
 import {
     advancedSearchIconClassName,
     containerClassName,
     iconProps,
     iconStyles,
-    searchBoxStyles,
+    textFieldStyles,
     searchContainer
 } from './navbar.styles';
 import { TbListSearch } from "react-icons/tb";
-import { useEffect, useState } from 'react';
+import {
+    useEffect,
+    useState
+} from 'react';
 import { AdvancedSearch } from '../AdvancedSearch/advancedSearch';
 import { INavbarProps } from './navbar.types';
-import { IconButton } from '@fluentui/react';
+import {
+    IconButton,
+    TextField
+} from '@fluentui/react';
 
 export const Navbar = (props: INavbarProps): JSX.Element => {
     const [showAdvancedSearch, setShowAdvancedSearch] = useState<boolean>(false);
     const [isAdvancedSearchEnabled, setIsAdvancedSearchEnabled] = useState<boolean>(false);
+    const [searchText, setSearchText] = useState<string>('');
 
     useEffect(() => {
         setIsAdvancedSearchEnabled(props.areMoviesLoaded);
@@ -30,13 +36,27 @@ export const Navbar = (props: INavbarProps): JSX.Element => {
         setShowAdvancedSearch(false);
     };
 
+    const handleSearchBoxChange = (event?: any, newValue?: string | undefined) => {
+        setSearchText(newValue!);
+    };
+
+    const handleEnterKey = (e: any) => {
+        if (e.key === 'Enter') {
+            props.handleSearchboxText(searchText!);
+            setSearchText('');
+        }
+    };
+
     return <div className={containerClassName}>
         <div className={searchContainer}>
-            <SearchBox disabled={!isAdvancedSearchEnabled}
+            <TextField disabled={!isAdvancedSearchEnabled || props.isDashboardPageClicked}
+                onChange={handleSearchBoxChange}
+                value={searchText}
+                onKeyDown={handleEnterKey}
                 placeholder={'Search everything'}
                 iconProps={iconProps}
-                styles={searchBoxStyles} />
-            <div style={!isAdvancedSearchEnabled ? { pointerEvents: 'none' } : {}}>
+                styles={textFieldStyles} />
+            <div style={(!isAdvancedSearchEnabled || props.isDashboardPageClicked) ? { pointerEvents: 'none' } : {}}>
                 <TbListSearch className={advancedSearchIconClassName}
                     onClick={handleOnAdvancedSearchClick} />
             </div>
@@ -45,6 +65,7 @@ export const Navbar = (props: INavbarProps): JSX.Element => {
                 collectAdvancedSearchedMovies={props.collectAdvancedSearchedMovies}
             />
             <IconButton iconProps={{ iconName: "Refresh" }}
+                disabled={props.isDashboardPageClicked}
                 onClick={props.handleRefreshMovies}
                 styles={iconStyles} />
         </div>

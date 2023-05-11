@@ -5,19 +5,27 @@ import {
 import {
     commandButtonStyles,
     containerClassName,
+    contextualIconButtonStyles,
     contextualMenuStyles,
     iconButtonStyles,
     notificationDotClassName,
-    notificationIcon,
-    userIcon
+    notificationIcon
 } from './profileSettings.styles'
 import {
     NavigateFunction,
     useNavigate
 } from 'react-router';
 import { IconButton } from '@fluentui/react';
-import { HubConnection, HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
-import { useContext, useEffect, useState } from 'react';
+import {
+    HubConnection,
+    HubConnectionBuilder,
+    LogLevel
+} from '@aspnet/signalr';
+import {
+    useContext,
+    useEffect,
+    useState
+} from 'react';
 import AuthentificationContext from '../../Authentication/authenticationContext';
 import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
 import { NotificationsHoverCard } from '../NotificationsHoverCard/notificationsHoverCard';
@@ -37,7 +45,10 @@ export const ProfileSettings = (): JSX.Element => {
             {
                 key: 'profileSettings',
                 text: 'Profile Settings',
-                iconProps: { iconName: 'Settings' },
+                iconProps: {
+                    iconName: 'Settings',
+                    styles: contextualIconButtonStyles
+                },
                 onClick: handleProfileSettingsClick,
             }
         ],
@@ -97,7 +108,7 @@ export const ProfileSettings = (): JSX.Element => {
             {authenticationContext.HasNotifications && <div className={notificationDotClassName}></div>}
             {showHoverCard && <NotificationsHoverCard />}
         </div>
-        <CommandButton iconProps={userIcon}
+        <CommandButton iconProps={{ iconName: 'AccountManagement' }}
             styles={commandButtonStyles}
             menuProps={menuProps} />
     </div >

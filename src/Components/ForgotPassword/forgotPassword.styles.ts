@@ -5,7 +5,7 @@ import {
     mergeStyles
 } from 'office-ui-fabric-react';
 import '../../Fonts/TisaSansProLight.ttf';
-import { FONT_FAMILY } from '../../Library/constants';
+import { COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
 
 export const contentClassName: string = mergeStyles({
     display: 'block',
@@ -28,6 +28,7 @@ export const headerClassName: string = mergeStyles({
 export const forgotPasswordMessageClassName: string = mergeStyles({
     fontWeight: FontWeights.regular,
     maxWidth: '20vw',
+    fontFamily: FONT_FAMILY,
     fontSize: '0.875vw',
 });
 export const textFieldStyles: Partial<ITextFieldStyles> = {
@@ -36,6 +37,7 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
         margin: 'auto',
     },
     field: {
+        fontFamily: FONT_FAMILY,
         height: '4.5vh',
         borderRadius: '5px',
         border: '3px solid #d3e6ee'
@@ -50,11 +52,12 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
     },
 };
 export const labelClassName: string = mergeStyles({
-    marginLeft: '27.6vw'
+    marginLeft: '27.6vw',
+    fontFamily: FONT_FAMILY
 });
 export const resetPasswordButtonStyles: Partial<IButtonStyles> = {
     root: {
-        background: '#526ad6',
+        background: COLOR2,
         color: 'white',
         position: 'relative',
         left: '27.5vw',
@@ -65,10 +68,11 @@ export const resetPasswordButtonStyles: Partial<IButtonStyles> = {
         width: '20vw'
     },
     rootHovered: {
-        background: '#d3e6ee',
+        background: COLOR2_D_20,
+        color: 'white'
     },
     rootPressed: {
-        background: '#526ad6',
+        background: COLOR2_D_40,
         color: 'white',
     }
 };
@@ -78,19 +82,21 @@ export const footerClassName: string = mergeStyles({
 });
 export const dontHaveAccountMessageClassName: string = mergeStyles({
     position: 'relative',
+    fontFamily: FONT_FAMILY,
     left: '44.5vw',
     bottom: '16vh',
 });
 export const signUpSpanClassName: string = mergeStyles({
     marginLeft: '5px',
-    color: '#526ad6',
+    fontFamily: FONT_FAMILY,
+    color: COLOR2,
     selectors: {
         ":hover": {
-            'color': '#d3e6ee',
+            'color': COLOR2_D_20,
             cursor: 'pointer'
         },
         ":active": {
-            color: '#526ad6',
+            color: COLOR2_D_40,
         }
     }
 });

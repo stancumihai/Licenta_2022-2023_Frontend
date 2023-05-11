@@ -162,8 +162,7 @@ export const AutocompleteSearchBox = (props: IAutocompleteSearchBoxProps): JSX.E
                     setInitialFocus={isCalloutFocussed}
                     doNotLayer={true} >
                     {renderProgressIndicator()}
-                    <FocusZone
-                        direction={FocusZoneDirection.bidirectional}
+                    <FocusZone direction={FocusZoneDirection.bidirectional}
                         handleTabKey={FocusZoneTabbableElements.all}
                         id="focusZoneSuggestions"
                         componentRef={focusZoneRef}>

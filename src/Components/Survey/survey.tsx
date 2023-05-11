@@ -373,7 +373,7 @@ export const Survey = (): JSX.Element => {
                             alt='Loading...'></img>
                     </div>
                     {isSearchDataLoaded() &&
-                        <div style={{ display: 'inline-flex' }} onClick={handleDivClick}>
+                        <div style={{ display: 'inline-flex', marginBottom: '10.5px' }} onClick={handleDivClick}>
                             <AutocompleteSearchBox
                                 id={surveyQuestion.uid! + "/" + surveyQuestion.category}
                                 mapClickedSuggestion={mapClickedSuggestion}
