@@ -2,9 +2,8 @@ import { IButtonStyles, IDialogStyles, ISpinnerStyles, mergeStyles } from 'offic
 import { COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
-    width: '100vw',
-    height: '100vh',
-    background: 'linear-gradient(90deg, rgba(18,19,36,1) 0%, rgba(28,28,66,1) 49%, rgba(38,29,57,1) 100%)',
+    width: '100%',
+    height: '100%',
     overflow: 'hidden'
 });
 

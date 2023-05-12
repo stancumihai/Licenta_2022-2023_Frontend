@@ -26,8 +26,8 @@ import {
     useEffect,
     useState
 } from 'react';
-import AuthentificationContext from '../../Authentication/authenticationContext';
-import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
+import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
+import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import { NotificationsHoverCard } from '../NotificationsHoverCard/notificationsHoverCard';
 
 export const ProfileSettings = (): JSX.Element => {

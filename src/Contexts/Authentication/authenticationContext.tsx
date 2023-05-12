@@ -1,11 +1,11 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react"
-import { ServiceContext, ServiceContextInstance } from '../Core/serviceContext';
-import { useFetch } from '../Hooks/useFetch';
-import { IFetchResult } from '../Hooks/useFetch.types';
-import { IUser } from '../Models/User/IUser';
+import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
+import { useFetch } from '../../Hooks/useFetch';
+import { IFetchResult } from '../../Hooks/useFetch.types';
+import { IUser } from '../../Models/User/IUser';
 import { IAuthentificationContext } from './authenticationContext.types';
 import Cookies from 'universal-cookie';
-import { REFRESH_TOKEN } from '../Library/constants';
+import { REFRESH_TOKEN } from '../../Library/constants';
 
 const defaultUser: IUser = {
     email: '',

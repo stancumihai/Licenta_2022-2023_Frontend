@@ -7,7 +7,7 @@
     background: linear-gradient(180deg, rgba(155, 60, 181, 1) 0%, rgba(158, 86, 177, 1) 38%, rgba(47, 27, 69, 1) 100%);
     width: 70px;
     border-radius: 10px;
-    border-left: 5px solid #913fa5;
+    /* border-left: 5px solid #913fa5; */
     box-sizing: initial;
     transition: width 0.5s;
     overflow-x: hidden;

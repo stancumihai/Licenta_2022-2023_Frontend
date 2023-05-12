@@ -41,7 +41,6 @@ export const TopGenres = (): JSX.Element => {
         if (genresData.isLoading) {
             return;
         }
-        console.log(genresData);
         if (genresData.errors !== "" ||
             genresData.data?.Error !== undefined ||
             genresData.data == null ||

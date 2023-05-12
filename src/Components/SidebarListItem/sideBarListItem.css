@@ -5,7 +5,7 @@ li {
 }
 
 li.active {
-    background: rgba(18, 19, 36, 1);
+    background: linear-gradient(90deg, rgba(18,19,36,1) 0%, rgba(22,22,43,1) 100%, rgba(28,28,66,1) 100%);
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
 }

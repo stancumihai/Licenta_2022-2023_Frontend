@@ -2,16 +2,19 @@ import { mergeStyles } from 'office-ui-fabric-react';
 
 export const containerClassName: string = mergeStyles({
     width: '75vw',
-    marginLeft: "25vw",
     height: '100vh',
     boxSizing: 'border-box',
-    overflow: 'hidden'
+    margin: 'auto',
+    textAlign: 'center',
+    justifyContent: 'center',
+    marginRight: '1vw',
+    overflow: 'scroll'
 });
 
 export const buttonContainerClassName: string = mergeStyles({
-    width: '75vw',
-    height: '15vh',
-    marginLeft: "25vw",
-    marginTop: '2vh',
+    height: '20vh',
+    textAlign: 'center',
+    justifyContent: 'center',
+    margin: 'auto',
     display: 'flex'
 });

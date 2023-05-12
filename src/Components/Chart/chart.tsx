@@ -4,8 +4,9 @@ import {
     IChartData,
     mapChart
 } from './chart.types';
+import { containerClassName } from './charts.styles';
 
-export const Charts = (props: IChartDashboardProps): JSX.Element => {
+export const Chart = (props: IChartDashboardProps): JSX.Element => {
     const [charts, setCharts] = useState<JSX.Element[] | null>([]);
 
     useEffect(() => {
@@ -17,9 +18,7 @@ export const Charts = (props: IChartDashboardProps): JSX.Element => {
         setCharts(chartArray);
     }, [props.isButtonClicked]);
 
-    return <div style={{ width: '100vw', height: '100vh' }}>
-        <div>
-            {charts !== null && charts}
-        </div>
+    return <div className={containerClassName}>
+        {charts !== null && charts}
     </div>
 };

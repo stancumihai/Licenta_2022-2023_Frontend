@@ -36,7 +36,6 @@ export const iconButtonStyles: Partial<IButtonStyles> = {
     icon: {
         color: 'white',
         fontSize: '25px',
-        marginRight: '-10px'
     }
 };
 

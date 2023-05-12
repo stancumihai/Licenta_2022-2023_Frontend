@@ -48,8 +48,8 @@ import {
 } from '../../Core/serviceContext';
 import { IUserProfileUpdate } from '../../Models/UserProfile/IUserProfileUpdate';
 import { IUserProfileCreate } from '../../Models/UserProfile/IUserProfileCreate';
-import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
-import AuthentificationContext from '../../Authentication/authenticationContext';
+import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
+import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 
 export const UserProfile = (props: IUserProfileProps): JSX.Element => {
     const defaultUserProfile: IUserProfileRead = {

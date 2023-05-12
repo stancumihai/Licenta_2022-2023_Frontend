@@ -1,8 +1,4 @@
-import { DefaultButton } from '@fluentui/react';
 import { buttonContainerClassName, containerClassName } from './dashboard.styles';
-import { Charts } from '../Charts/charts';
-import { GraphTypes } from '../../Enums/graphTypes';
-import { IChartData } from '../Charts/chart.types';
 import {
     useContext,
     useState,
@@ -18,8 +14,15 @@ import {
     MonthlyAppUsageModel,
 } from '../../Models/IMonthlyAppUsage';
 import { ITopGenreModel } from '../../Models/ITopGenreModel';
-import { getMonthlyMoviesCount, getMonthlyRuntime, getMonthlySeenMoviesChartModels } from '../../Helpers/ChartHelper/chartDataLogic';
+import {
+    getMonthlyMoviesCount,
+    getMonthlyRuntime,
+    getMonthlySeenMoviesChartModels
+} from '../../Helpers/ChartHelper/chartDataLogic';
 import { ButtonCard } from '../ButtonCard/buttonCard';
+import { GraphTypes } from '../../Enums/graphTypes';
+import { IChartData } from '../Chart/chart.types';
+import { Chart } from '../Chart/chart';
 
 export const Dashboard = (): JSX.Element => {
     const [chartData, setChartData] = useState<IChartData[]>([]);
@@ -133,7 +136,7 @@ export const Dashboard = (): JSX.Element => {
         {isDataLoaded() &&
             <>
                 {getButtons()}
-                {chartData.length !== 0 && <Charts chartData={chartData}
+                {chartData.length !== 0 && <Chart chartData={chartData}
                     isButtonClicked={isButtonClicked} />}
             </>
         }

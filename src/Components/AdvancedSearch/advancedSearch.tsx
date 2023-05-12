@@ -280,15 +280,15 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
             orderBy: selectedOrderByDropdownOption.text,
             itemsPerPage: itemsPerPage,
         };
-        props.collectAdvancedSearchedMovies(null);
+        //props.collectAdvancedSearchedMovies(null);
         services.MovieService.GetAdvancedSearchMovieData(searchModel).then((data: IResponse<IMovie[]>) => {
             if (data.Status === 200) {
-                props.collectAdvancedSearchedMovies(data.Data!);
+                //props.collectAdvancedSearchedMovies(data.Data!);
                 handleCloseDialog();
                 handleResetClick();
                 return;
             }
-            props.collectAdvancedSearchedMovies(null);
+            // props.collectAdvancedSearchedMovies(null);
         });
     };
 

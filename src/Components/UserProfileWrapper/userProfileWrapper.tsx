@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
-import AuthentificationContext from '../../Authentication/authenticationContext';
-import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
+import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
+import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';

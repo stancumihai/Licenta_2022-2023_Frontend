@@ -3,18 +3,20 @@ import { COLOR1, COLOR2, FONT_FAMILY } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
     padding: '2vh',
+    paddingTop: '3.5vh',
     position: 'relative',
-    right: '-25%',
+    right: '-17%',
     maxWidth: '75vw',
     maxHeight: '10vh',
     height: '10vh',
-    top: '1vh'
+    top: '1vh',
+    boxSizing: 'border-box',
+    display:'inline',
 });
 
 export const textFieldStyles: Partial<ITextFieldStyles> = {
     root: {
         border: 'none',
-        marginLeft: '-6.3vw',
         width: '17.5%',
         selectors: {
             "::after": {

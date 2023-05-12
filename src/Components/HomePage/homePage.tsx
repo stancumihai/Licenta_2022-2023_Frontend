@@ -22,8 +22,6 @@ import {
     ServiceContext,
     ServiceContextInstance
 } from '../../Core/serviceContext';
-import { useFetch } from '../../Hooks/useFetch';
-import { IFetchResult } from '../../Hooks/useFetch.types';
 import {
     DASHBOARD_PATH,
     MAX_MOVIES_PER_PAGE,
@@ -43,30 +41,17 @@ import {
     useNavigate
 } from 'react-router';
 import { Dashboard } from '../Dashboard/dashboard';
+import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
+import MovieContext from '../../Contexts/Movie/movieContext';
 
 export const HomePage = (): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
-    const [movies, setMovies] = useState<IMovie[]>([]);
-    const [areMoviesLoaded, setAreMoviesLoaded] = useState<boolean>(false);
-    const movieData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetAll());
+    const movieContext: IMovieContext = useContext(MovieContext);
 
     const [isPageEdited, setIsPageEdited] = useState<boolean>(false);
     const [moviesToDisplayInPage, setMoviesToDisplayInPage] = useState<IMovie[] | undefined>(undefined);
     const [pageUrl, setPageUrl] = useState<string>(window.location.href);
     const [countMapper, setCountMapper] = useState<ICountMapper | undefined>(undefined);
-
-    const [collectionMovies, setCollectionMovies] = useState<IMovie[]>([]);
-    const [areCollectionMoviesLoaded, setAreCollectionMoviesLoaded] = useState<boolean>(false);
-    const colectionMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesCollection());
-
-    const [historyMovies, setHistoryMovies] = useState<IMovie[]>([]);
-    const [areHistoryMoviesLoaded, setAreHistoryMoviesLoaded] = useState<boolean>(false);
-    const historyMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesHistory());
-
-    const [watchLaterMovies, setWatchLaterMovies] = useState<IMovie[]>([]);
-    const [areWatchLaterMoviesLoaded, setAreWatchLaterMoviesLoaded] = useState<boolean>(false);
-    const watchLaterMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesSubscription());
-
     const [refreshMoviesConfirmation, setRefreshMoviesConfirmation] = useState<boolean>(false);
     const [isAdvancedMoviesSpinnerLoading, setIsAdvancedMoviesSpinnerLoading] = useState<boolean>(false);
     const [isAdvancedSearchClosed, setIsAdvancedSearchClosed] = useState<boolean | undefined>(undefined);
@@ -78,99 +63,10 @@ export const HomePage = (): JSX.Element => {
     const [isSidebarClicked, setIsSidebarClicked] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
 
-    useEffect(() => {
-        if (window.location.href !== 'http://localhost:3000/home') {
-            const page: string = window.location.href.split('/')[4];
-            handleSidebarClick(page);
-            return;
-        }
-        setPageUrl(window.location.href);
-    }, [pageUrl]);
-
-    useEffect(() => {
-        if (window.location.href !== 'http://localhost:3000/home') {
-            const page: string = window.location.href.split('/')[4];
-            setAreMoviesLoaded(false);
-            handleSidebarClick(page);
-            return;
-        }
-        if (movieData.isLoading) {
-            return;
-        }
-        if (movieData.errors !== "" ||
-            movieData.data?.Error !== undefined ||
-            movieData.data == null ||
-            movieData.data.Data === undefined) {
-            return;
-        }
-        setIsPageEdited(false);
-        setMovies(movieData.data!.Data!);
-        setHomeMovies(movieData.data!.Data!);
-        setTimeout(() => {
-            setAreMoviesLoaded(true);
-        }, 1000);
-    }, [movieData]);
-
-    useEffect(() => {
-        if (colectionMoviesData.isLoading) {
-            return;
-        }
-        if (colectionMoviesData.errors !== "" ||
-            colectionMoviesData.data?.Error !== undefined ||
-            colectionMoviesData.data == null ||
-            colectionMoviesData.data.Data === undefined) {
-            return;
-        }
-        setCollectionMovies(colectionMoviesData.data!.Data!);
-        setTimeout(() => {
-            setAreCollectionMoviesLoaded(true);
-        }, 1000);
-    }, [colectionMoviesData]);
-
-    useEffect(() => {
-        if (historyMoviesData.isLoading) {
-            return;
-        }
-        if (historyMoviesData.errors !== "" ||
-            historyMoviesData.data?.Error !== undefined ||
-            historyMoviesData.data == null ||
-            historyMoviesData.data.Data === undefined) {
-            return;
-        }
-        setHistoryMovies(historyMoviesData.data!.Data!);
-        setTimeout(() => {
-            setAreHistoryMoviesLoaded(true);
-        }, 1000);
-    }, [historyMoviesData]);
-
-    useEffect(() => {
-        if (watchLaterMoviesData.isLoading) {
-            return;
-        }
-        if (watchLaterMoviesData.errors !== "" ||
-            watchLaterMoviesData.data?.Error !== undefined ||
-            watchLaterMoviesData.data == null ||
-            watchLaterMoviesData.data.Data === undefined) {
-            return;
-        }
-        setWatchLaterMovies(watchLaterMoviesData.data!.Data!);
-        setTimeout(() => {
-            setAreWatchLaterMoviesLoaded(true);
-        }, 1000);
-    }, [watchLaterMoviesData]);
-
-    useEffect(() => {
-        if (areHistoryMoviesLoaded && areWatchLaterMoviesLoaded && areCollectionMoviesLoaded) {
-            const countMapper: ICountMapper = {
-                historyCount: historyMovies.length,
-                watchLaterCount: watchLaterMovies.length,
-                collectionCount: collectionMovies.length
-            };
-            setCountMapper(countMapper);
-        }
-    }, [areCollectionMoviesLoaded, areHistoryMoviesLoaded, areWatchLaterMoviesLoaded])
-
     const onPageChange = (selectedPageIndex: number, sentFromSearch: boolean, loadMoviesFromPage?: boolean): void => {
+        const pageMovies = movieContext.currentUsedMovies
+            .slice(selectedPageIndex * MAX_MOVIES_PER_PAGE, (selectedPageIndex + 1) * MAX_MOVIES_PER_PAGE);
+        setMoviesToDisplayInPage(pageMovies);
         // if (sentFromSearch === true) {
         //     if (searchBoxText === undefined) {
         //         setTimeout(() => {
@@ -192,139 +88,139 @@ export const HomePage = (): JSX.Element => {
             return;
         }
         const currentUrl: string = window.location.href;
-        if (loadMoviesFromPage === undefined) {
-            if (currentUrl === 'http://localhost:3000/home') {
-                fetch('https://localhost:7145/api/Movies/' + selectedPageIndex + `/${MAX_MOVIES_PER_PAGE}`)
-                    .then((response) => response.json())
-                    .then((data) => {
-                        setMoviesToDisplayInPage(data);
-                    });
-                setIsPageEdited(false);
-                return;
-            }
-            if (currentUrl !== previousUrl) {
-                selectedPageIndex = 1;
-                setPreviousUrl(currentUrl);
-                setIsPageEdited(true);
-            }
-            if (currentUrl.includes(MY_HISTORY_PATH)) {
-                services.MovieService.GetMoviesHistoryPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
-                    setMoviesToDisplayInPage(data.Data);
-                });
-                setIsPageEdited(false);
-                return;
-            }
-            if (currentUrl.includes(MY_COLLECTION_PATH)) {
-                services.MovieService.GetMoviesCollectionPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
-                    setMoviesToDisplayInPage(data.Data);
-                });
-                return;
-            }
-            services.MovieService.GetMoviesSubscriptionPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
-                setMoviesToDisplayInPage(data.Data);
-            });
-            setIsPageEdited(false);
-            return;
-        }
+        // if (loadMoviesFromPage === undefined) {
+        // if (currentUrl === 'http://localhost:3000/home') {
+        //     fetch('https://localhost:7145/api/Movies/' + selectedPageIndex + `/${MAX_MOVIES_PER_PAGE}`)
+        //         .then((response) => response.json())
+        //         .then((data) => {
+        //             setMoviesToDisplayInPage(data);
+        //         });
+        //     setIsPageEdited(false);
+        //     return;
+        // }
+        //     if (currentUrl !== previousUrl) {
+        //         selectedPageIndex = 1;
+        //         setPreviousUrl(currentUrl);
+        //         setIsPageEdited(true);
+        //     }
+        //     if (currentUrl.includes(MY_HISTORY_PATH)) {
+        //         services.MovieService.GetMoviesHistoryPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
+        //             setMoviesToDisplayInPage(data.Data);
+        //         });
+        //         setIsPageEdited(false);
+        //         return;
+        //     }
+        //     if (currentUrl.includes(MY_COLLECTION_PATH)) {
+        //         services.MovieService.GetMoviesCollectionPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
+        //             setMoviesToDisplayInPage(data.Data);
+        //         });
+        //         return;
+        //     }
+        //     services.MovieService.GetMoviesSubscriptionPaginated(selectedPageIndex, MAX_MOVIES_PER_PAGE).then(data => {
+        //         setMoviesToDisplayInPage(data.Data);
+        //     });
+        //     setIsPageEdited(false);
+        //     return;
+        // }
     };
 
-    const handleSidebarClick = (page: string): void => {
-        setIsSidebarClicked(true);
-        setTimeout(() => {
-            setIsSidebarClicked(false);
-        }, 500);
-        if (page.includes(DASHBOARD_PATH)) {
-            if (!window.location.href.includes(DASHBOARD_PATH)) {
-                navigate(DASHBOARD_PATH);
-                setIsDashboardPageClicked(true);
-            }
-            return;
-        }
-        setIsDashboardPageClicked(false);
-        if (window.location.href.includes(page)) {
-            return;
-        }
-        const prevUrl: string = window.location.href;
-        if (prevUrl !== previousUrl) {
-            setPreviousUrl(prevUrl);
-            setIsPageEdited(true);
-        }
-        setMoviesToDisplayInPage(undefined);
-        switch (page) {
-            case MY_COLLECTION_PATH: {
-                services.MovieService.GetMoviesCollectionPaginated(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
-                    if (data.Data! === undefined) {
-                        setMoviesToDisplayInPage(undefined);
-                        return;
-                    }
-                    setTimeout(() => {
-                        setMoviesToDisplayInPage(data.Data!);
-                        services.MovieService.GetMoviesCollection().then((data: IResponse<IMovie[]>) => {
-                            setMovies(data.Data!)
-                        })
-                    }, 1000);
-                    setTimeout(() => {
-                        setAreMoviesLoaded(true);
-                    }, 2000);
-                });
-                break;
-            }
-            case TRENDING_PATH: {
-                setTimeout(() => {
-                    setMoviesToDisplayInPage(undefined);
-                    setAreMoviesLoaded(true);
-                }, 1000);
-                break;
-            }
-            case MY_HISTORY_PATH: {
-                services.MovieService.GetMoviesHistoryPaginated(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
-                    if (data.Data! === undefined) {
-                        setMoviesToDisplayInPage(undefined);
-                        return;
-                    }
-                    setTimeout(() => {
-                        setMoviesToDisplayInPage(data.Data!);
-                        services.MovieService.GetMoviesHistory().then((data: IResponse<IMovie[]>) => {
-                            setMovies(data.Data!);
-                        });
-                    }, 1000);
-                    setTimeout(() => {
-                        setAreMoviesLoaded(true);
-                    }, 2000);
-                });
-                break;
-            }
-            case WATCH_LATER_PATH: {
-                services.MovieService.GetMoviesSubscriptionPaginated(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
-                    if (data.Data! === undefined) {
-                        setMoviesToDisplayInPage([]);
-                        return;
-                    }
-                    setTimeout(() => {
-                        setMoviesToDisplayInPage(data.Data!);
-                        services.MovieService.GetMoviesSubscription().then((data: IResponse<IMovie[]>) => {
-                            setMovies(data.Data!);
-                        });
-                    }, 1000);
-                    setTimeout(() => {
-                        setAreMoviesLoaded(true);
-                    }, 2000);
-                });
-                break;
-            }
-            default: {
-                setMovies(homeMovies);
-                onPageChange(1, false);
-                break;
-            }
-        }
-    };
+    // const handleSidebarClick = (page: string): void => {
+    //     setIsSidebarClicked(true);
+    //     setTimeout(() => {
+    //         setIsSidebarClicked(false);
+    //     }, 500);
+    //     if (page.includes(DASHBOARD_PATH)) {
+    //         if (!window.location.href.includes(DASHBOARD_PATH)) {
+    //             navigate(DASHBOARD_PATH);
+    //             setIsDashboardPageClicked(true);
+    //         }
+    //         return;
+    //     }
+    //     setIsDashboardPageClicked(false);
+    //     if (window.location.href.includes(page)) {
+    //         return;
+    //     }
+    //     const prevUrl: string = window.location.href;
+    //     if (prevUrl !== previousUrl) {
+    //         setPreviousUrl(prevUrl);
+    //         setIsPageEdited(true);
+    //     }
+    //     setMoviesToDisplayInPage(undefined);
+    //     switch (page) {
+    //         case MY_COLLECTION_PATH: {
+    //             services.MovieService.GetMoviesCollectionPaginated(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
+    //                 if (data.Data! === undefined) {
+    //                     setMoviesToDisplayInPage(undefined);
+    //                     return;
+    //                 }
+    //                 setTimeout(() => {
+    //                     setMoviesToDisplayInPage(data.Data!);
+    //                     services.MovieService.GetMoviesCollection().then((data: IResponse<IMovie[]>) => {
+    //                         setMovies(data.Data!)
+    //                     })
+    //                 }, 1000);
+    //                 setTimeout(() => {
+    //                     setAreMoviesLoaded(true);
+    //                 }, 2000);
+    //             });
+    //             break;
+    //         }
+    //         case TRENDING_PATH: {
+    //             setTimeout(() => {
+    //                 setMoviesToDisplayInPage(undefined);
+    //                 setAreMoviesLoaded(true);
+    //             }, 1000);
+    //             break;
+    //         }
+    //         case MY_HISTORY_PATH: {
+    //             services.MovieService.GetMoviesHistoryPaginated(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
+    //                 if (data.Data! === undefined) {
+    //                     setMoviesToDisplayInPage(undefined);
+    //                     return;
+    //                 }
+    //                 setTimeout(() => {
+    //                     setMoviesToDisplayInPage(data.Data!);
+    //                     services.MovieService.GetMoviesHistory().then((data: IResponse<IMovie[]>) => {
+    //                         setMovies(data.Data!);
+    //                     });
+    //                 }, 1000);
+    //                 setTimeout(() => {
+    //                     setAreMoviesLoaded(true);
+    //                 }, 2000);
+    //             });
+    //             break;
+    //         }
+    //         case WATCH_LATER_PATH: {
+    //             services.MovieService.GetMoviesSubscriptionPaginated(START_PAGE_INDEX, MAX_MOVIES_PER_PAGE).then(data => {
+    //                 if (data.Data! === undefined) {
+    //                     setMoviesToDisplayInPage([]);
+    //                     return;
+    //                 }
+    //                 setTimeout(() => {
+    //                     setMoviesToDisplayInPage(data.Data!);
+    //                     services.MovieService.GetMoviesSubscription().then((data: IResponse<IMovie[]>) => {
+    //                         setMovies(data.Data!);
+    //                     });
+    //                 }, 1000);
+    //                 setTimeout(() => {
+    //                     setAreMoviesLoaded(true);
+    //                 }, 2000);
+    //             });
+    //             break;
+    //         }
+    //         default: {
+    //             setMovies(homeMovies);
+    //             onPageChange(1, false);
+    //             break;
+    //         }
+    //     }
+    // };
 
-    const isDataLoaded = (): boolean => {
-        return areHistoryMoviesLoaded &&
-            areWatchLaterMoviesLoaded &&
-            areCollectionMoviesLoaded;
-    };
+    // const isDataLoaded = (): boolean => {
+    //     return areHistoryMoviesLoaded &&
+    //         areWatchLaterMoviesLoaded &&
+    //         areCollectionMoviesLoaded;
+    // };
 
     const collectAdvancedSearchedMovies = (movies: IMovie[] | null): void => {
         if (movies === null) {
@@ -358,49 +254,46 @@ export const HomePage = (): JSX.Element => {
     };
 
     useEffect(() => {
-        console.log(isDashboardPageClicked);
-    });
+    })
 
     return <div className={containerClassName}>
-        <Navbar collectAdvancedSearchedMovies={collectAdvancedSearchedMovies}
+        {/* <Navbar collectAdvancedSearchedMovies={collectAdvancedSearchedMovies}
             handleSearchboxText={handleSearchboxText}
             handleRefreshMovies={handleRefreshMovies}
-            areMoviesLoaded={areMoviesLoaded}
             isAdvancedSearchClosed={isAdvancedSearchClosed}
-            isDashboardPageClicked={isDashboardPageClicked} />
-        {(!isDataLoaded() && !isDashboardPageClicked) || isAdvancedMoviesSpinnerLoading ?
+            isDashboardPageClicked={isDashboardPageClicked} /> */}
+        {/* {(!isDashboardPageClicked) || isAdvancedMoviesSpinnerLoading ?
             <div>
                 <Spinner styles={loadingSpinnerStyle}
                     label={SPINNER_LOADING_MOVIES_MESSAGE}
                     ariaLive="assertive"
                     labelPosition="top" />
-            </div> :
-            <div>
-                <div className={mainLogoDivClassName}>
-                    <Logo mainLogoClassName={mainLogoClassName}
-                        mainTextClassName={mainTextClassName} />
-                </div>
-                <SideBar countMapper={countMapper !== undefined ? countMapper : undefined}
-                    handleSidebarClick={handleSidebarClick} />
-                {isDashboardPageClicked && <Dashboard />}
-                {areMoviesLoaded && moviesToDisplayInPage !== undefined && !isDashboardPageClicked && <MovieCardsContainer
-                    moviesToDisplayInPage={moviesToDisplayInPage !== undefined ? moviesToDisplayInPage : []} />}
-                {<CustomDialog dialogStyles={dialogStyles}
-                    acceptedButtonStyles={acceptedButtonStyles}
-                    mainText={"Are you sure you want to refresh movies?"}
-                    isHidden={!refreshMoviesConfirmation}
-                    handleCloseDialog={handleCloseDialog}
-                    acceptedText="Yes"
-                    cancelText='No' />}
-                {
-                    !isDashboardPageClicked &&
-                    <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}
-                        totalItemsCount={movies.length}
-                        onPageChange={onPageChange}
-                        loadFromPage={loadFromPage}
-                        isPageEdited={isPageEdited} />
-                }
+            </div> : */}
+        <div>
+            <div className={mainLogoDivClassName}>
+                <Logo mainLogoClassName={mainLogoClassName}
+                    mainTextClassName={mainTextClassName} />
             </div>
-        }
+            {isDashboardPageClicked && <Dashboard />}
+            {/* {moviesToDisplayInPage !== undefined && !isDashboardPageClicked && <MovieCardsContainer
+                moviesToDisplayInPage={movieContext.currentUsedMovies !== undefined ? movieContext.currentUsedMovies : []} />} */}
+            <MovieCardsContainer moviesToDisplayInPage={moviesToDisplayInPage !== undefined ? moviesToDisplayInPage : []} />
+            {<CustomDialog dialogStyles={dialogStyles}
+                acceptedButtonStyles={acceptedButtonStyles}
+                mainText={"Are you sure you want to refresh movies?"}
+                isHidden={!refreshMoviesConfirmation}
+                handleCloseDialog={handleCloseDialog}
+                acceptedText="Yes"
+                cancelText='No' />}
+            {
+                !isDashboardPageClicked &&
+                <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}
+                    totalItemsCount={movieContext.movies.length}
+                    onPageChange={onPageChange}
+                    loadFromPage={loadFromPage}
+                    isPageEdited={isPageEdited} />
+            }
+        </div>
+        {/* } */}
     </div>
 };

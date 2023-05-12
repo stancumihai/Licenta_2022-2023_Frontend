@@ -5,10 +5,8 @@ import {
   Cell,
   Tooltip
 } from 'recharts';
-import { useCallback } from 'react';
 import {
   ICustomChartProps,
-  IChart,
   CustomTooltip,
   COLORS_PALLETE,
   VALUE_PROPERTY
@@ -17,13 +15,6 @@ import { CustomPieLabelData } from './customPieChart.types';
 import { RADIAN } from '../../../Library/constants';
 
 export const CustomPieChart = (props: ICustomChartProps): JSX.Element => {
-
-  const renderCustomizedLabel = useCallback(
-    (entry: IChart): any => {
-      return entry.name;
-    },
-    [props.data]
-  );
 
   const renderCustomizedLabel2 = (customPieLabelData: CustomPieLabelData): JSX.Element => {
     const radius: number = customPieLabelData.innerRadius + (customPieLabelData.outerRadius - customPieLabelData.innerRadius) * 0.5;

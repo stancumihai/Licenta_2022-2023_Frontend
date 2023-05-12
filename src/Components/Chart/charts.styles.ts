@@ -2,7 +2,9 @@ import { mergeStyles } from 'office-ui-fabric-react';
 
 export const containerClassName: string = mergeStyles({
     width: '100%',
-    height: '100%'
+    height: '100%',
+    display: 'grid',
+    gridTemplateColumns: "auto auto",
 });
 
 export const chartContentClassName: string = mergeStyles({

@@ -51,8 +51,8 @@ import {
 } from '../../Core/serviceContext';
 import { ILoginUser } from '../../Models/User/ILoginUser';
 import Cookies from 'universal-cookie';
-import { IAuthentificationContext } from '../../Authentication/authenticationContext.types';
-import AuthentificationContext from '../../Authentication/authenticationContext';
+import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
+import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import { IResponse } from '../../Models/IResponse';
 import { IUser } from '../../Models/User/IUser';
 

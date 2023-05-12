@@ -3,11 +3,11 @@ import { IButtonStyles, IIconProps, mergeStyles } from 'office-ui-fabric-react';
 import { COLOR1, COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
-    maxWidth: '20%',
+    width: 'fit-content',
     position: 'relative',
     right: '-75%',
     maxHeight: '10vh',
-    height: '10vh',
+    height: '3vh',
     top: '-3.5vh'
 });
 
@@ -85,8 +85,8 @@ export const notificationDotClassName: string = mergeStyles({
     display: 'inline-block',
     position: 'relative',
     backgroundColor: 'red',
-    width: '4.2px',
-    height: '4.2px',
+    width: '4.5px',
+    height: '4.5px',
     borderRadius: '25px',
     top: '-1.5vh',
     left: '-0.6vw'

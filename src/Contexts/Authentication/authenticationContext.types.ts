@@ -1,4 +1,4 @@
-import { IUser } from '../Models/User/IUser';
+import { IUser } from '../../Models/User/IUser';
 
 export interface IAuthentificationContext {
     User: IUser,
