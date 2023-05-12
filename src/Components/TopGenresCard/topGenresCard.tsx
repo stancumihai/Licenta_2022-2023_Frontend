@@ -11,13 +11,12 @@ import { ITopGenresProps } from './topGenres.types'
 import {
     containerClassName,
     examplesMessageClassName,
-    movieEntryClassName,
-    movieListContainerClassName
+    genreClassName,
+    movieEntryClassName
 } from './topGenresCard.styles'
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import { IMovie } from '../../Models/IMovie';
-import { FONT_FAMILY } from '../../Library/constants';
 
 export const TopGenresCard = (props: ITopGenresProps): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
@@ -39,14 +38,17 @@ export const TopGenresCard = (props: ITopGenresProps): JSX.Element => {
         setAreMoviesLoaded(true);
     }, [movieData]);
 
-
     return <div className={containerClassName}>
-        <h2 style={{ fontFamily: FONT_FAMILY }}>{props.genre}</h2>
-        <h3 className={examplesMessageClassName}>Some examples are:</h3>
-        {areMoviesLoaded && <ul className={movieListContainerClassName}>
-            {movies.map((movie: IMovie, i: number) => {
-                return <li key={i} className={movieEntryClassName}>{movie.title}</li>
-            })}
-        </ul>}
+        {areMoviesLoaded &&
+            < >
+                <h2 className={genreClassName}>{props.genre}</h2>
+                <h3 className={examplesMessageClassName}>Some examples are:</h3>
+                <ul style={{ marginLeft: '-10px' }}>
+                    {movies.map((movie: IMovie, i: number) => {
+                        return <li key={i} className={movieEntryClassName}>{movie.title}</li>
+                    })}
+                </ul>
+            </ >
+        }
     </div>
 }

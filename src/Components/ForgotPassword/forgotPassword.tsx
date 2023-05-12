@@ -1,6 +1,7 @@
 import { TextField } from '@fluentui/react';
 import {
     DefaultButton,
+    IconButton,
     Label
 } from 'office-ui-fabric-react';
 import {
@@ -18,11 +19,14 @@ import {
 } from '../../Library/constants';
 import { IResponse } from '../../Models/IResponse';
 import {
+    circleClassName1,
+    circleClassName2,
     containerClassName,
     contentClassName,
     dontHaveAccountMessageClassName,
     forgotPasswordMessageClassName,
     headerClassName,
+    iconButtonStyles,
     labelClassName,
     mainLogoClassName,
     mainTextClassName,
@@ -79,10 +83,26 @@ export const ForgotPassword = (): JSX.Element => {
         <Logo mainLogoClassName={mainLogoClassName}
             mainTextClassName={mainTextClassName} />
         <div className={containerClassName}>
-            <div className={headerClassName}>
-                <p className={forgotPasswordMessageClassName}>{FORGOT_PASSWORD_HEADER_MESSAGE}</p>
+            <div style={{
+                background: 'white',
+                width: '200px',
+                height: '200px',
+                position: 'absolute',
+                borderRadius: '100%',
+                right: '30%',
+                top: '7.5%'
+            }}>
+                <IconButton styles={iconButtonStyles}
+                    iconProps={{ iconName: 'Lock' }} />
+            </div>
+            <div className={circleClassName1}>
+            </div>
+            <div className={circleClassName2}>
             </div>
             <div className={contentClassName}>
+                <div className={headerClassName}>
+                    <p className={forgotPasswordMessageClassName}>{FORGOT_PASSWORD_HEADER_MESSAGE}</p>
+                </div>
                 <Label className={labelClassName}>Email</Label>
                 <TextField onChange={onEmailAddressChange}
                     styles={textFieldStyles}
@@ -90,10 +110,10 @@ export const ForgotPassword = (): JSX.Element => {
                 <DefaultButton onClick={onResetPasswordClick}
                     styles={resetPasswordButtonStyles}
                     text='Reset Password' />
+                <p className={dontHaveAccountMessageClassName}>Don't have an account?
+                    <span onClick={handleSignUpClick}
+                        className={signUpSpanClassName}>Sign up</span></p>
             </div>
-            <p className={dontHaveAccountMessageClassName}>Don't have an account?
-                <span onClick={handleSignUpClick}
-                    className={signUpSpanClassName}>Sign up</span></p>
         </div>
         {
             isCalloutVisible &&

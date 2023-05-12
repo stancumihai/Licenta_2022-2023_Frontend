@@ -54,11 +54,15 @@ import { SURVEY_PATH_PERMISSIONS } from './Contexts/Authentication/pagePermissio
 import { SideBar } from './Components/SideBar/sideBar';
 import { Navbar } from './Components/Navbar/navbar';
 import { containerClassName, mainContentClassName } from './App.styles';
+import { IUiContext } from './Contexts/Ui/uiContext.types';
+import UiContext from './Contexts/Ui/uiContext';
 
 initializeIcons(undefined, { disableWarnings: true });
 
 export default function App(): JSX.Element {
   const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
+  const uiContext: IUiContext = useContext(UiContext);
+
   const navigate: NavigateFunction = useNavigate();
   const services = useContext<ServiceContext>(ServiceContextInstance);
   const [userHasSurveyAnswers, setUserHasSurveyAnswers] = useState<boolean | undefined>(undefined);
@@ -144,9 +148,37 @@ export default function App(): JSX.Element {
       });
   };
 
+  useEffect(() => {
+    const currentPath: string = window.location.href;
+    if (currentPath.includes(SIGN_UP_PATH) ||
+      currentPath.includes(LOGIN_PATH) ||
+      currentPath.includes(FORGOT_PASSWORD_PATH) ||
+      currentPath.includes(RENEW_PASSWORD_PATH) ||
+      currentPath.includes(USER_PROFILE_PATH)
+    ) {
+      uiContext.setSideBarState(false);
+      return;
+    }
+    uiContext.setSideBarState(true);
+  });
+
+  useEffect(() => {
+    const currentPath: string = window.location.href;
+    if (currentPath.includes(SIGN_UP_PATH) ||
+      currentPath.includes(LOGIN_PATH) ||
+      currentPath.includes(FORGOT_PASSWORD_PATH) ||
+      currentPath.includes(RENEW_PASSWORD_PATH) ||
+      currentPath.includes(USER_PROFILE_PATH)
+    ) {
+      uiContext.setNavbarState(false);
+      return;
+    }
+    uiContext.setNavbarState(true);
+  });
+
   return (<div className={containerClassName}>
-    {isUserAuthenticated ? <Navbar /> : <></>}
-    {isUserAuthenticated ? <SideBar /> : <></>}
+    {isUserAuthenticated && (uiContext.shouldDisplayNavbar === true) ? <Navbar /> : <></>}
+    {isUserAuthenticated && (uiContext.shouldDisplaySideBar === true) ? <SideBar /> : <></>}
     <div className={mainContentClassName}>
       <Routes>
         <Route path={LOGIN_PATH} element={<Login />} />

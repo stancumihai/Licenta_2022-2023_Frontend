@@ -253,9 +253,6 @@ export const HomePage = (): JSX.Element => {
         }
     };
 
-    useEffect(() => {
-    })
-
     return <div className={containerClassName}>
         {/* <Navbar collectAdvancedSearchedMovies={collectAdvancedSearchedMovies}
             handleSearchboxText={handleSearchboxText}
@@ -278,13 +275,13 @@ export const HomePage = (): JSX.Element => {
             {/* {moviesToDisplayInPage !== undefined && !isDashboardPageClicked && <MovieCardsContainer
                 moviesToDisplayInPage={movieContext.currentUsedMovies !== undefined ? movieContext.currentUsedMovies : []} />} */}
             <MovieCardsContainer moviesToDisplayInPage={moviesToDisplayInPage !== undefined ? moviesToDisplayInPage : []} />
-            {<CustomDialog dialogStyles={dialogStyles}
+            {/* {<CustomDialog dialogStyles={dialogStyles}
                 acceptedButtonStyles={acceptedButtonStyles}
                 mainText={"Are you sure you want to refresh movies?"}
                 isHidden={!refreshMoviesConfirmation}
                 handleCloseDialog={handleCloseDialog}
                 acceptedText="Yes"
-                cancelText='No' />}
+                cancelText='No' />} */}
             {
                 !isDashboardPageClicked &&
                 <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}

@@ -5,7 +5,6 @@ export const socialMediaContainerClassName: string = mergeStyles({
     flexFlow: 'row wrap',
     justifyContent: 'center',
     position: 'absolute',
-    left: '47.5%',
-    zIndex: '100',
+    left: '52.5%',
     top: '10px'
 });

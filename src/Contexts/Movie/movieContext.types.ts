@@ -6,6 +6,6 @@ export interface IMovieContext {
     collectionMovies: IMovie[];
     historyMovies: IMovie[];
     watchLaterMovies: IMovie[];
-    setCurrentMovies: (movieContextType: IMovieContextType) => void;
+    setCurrentMovies: (movieContextType: IMovieContextType, otherCollection?: IMovie[]) => void;
     currentUsedMovies: IMovie[];
 };

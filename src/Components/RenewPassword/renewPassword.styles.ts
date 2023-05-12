@@ -1,10 +1,63 @@
 import { IButtonStyles, ITextFieldStyles, mergeStyles } from 'office-ui-fabric-react';
-import { COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
+import { COLOR1, COLOR1_D_40, COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
+
+export const circleClassName1: string = mergeStyles({
+    background: COLOR2,
+    width: '200px',
+    height: '200px',
+    position: 'absolute',
+    borderRadius: '100%',
+    top: '60%',
+    left: "36%"
+});
+
+export const circleClassName2: string = mergeStyles({
+    background: COLOR1_D_40,
+    width: '200px',
+    height: '200px',
+    position: 'absolute',
+    borderRadius: '100%',
+    top: '60%',
+    left: "57.5%"
+});
+
+export const iconButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        position: "absolute",
+        left: '43%',
+        top: '9vh',
+        backgroundColor: 'transparent',
+        color: COLOR2
+    },
+    rootHovered: {
+        backgroundColor: 'transparent',
+    },
+    icon: {
+        fontSize: '100px'
+    }
+};
 
 export const containerClassName: string = mergeStyles({
-    position: 'relative',
-    top: '20vh'
+    height: 'inherit'
 });
+
+export const contentClassName: string = mergeStyles({
+    position: 'relative',
+    width: '25%',
+    height: '60%',
+    margin: 'auto',
+    paddingTop: '2%',
+    top: '22.5%',
+    boxShadow: `rgba(0, 0, 0, 0.25) 0px 54px 55px, 
+                rgba(0, 0, 0, 0.12) 0px -12px 30px, 
+                rgba(0, 0, 0, 0.12) 0px 4px 6px, 
+                rgba(0, 0, 0, 0.17) 0px 12px 13px, 
+                rgba(0, 0, 0, 0.09) 0px -3px 5px`,
+    boxSizing: 'border-box',
+    borderRadius: '20px',
+    backdropFilter: 'blur(5px)',
+});
+
 export const errorClassName: string = mergeStyles({
     fontFamily: FONT_FAMILY,
     color: '#945564',
@@ -13,21 +66,18 @@ export const errorClassName: string = mergeStyles({
     left: '3vw',
     top: '38vh'
 });
+
 export const textFieldStyles: Partial<ITextFieldStyles> = {
     root: {
-        maxWidth: '22vw',
-        left: "1vw",
+        width: '70%',
         margin: 'auto',
-        top: '2vh',
     },
     revealIcon: {
         color: COLOR2
     },
     field: {
-        fontFamily: FONT_FAMILY,
-        height: '4.5vh',
-        borderRadius: '5px',
-        border: '3px solid #d3e6ee'
+        color: 'black',
+        fontFamily: FONT_FAMILY
     },
     wrapper: {
         border: 'none',
@@ -37,26 +87,32 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
             }
         }
     },
+    fieldGroup: {
+        borderRadius: '5px',
+    }
 };
+
 export const labelClassName: string = mergeStyles({
-    top: '2.5vh',
-    marginTop: '5px',
-    marginBottom: '5px',
+    top: '3%',
+    marginTop: '5%',
+    marginBottom: '5%',
     position: 'relative',
     fontFamily: FONT_FAMILY,
-    left: '40vw'
+    color: COLOR1,
+    left: '15%'
 });
+
 export const resetPasswordButtonStyles: Partial<IButtonStyles> = {
     root: {
         background: COLOR2,
         color: 'white',
         position: 'relative',
-        left: '40vw',
         top: '5vh',
         border: 'none',
         borderRadius: '5px',
         padding: '20px',
-        width: '20vw'
+        width: '50%',
+        left: '25%'
     },
     rootHovered: {
         background: COLOR2_D_20,
@@ -67,20 +123,28 @@ export const resetPasswordButtonStyles: Partial<IButtonStyles> = {
         color: 'white',
     }
 };
+
 export const mainLogoClassName: string = mergeStyles({
-    width: '5vw',
+    width: '4vw',
+    marginLeft: '60px',
     borderRadius: '3px',
 });
+
 export const mainTextClassName: string = mergeStyles({
     font: FONT_FAMILY,
-    fontSize: '1.35vw'
+    color: COLOR1,
+    fontSize: '1.35vw',
+    marginLeft: '15%'
 });
+
 export const resetPasswordQuestionClassName: string = mergeStyles({
     position: 'relative',
     fontFamily: FONT_FAMILY,
-    left: '44.5vw',
-    top: '6vh',
+    color: COLOR1,
+    top: '10%',
+    textAlign: "center"
 });
+
 export const loginSpanClassName: string = mergeStyles({
     marginLeft: '5px',
     color: COLOR2,

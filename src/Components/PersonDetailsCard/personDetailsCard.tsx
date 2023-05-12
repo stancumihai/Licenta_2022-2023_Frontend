@@ -6,7 +6,8 @@ import {
 import {
     containerClassName,
     knownForHeaderClassName,
-    knownForMovieEntryClassName
+    knownForMovieEntryClassName,
+    personNameClassName
 } from './personDetailsCard.styles';
 import { IPersonDetailCardProps } from './personDetailsCard.types';
 import {
@@ -16,7 +17,6 @@ import {
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import { IMovie } from '../../Models/IMovie';
-import { FONT_FAMILY } from '../../Library/constants';
 
 export const PersonDetailsCard = (props: IPersonDetailCardProps): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
@@ -39,9 +39,9 @@ export const PersonDetailsCard = (props: IPersonDetailCardProps): JSX.Element =>
     }, [movieData]);
 
     return <div className={containerClassName}>
-        <h2 style={{ fontFamily: FONT_FAMILY }}>{props.person.name}</h2>
+        <h2 className={personNameClassName}>{props.person.name}</h2>
         <h3 className={knownForHeaderClassName}>Known for:</h3>
-        {areMoviesLoaded && <ul>
+        {areMoviesLoaded && <ul style={{ marginLeft: '-10px' }}>
             {movies.map((movie: IMovie, i: number) => {
                 return <li key={i} className={knownForMovieEntryClassName}>{movie.title}</li>
             })}

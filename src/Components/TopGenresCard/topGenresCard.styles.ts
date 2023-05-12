@@ -1,22 +1,22 @@
 import { mergeStyles } from 'office-ui-fabric-react';
 import {
+    COLOR1_D_40,
     COLOR2,
     FONT_FAMILY
 } from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
+    display: 'flex',
     color: 'white',
     width: '150px',
-    height: '150px',
-    display: 'flex',
-    flexDirection: 'column'
+    height: '50%',
+    marginLeft: '20%',
 });
 
-export const examplesMessageClassName: string = mergeStyles({
-});
-
-export const movieListContainerClassName: string = mergeStyles({
-    marginLeft: '-2vw'
+export const genreClassName: string = mergeStyles({
+    fontFamily: FONT_FAMILY,
+    fontStyle: 'italic',
+    color: COLOR1_D_40
 });
 
 export const movieEntryClassName: string = mergeStyles({
@@ -31,4 +31,11 @@ export const movieEntryClassName: string = mergeStyles({
             cursor: 'pointer'
         }
     }
+});
+
+export const examplesMessageClassName: string = mergeStyles({
+    marginTop: "14.5%",
+    marginLeft: "15.5%",
+    fontSize: '15px',
+    fontFamily: FONT_FAMILY,
 });

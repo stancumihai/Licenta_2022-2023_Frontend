@@ -2,5 +2,6 @@ export enum IMovieContextType {
     HOME,
     HISTORY,
     COLLECTION,
-    WATCHLATER
+    WATCHLATER,
+    NONE
 };

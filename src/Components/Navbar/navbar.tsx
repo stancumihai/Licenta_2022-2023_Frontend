@@ -9,6 +9,7 @@ import {
 } from './navbar.styles';
 import { TbListSearch } from "react-icons/tb";
 import {
+    useContext,
     useState
 } from 'react';
 import { AdvancedSearch } from '../AdvancedSearch/advancedSearch';
@@ -16,11 +17,18 @@ import {
     IconButton,
     TextField
 } from '@fluentui/react';
+import { CustomDialog } from '../CustomDialog/customDialog';
+import MovieContext from '../../Contexts/Movie/movieContext';
+import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
+import { IMovieContextType } from '../../Enums/movieContextType';
+import { IMovie } from '../../Models/IMovie';
 
 export const Navbar = (): JSX.Element => {
     const [showAdvancedSearch, setShowAdvancedSearch] = useState<boolean>(false);
     // const [isAdvancedSearchEnabled, setIsAdvancedSearchEnabled] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>('');
+    const [isRefreshConfirmationDisplayed, setIsRefreshConfirmationDisplayed] = useState<boolean>(false);
+    const movieContext: IMovieContext = useContext(MovieContext);
 
     // useEffect(() => {
     //     setIsAdvancedSearchEnabled(props.areMoviesLoaded);
@@ -38,11 +46,21 @@ export const Navbar = (): JSX.Element => {
         setSearchText(newValue!);
     };
 
-    const handleEnterKey = (e: any) => {
+    const handleSearchBarEnterKeyPressed = (e: any) => {
         if (e.key === 'Enter') {
-            // props.handleSearchboxText(searchText!);
+            const searchedMovies: IMovie[] = movieContext.movies.filter((movie: IMovie) => movie.title.includes(searchText));
+            movieContext.setCurrentMovies(IMovieContextType.NONE, searchedMovies);
             setSearchText('');
         }
+    };
+
+    const handleRefreshButtonClick = (): void => {
+        setIsRefreshConfirmationDisplayed(true);
+    };
+
+    const handlRefreshCloseDialog = (): void => {
+        setIsRefreshConfirmationDisplayed(false);
+        movieContext.setCurrentMovies(IMovieContextType.HOME);
     };
 
     return <div className={containerClassName}>
@@ -51,14 +69,12 @@ export const Navbar = (): JSX.Element => {
                 // disabled={!isAdvancedSearchEnabled || props.isDashboardPageClicked}
                 onChange={handleSearchBoxChange}
                 value={searchText}
-                onKeyDown={handleEnterKey}
+                onKeyDown={handleSearchBarEnterKeyPressed}
                 placeholder={'Search everything'}
                 iconProps={iconProps}
                 styles={textFieldStyles} />
-            <div >
-                <TbListSearch className={advancedSearchIconClassName}
-                    onClick={handleOnAdvancedSearchClick} />
-            </div>
+            <TbListSearch className={advancedSearchIconClassName}
+                onClick={handleOnAdvancedSearchClick} />
             {/* <div style={(props.isDashboardPageClicked) ? { pointerEvents: 'none' } : {}}>
                 <TbListSearch className={advancedSearchIconClassName}
                     onClick={handleOnAdvancedSearchClick} />
@@ -75,8 +91,14 @@ export const Navbar = (): JSX.Element => {
 
             <IconButton iconProps={{ iconName: "Refresh" }}
                 // disabled={props.isDashboardPageClicked}
-                // onClick={props.handleRefreshMovies}
+                onClick={handleRefreshButtonClick}
                 styles={iconStyles} />
+            {<CustomDialog
+                mainText={"Are you sure you want to refresh movies?"}
+                isHidden={!isRefreshConfirmationDisplayed}
+                handleCloseDialog={handlRefreshCloseDialog}
+                acceptedText="Yes"
+                cancelText='No' />}
         </div>
         {/* <div style={!isAdvancedSearchEnabled ? { pointerEvents: 'none' } : {}}>
             <ProfileSettings />

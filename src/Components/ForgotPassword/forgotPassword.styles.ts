@@ -5,42 +5,59 @@ import {
     mergeStyles
 } from 'office-ui-fabric-react';
 import '../../Fonts/TisaSansProLight.ttf';
-import { COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
+import {
+    COLOR1,
+    COLOR1_D_40,
+    COLOR2,
+    COLOR2_D_20,
+    COLOR2_D_40,
+    FONT_FAMILY
+} from '../../Library/constants';
+
+export const containerClassName: string = mergeStyles({
+    height: 'inherit'
+});
 
 export const contentClassName: string = mergeStyles({
-    display: 'block',
     position: 'relative',
+    width: '25%',
+    height: '60%',
     margin: 'auto',
-    padding: '20px',
-    top: '20vh',
-    maxWidth: '75vw',
-    height: '50vh',
+    paddingTop: '2%',
+    top: '22.5%',
+    boxShadow: `rgba(0, 0, 0, 0.25) 0px 54px 55px, 
+                rgba(0, 0, 0, 0.12) 0px -12px 30px, 
+                rgba(0, 0, 0, 0.12) 0px 4px 6px, 
+                rgba(0, 0, 0, 0.17) 0px 12px 13px, 
+                rgba(0, 0, 0, 0.09) 0px -3px 5px`,
+    boxSizing: 'border-box',
+    borderRadius: '20px',
+    backdropFilter: 'blur(5px)',
 });
+
 export const headerClassName: string = mergeStyles({
     display: 'block',
     position: 'relative',
     margin: 'auto',
     fontWeight: "0",
-    maxWidth: '25vw',
-    top: '20vh',
-    left: '2.9vw'
+    width: '75%',
 });
+
 export const forgotPasswordMessageClassName: string = mergeStyles({
     fontWeight: FontWeights.regular,
-    maxWidth: '20vw',
     fontFamily: FONT_FAMILY,
     fontSize: '0.875vw',
+    color: COLOR1
 });
+
 export const textFieldStyles: Partial<ITextFieldStyles> = {
     root: {
-        maxWidth: '20vw',
+        width: '70%',
         margin: 'auto',
     },
     field: {
-        fontFamily: FONT_FAMILY,
-        height: '4.5vh',
-        borderRadius: '5px',
-        border: '3px solid #d3e6ee'
+        color: 'black',
+        fontFamily: FONT_FAMILY
     },
     wrapper: {
         border: 'none',
@@ -50,42 +67,55 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
             }
         }
     },
+    fieldGroup: {
+        borderRadius: '5px',
+    }
 };
+
 export const labelClassName: string = mergeStyles({
-    marginLeft: '27.6vw',
-    fontFamily: FONT_FAMILY
+    top: '3%',
+    marginBottom: '5%',
+    position: 'relative',
+    fontFamily: FONT_FAMILY,
+    color: COLOR1,
+    left: '15%'
 });
+
 export const resetPasswordButtonStyles: Partial<IButtonStyles> = {
     root: {
         background: COLOR2,
         color: 'white',
         position: 'relative',
-        left: '27.5vw',
         top: '3vh',
         border: 'none',
         borderRadius: '5px',
         padding: '20px',
-        width: '20vw'
+        width: '50%',
+        left: '25%'
     },
     rootHovered: {
         background: COLOR2_D_20,
-        color: 'white'
+        color: 'white',
     },
     rootPressed: {
         background: COLOR2_D_40,
         color: 'white',
     }
 };
+
 export const footerClassName: string = mergeStyles({
     margin: 'auto',
     maxHeight: '10px'
 });
+
 export const dontHaveAccountMessageClassName: string = mergeStyles({
     position: 'relative',
     fontFamily: FONT_FAMILY,
-    left: '44.5vw',
-    bottom: '16vh',
+    color: COLOR1,
+    textAlign: "center",
+    top: '10%'
 });
+
 export const signUpSpanClassName: string = mergeStyles({
     marginLeft: '5px',
     fontFamily: FONT_FAMILY,
@@ -100,15 +130,51 @@ export const signUpSpanClassName: string = mergeStyles({
         }
     }
 });
+
 export const mainLogoClassName: string = mergeStyles({
-    width: '5vw',
-    borderRadius: '3px',
+    width: '4vw',
+    marginLeft: '60px',
 });
+
 export const mainTextClassName: string = mergeStyles({
     font: FONT_FAMILY,
-    fontSize: '1.35vw'
+    color: COLOR1,
+    fontSize: '1.35vw',
+    marginLeft: '15%'
 });
-export const containerClassName: string = mergeStyles({
-    position: 'relative',
-    top: '3vh'
+
+export const circleClassName1: string = mergeStyles({
+    background: COLOR2,
+    width: '200px',
+    height: '200px',
+    position: 'absolute',
+    borderRadius: '100%',
+    top: '60%',
+    left: "36%"
 });
+
+export const circleClassName2: string = mergeStyles({
+    background: COLOR1_D_40,
+    width: '200px',
+    height: '200px',
+    position: 'absolute',
+    borderRadius: '100%',
+    top: '60%',
+    left: "58%"
+});
+
+export const iconButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        position: "absolute",
+        left: '43%',
+        top: '9vh',
+        backgroundColor: 'transparent',
+        color: COLOR2
+    },
+    rootHovered: {
+        backgroundColor: 'transparent',
+    },
+    icon: {
+        fontSize: '100px'
+    }
+};

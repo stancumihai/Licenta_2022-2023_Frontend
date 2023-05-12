@@ -149,8 +149,14 @@ export const SideBar = (): JSX.Element => {
     };
 
     const handleToggleButton = () => {
-        setIsToggleActive(prev => !prev);
         $('.navigation').toggleClass('active');
+        if (!isToggleActive) {
+            setTimeout(() => {
+                setIsToggleActive(prev => !prev);
+            }, 300);
+            return;
+        }
+        setIsToggleActive(prev => !prev);
     };
 
     return <div className='navigation'>

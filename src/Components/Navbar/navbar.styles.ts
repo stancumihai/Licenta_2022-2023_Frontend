@@ -9,9 +9,9 @@ export const containerClassName: string = mergeStyles({
     maxWidth: '75vw',
     maxHeight: '10vh',
     height: '10vh',
-    top: '1vh',
+    top: '2.3vh',
     boxSizing: 'border-box',
-    display:'inline',
+    display: 'inline',
 });
 
 export const textFieldStyles: Partial<ITextFieldStyles> = {
@@ -42,14 +42,18 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
         fontFamily: FONT_FAMILY,
     },
     icon: {
-        marginRight: '11.5vw',
+        marginRight: '16vw',
         width: '0'
     }
 };
 
 export const iconProps = {
     iconName: 'Search',
-    style: { opacity: 100, color: 'black', cursor: 'pointer' }
+    style: {
+        opacity: 100,
+        color: 'black',
+        cursor: 'pointer'
+    }
 };
 
 export const advancedSearchIconClassName: string = mergeStyles({

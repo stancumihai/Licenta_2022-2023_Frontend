@@ -16,7 +16,7 @@ import {
     iconButtonStyles,
     labelClassName,
     profileSettingsTitleClassName,
-    pushSettingsButtonStyles,
+    saveSettingsButtonStyles,
     roundedImageClassName,
     textFieldStyles
 } from './userProfile.styles';
@@ -67,7 +67,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
     const [dateOfBirth, setDateOfBirth] = useState<Date>(defaultUserProfile.dateOfBirth);
     const [isFormDisabled, setIsFormDisabled] = useState<boolean>(true);
     const [isEditButtonClicked, setIsEditButtonClicked] = useState<boolean>(false);
-    const [isPushSettingsClicked, setIsPushSettingsClicked] = useState<boolean>(false);
+    const [isSaveSettingsClicked, setIsSaveSettingsClicked] = useState<boolean>(false);
     const services = useContext<ServiceContext>(ServiceContextInstance);
 
     const navigate: NavigateFunction = useNavigate();
@@ -81,7 +81,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
             return;
         }
         setIsFormDisabled(false);
-    }, [isPushSettingsClicked]);
+    }, [isSaveSettingsClicked]);
 
     const onFullNameChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newFullName?: string | undefined): void => {
         setFullName(newFullName!);
@@ -106,7 +106,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
             };
             services.UserProfilesService.Add(userProfile);
             setTimeout(() => {
-                setIsPushSettingsClicked(true);
+                setIsSaveSettingsClicked(true);
             }, 500)
             return;
         }
@@ -122,18 +122,18 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         setTimeout(() => {
             setIsFormDisabled(true);
             setIsEditButtonClicked(false);
-            setIsPushSettingsClicked(true);
+            setIsSaveSettingsClicked(true);
         }, 500);
     };
     const handleCloseDialog = (accepted?: boolean): void => {
         if (accepted === false) {
             setTimeout(() => {
-                setIsPushSettingsClicked(false);
+                setIsSaveSettingsClicked(false);
             }, 500);
             return;
         }
         setTimeout(() => {
-            setIsPushSettingsClicked(false);
+            setIsSaveSettingsClicked(false);
             if (fullName === props.userProfile?.fullName && city === props.userProfile.city && country === props.userProfile.country) {
                 return;
             }
@@ -164,12 +164,12 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         </div>
         <div style={{
             background: 'white',
-            width: '250px',
-            height: '250px',
+            width: '200px',
+            height: '200px',
             position: 'absolute',
             borderRadius: '100%',
-            left: '53vw',
-            top: '10px'
+            right: '31%',
+            top: '9.5%'
         }}>
             <IconButton styles={iconButtonStyles}
                 iconProps={{ iconName: 'Contact' }} />
@@ -214,7 +214,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
                     styles={editButtonStyles}
                     onClick={handleEditButtonClick} />
                 {isEditButtonClicked && props.userProfile !== undefined &&
-                    <DefaultButton styles={pushSettingsButtonStyles}
+                    <DefaultButton styles={saveSettingsButtonStyles}
                         text="Save"
                         onClick={handlePushSettingsClick} />}
             </div>
@@ -224,7 +224,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
                     mainText={props.userProfile === undefined ?
                         "Are you sure?" :
                         "Are you sure of updates?"}
-                    isHidden={!isPushSettingsClicked}
+                    isHidden={!isSaveSettingsClicked}
                     handleCloseDialog={handleCloseDialog}
                     acceptedText="Yes"
                     cancelText='No' />

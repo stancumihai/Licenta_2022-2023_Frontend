@@ -40,5 +40,6 @@ export const dialogContentStyles: Partial<IDialogContentStyles> = {
 
 export const containerClassName: string = mergeStyles({
     display: 'inline-block',
+    position: 'absolute',
     marginTop: '100px'
 });

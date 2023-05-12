@@ -4,6 +4,7 @@ import {
     TextField
 } from '@fluentui/react';
 import {
+    COLOR2,
     ENVELOPE_LOGO_LOCATION,
     FORGOT_PASSWORD,
     FORGOT_PASSWORD_PATH,
@@ -30,9 +31,9 @@ import {
     containerClassName,
     emailAddressIconClassName,
     passwordIconClassName,
-    customIconButtonContainerClasssName,
     errorClassName,
     textErrorFieldStyles,
+    nushClassName as textfieldContainerClassName,
 } from './login.styles';
 import { useContext, useState } from 'react';
 import { IsModified } from '../../Library/types';
@@ -55,6 +56,7 @@ import { IAuthentificationContext } from '../../Contexts/Authentication/authenti
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import { IResponse } from '../../Models/IResponse';
 import { IUser } from '../../Models/User/IUser';
+import $ from 'jquery';
 
 export const Login = (): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -97,6 +99,13 @@ export const Login = (): JSX.Element => {
     };
     const onRememberMeChange = (ev?: React.FormEvent<HTMLInputElement | HTMLElement> | undefined, checked?: boolean | undefined): void => {
         setRememberMe(checked!);
+        if (checked === true) {
+            $('.ms-Checkbox-checkbox').css('background', COLOR2);
+            $('.ms-Checkbox-checkbox').css('border', COLOR2);
+            return;
+        }
+        $('.ms-Checkbox-checkbox').css('background', 'rgb(96, 94, 92)');
+        $('.ms-Checkbox-checkbox').css('border-color', COLOR2);
     };
     const clearFields = () => {
         setEmailAddress('');
@@ -147,20 +156,23 @@ export const Login = (): JSX.Element => {
                 </div>
                 <p className={additionalInfoHeaderClassName}>Login to access your account</p>
                 <div className={contentStyles.body}>
-                    <TextField value={emailAddress}
-                        onGetErrorMessage={() => emailAddressErrorMessage.toString()}
-                        onChange={onEmailAddressChange}
-                        styles={emailAddressErrorMessage ? textErrorFieldStyles : textFieldStyles}
-                        placeholder='Email Address' />
-                    <TextField value={password}
-                        onGetErrorMessage={() => passwordErrorMessage.toString()}
-                        onChange={onPasswordChange}
-                        styles={passwordErrorMessage ? textErrorFieldStyles : textFieldStyles}
-                        placeholder='Password'
-                        type="password" />
-                    <div className={customIconButtonContainerClasssName}>
+                    <div className={textfieldContainerClassName}>
+                        <TextField value={emailAddress}
+                            onGetErrorMessage={() => emailAddressErrorMessage.toString()}
+                            onChange={onEmailAddressChange}
+                            styles={emailAddressErrorMessage ? textErrorFieldStyles : textFieldStyles}
+                            placeholder='Email Address' >
+                        </TextField>
                         <CustomIconButton className={emailAddressIconClassName}
                             logoLocation={ENVELOPE_LOGO_LOCATION} />
+                    </div>
+                    <div className={textfieldContainerClassName}>
+                        <TextField value={password}
+                            onGetErrorMessage={() => passwordErrorMessage.toString()}
+                            onChange={onPasswordChange}
+                            styles={passwordErrorMessage ? textErrorFieldStyles : textFieldStyles}
+                            placeholder='Password'
+                            type="password" />
                         <CustomIconButton className={passwordIconClassName}
                             logoLocation={LOCK_LOGO_LOCATION} />
                     </div>

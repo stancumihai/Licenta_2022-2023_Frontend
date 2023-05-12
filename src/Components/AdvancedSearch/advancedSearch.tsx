@@ -43,9 +43,13 @@ import $ from 'jquery';
 import { ISearchModel } from '../../UiModels/ISearchModel';
 import { IMovie } from '../../Models/IMovie';
 import { IResponse } from '../../Models/IResponse';
+import MovieContext from '../../Contexts/Movie/movieContext';
+import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
+import { IMovieContextType } from '../../Enums/movieContextType';
 
 export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
+    const movieContext: IMovieContext = useContext(MovieContext);
     const [director, setDirector] = useState<string>('');
     const [actor, setActor] = useState<string>('');
     const [genre, setGenre] = useState<string>('');
@@ -241,9 +245,7 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
     };
 
     const handleCloseDialog = (): void => {
-        props.handleCloseDialog();
-        setActorsSearchPageNumber(0);
-        setDirectorsSearchPageNumber(0);
+
     };
 
     const mapClickedSuggestion = (suggestion: string, e: any): void => {
@@ -284,7 +286,8 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
         services.MovieService.GetAdvancedSearchMovieData(searchModel).then((data: IResponse<IMovie[]>) => {
             if (data.Status === 200) {
                 //props.collectAdvancedSearchedMovies(data.Data!);
-                handleCloseDialog();
+                movieContext.setCurrentMovies(IMovieContextType.NONE, data.Data);
+                props.handleCloseDialog();
                 handleResetClick();
                 return;
             }

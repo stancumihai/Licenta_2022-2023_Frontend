@@ -6,6 +6,7 @@ import {
 } from './sideBarListItem.styles';
 import { ISidebarListItemProps } from './sideBarListItem.types';
 import './sideBarListItem.css';
+import { FONT_FAMILY } from '../../Library/constants';
 
 export const SideBarListItem = (props: ISidebarListItemProps): JSX.Element => {
 
@@ -15,7 +16,8 @@ export const SideBarListItem = (props: ISidebarListItemProps): JSX.Element => {
         <a onClick={props.sidebarListItem.handleSidebarNavigation}>
             <IconButton className='icon' styles={iconButtonStyles}
                 iconProps={{ iconName: props.sidebarListItem.iconName }} />
-            <span className='title'> {props.sidebarListItem.text}</span>
+            <span style={{ fontFamily: FONT_FAMILY }}
+                className='title'> {props.sidebarListItem.text}</span>
             <p className={countSidebarListItemClassName} >
                 {props.isToggleActive ? props.sidebarListItem.count : undefined}
             </p>

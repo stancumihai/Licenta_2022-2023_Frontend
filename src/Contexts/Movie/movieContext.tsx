@@ -95,7 +95,11 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         return areMoviesLoaded;
     };
 
-    const setCurrentMovies = (movieContextType: IMovieContextType) => {
+    const setCurrentMovies = (movieContextType: IMovieContextType, otherCollection?: IMovie[]) => {
+        if (otherCollection !== undefined) {
+            setCurrentUserMovies(otherCollection);
+            return;
+        }
         switch (movieContextType) {
             case IMovieContextType.COLLECTION: {
                 setCurrentUserMovies(collectionMovies);
@@ -110,7 +114,7 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
                 return;
             }
             default: {
-                setCollectionMovies(movies);
+                setCurrentUserMovies(movies);
                 return;
             }
         }

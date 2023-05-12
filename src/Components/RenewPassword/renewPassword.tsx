@@ -15,7 +15,11 @@ import { IResponse } from '../../Models/IResponse';
 import { Logo } from '../Logo/logo';
 import { MessageCallout } from '../MessageCallout/messageCallout';
 import {
+    circleClassName1,
+    circleClassName2,
     containerClassName,
+    contentClassName,
+    iconButtonStyles,
     labelClassName,
     loginSpanClassName,
     mainLogoClassName,
@@ -30,6 +34,7 @@ import {
 } from 'react-router';
 import { LOGIN_PATH } from '../../Library/constants';
 import { CustomAlert } from '../CustomAlert/customAlert';
+import { IconButton } from '@fluentui/react';
 export const RenewPassword = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const [newPassword, setNewPassword] = useState<string>('');
@@ -73,7 +78,7 @@ export const RenewPassword = (): JSX.Element => {
     const onHandleSubmitClick = () => {
         setHasInvalidPassword(false);
         if (newPassword === '' || confirmPassword === '') {
-            setCalloutParameters('Please field both fields', '');
+            setCalloutParameters('Please fill both fields', '');
             return;
         }
         if (newPassword !== confirmPassword) {
@@ -105,38 +110,57 @@ export const RenewPassword = (): JSX.Element => {
             setHasInvalidPassword(false);
         }, 500)
     };
-    return <div>
+    return <>
         <Logo mainLogoClassName={mainLogoClassName}
             mainTextClassName={mainTextClassName} />
         <div className={containerClassName}>
-            <Label className={labelClassName}>Password</Label>
-            <TextField onChange={onNewPasswordChange}
-                canRevealPassword={true}
-                styles={textFieldStyles}
-                underlined={true}
-                type="password" />
-            <Label className={labelClassName}>Confirm Password</Label>
-            <TextField onChange={onConfirmPasswordChange}
-                canRevealPassword={true}
-                underlined={true}
-                styles={textFieldStyles}
-                type="password" />
-            <DefaultButton onClick={onHandleSubmitClick}
-                styles={resetPasswordButtonStyles}
-                text='Reset Password' />
-            <CustomAlert left={true}
-                isOpen={hasInvalidPassword!}
-                messages={invalidPasswordMessages}
-                handleCloseDialog={handleModalClose} />
-            <p className={resetPasswordQuestionClassName}>Have you reset password?
-                <span onClick={handleLoginClick}
-                    className={loginSpanClassName} >Login</span></p>
+            <div style={{
+                background: 'white',
+                width: '200px',
+                height: '200px',
+                position: 'absolute',
+                borderRadius: '100%',
+                right: '30.5%',
+                top: '8.5%'
+            }}>
+                <IconButton styles={iconButtonStyles}
+                    iconProps={{ iconName: 'Lock' }} />
+            </div>
+            <div className={circleClassName1}>
+            </div>
+            <div className={circleClassName2}>
+            </div>
+            <div className={contentClassName}>
+                <Label className={labelClassName}>Password</Label>
+                <TextField onChange={onNewPasswordChange}
+                    canRevealPassword={true}
+                    styles={textFieldStyles}
+                    underlined={true}
+                    type="password" />
+                <Label className={labelClassName}>Confirm Password</Label>
+                <TextField onChange={onConfirmPasswordChange}
+                    canRevealPassword={true}
+                    underlined={true}
+                    styles={textFieldStyles}
+                    type="password" />
+                <DefaultButton onClick={onHandleSubmitClick}
+                    styles={resetPasswordButtonStyles}
+                    text='Reset Password' />
+                <CustomAlert left={true}
+                    isOpen={hasInvalidPassword!}
+                    messages={invalidPasswordMessages}
+                    handleCloseDialog={handleModalClose} />
+                <p className={resetPasswordQuestionClassName}>Have you reset password?
+                    <span onClick={handleLoginClick}
+                        className={loginSpanClassName} >Login</span></p>
+            </div>
+
+            {
+                isCalloutVisible &&
+                <MessageCallout setIsCalloutVisible={setIsCalloutVisible}
+                    notificationMessage={notificationMessage}
+                    notificationTitle={notificationTitle} />
+            }
         </div>
-        {
-            isCalloutVisible &&
-            <MessageCallout setIsCalloutVisible={setIsCalloutVisible}
-                notificationMessage={notificationMessage}
-                notificationTitle={notificationTitle} />
-        }
-    </div>
+    </>
 };

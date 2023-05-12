@@ -29,7 +29,6 @@ import {
     additionalInfoHeaderClassName,
     signUpHeaderButtonStyles,
     loginHeaderButtonStyles,
-    customIconButtonContainerClasssName,
     successfullyRegisteredClassName,
     errorClassName,
     textErrorFieldStyles
@@ -120,10 +119,10 @@ export const Register = (): JSX.Element => {
     };
     const handleIncorrectRegister = (message: string) => {
         setServerErrorMessage(message);
-        setTimeout(() => {
-            setServerErrorMessage('');
-            clearFields();
-        }, 3000)
+        // setTimeout(() => {
+        //     setServerErrorMessage('');
+        //     clearFields();
+        // }, 3000)
     }
     const handleRegister = (): void => {
         if (!validator.isEmail(emailAddress)) {
@@ -183,12 +182,10 @@ export const Register = (): JSX.Element => {
                         styles={passwordErrorMessage ? textErrorFieldStyles : textFieldStyles}
                         placeholder='Password'
                         type="password" />
-                    <div className={customIconButtonContainerClasssName}>
-                        <CustomIconButton className={emailAddressIconClassName}
-                            logoLocation={ENVELOPE_LOGO_LOCATION} />
-                        <CustomIconButton className={passwordIconClassName}
-                            logoLocation={LOCK_LOGO_LOCATION} />
-                    </div>
+                    <CustomIconButton className={emailAddressIconClassName}
+                        logoLocation={ENVELOPE_LOGO_LOCATION} />
+                    <CustomIconButton className={passwordIconClassName}
+                        logoLocation={LOCK_LOGO_LOCATION} />
                     <p className={successfullyRegisteredClassName}>{successfullyRegisteredMessage}</p>
                     <p className={errorClassName}>{serverErrorMessage}</p>
                     <DefaultButton disabled={isSaveButtonDisabled || isAnyFieldEmpty()}

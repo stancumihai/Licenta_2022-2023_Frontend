@@ -14,14 +14,14 @@ export const UserProfileWrapper = (): JSX.Element => {
     const [userProfile, setUserProfile] = useState<IUserProfileRead | undefined>(undefined);
     const [isUserProfileLoaded, setIsUserProfileLoaded] = useState(false);
 
-    const logAuthContext = () => {
-        if (authenticationContext.User.uid! === undefined) {
-            logAuthContext();
-        }
-    };
+    // const logAuthContext = () => {
+    //     if (authenticationContext.User.uid! === undefined) {
+    //         logAuthContext();
+    //     }
+    // };
 
     useEffect(() => {
-        logAuthContext();
+        // logAuthContext();
         if (userProfileData.isLoading) {
             return;
         }
@@ -35,7 +35,7 @@ export const UserProfileWrapper = (): JSX.Element => {
         setIsUserProfileLoaded(true);
     }, [userProfileData, authenticationContext.User.uid])
 
-    return <div>
+    return <>
         {isUserProfileLoaded && <UserProfile userProfile={userProfile} />}
-    </div>
+    </>
 };

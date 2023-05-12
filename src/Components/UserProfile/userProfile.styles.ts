@@ -16,18 +16,16 @@ import {
 } from '@fluentui/react';
 
 export const containerClassName: string = mergeStyles({
-    height: '100vh',
-    background: 'linear-gradient(90deg, rgba(18,19,36,1) 0%, rgba(28,28,66,1) 49%, rgba(38,29,57,1) 100%)',
-    overflow: 'hidden',
+    height: 'inherit',
 });
 
 export const contentClassName: string = mergeStyles({
     width: '22.5%',
-    backdropFilter: 'blur(5px)',
+    height: "70%",
     margin: 'auto',
-    height: "65%",
-    transform: 'translate(0%, 25%)',
+    transform: 'translate(0%, 35%)',
     boxSizing: 'border-box',
+    backdropFilter: 'blur(5px)',
     padding: '2%',
     boxShadow: 'rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px'
 });
@@ -129,7 +127,7 @@ export const editButtonStyles: Partial<IButtonStyles> = {
     }
 };
 
-export const pushSettingsButtonStyles: Partial<IButtonStyles> = {
+export const saveSettingsButtonStyles: Partial<IButtonStyles> = {
     root: {
         width: '4vw',
         height: '4vh',
@@ -177,8 +175,6 @@ export const acceptedButtonStyles: Partial<IButtonStyles> = {
 };
 
 export const datePickerStyles: Partial<IDatePickerStyles> = {
-    root: {
-    },
     textField: {
         width: '80%',
         left: '4vh'
@@ -224,15 +220,14 @@ export const datePickerTextFieldStyles: Partial<ITextFieldStyles> = {
 };
 
 export const roundedImageClassName: string = mergeStyles({
-    width: '250px',
-    height: '250px',
+    width: '200px',
+    height: '200px',
     borderRadius: '100%',
     opacity: "0.7",
     position: 'absolute',
-    transform: 'rotate(45deg)',
-    top: '69%',
-    left: '32%',
-
+    transform: 'rotate(65deg)',
+    top: '72%',
+    left: '37.5%'
 });
 
 export const roundedContainerImageClassName: string = mergeStyles({
@@ -251,6 +246,6 @@ export const iconButtonStyles: Partial<IButtonStyles> = {
         backgroundColor: 'transparent',
     },
     icon: {
-        fontSize: '150px'
+        fontSize: '120px'
     }
 };
