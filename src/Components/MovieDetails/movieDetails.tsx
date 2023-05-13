@@ -314,7 +314,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
 
     return <div className={containerClassName}>
         <div className={iconContainerClassName}>
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', marginLeft: '-60%' }}>
                 {!isWatchLaterPath() &&
                     <div>
                         <MdWatchLater onClick={handleWatchLaterClick}
@@ -327,7 +327,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
                     </div>
                 }
             </div>
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', marginLeft: '-60%' }}>
                 {!isWatchLaterPath() &&
                     <div>
                         <AiOutlineLike onClick={handleMovieLikeClick}

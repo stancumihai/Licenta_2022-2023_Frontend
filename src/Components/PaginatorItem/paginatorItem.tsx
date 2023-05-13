@@ -28,5 +28,4 @@ export const PaginatorItem = (props: IPaginatorItemProps): JSX.Element => {
             styles={props.iconStyles ?? props.iconStyles!}
             iconProps={{ iconName: props.iconName }} />
     </TooltipHost>
-
 };  

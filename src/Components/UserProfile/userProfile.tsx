@@ -81,7 +81,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
             return;
         }
         setIsFormDisabled(false);
-    }, [isSaveSettingsClicked]);
+    }, []);
 
     const onFullNameChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newFullName?: string | undefined): void => {
         setFullName(newFullName!);
@@ -126,6 +126,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         }, 500);
     };
     const handleCloseDialog = (accepted?: boolean): void => {
+        debugger;
         if (accepted === false) {
             setTimeout(() => {
                 setIsSaveSettingsClicked(false);
@@ -134,7 +135,9 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         }
         setTimeout(() => {
             setIsSaveSettingsClicked(false);
-            if (fullName === props.userProfile?.fullName && city === props.userProfile.city && country === props.userProfile.country) {
+            if (fullName === props.userProfile?.fullName &&
+                city === props.userProfile.city &&
+                country === props.userProfile.country) {
                 return;
             }
             const newUserProfile: IUserProfileUpdate = {

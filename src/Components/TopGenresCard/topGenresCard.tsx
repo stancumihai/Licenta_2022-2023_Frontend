@@ -25,6 +25,7 @@ export const TopGenresCard = (props: ITopGenresProps): JSX.Element => {
     const movieData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesByGenre(props.genre, 1, 5));
 
     useEffect(() => {
+        console.log('asd');
         if (movieData.isLoading) {
             return;
         }

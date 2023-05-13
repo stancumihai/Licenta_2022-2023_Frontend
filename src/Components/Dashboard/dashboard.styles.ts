@@ -2,13 +2,13 @@ import { mergeStyles } from 'office-ui-fabric-react';
 
 export const containerClassName: string = mergeStyles({
     width: '75vw',
-    height: '100vh',
     boxSizing: 'border-box',
     margin: 'auto',
+    marginTop: '1.3%',
     textAlign: 'center',
     justifyContent: 'center',
     marginRight: '1vw',
-    overflow: 'scroll'
+    overflowX: 'hidden'
 });
 
 export const buttonContainerClassName: string = mergeStyles({

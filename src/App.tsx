@@ -1,4 +1,7 @@
-import { initializeIcons } from '@fluentui/react';
+import {
+  Spinner,
+  initializeIcons
+} from '@fluentui/react';
 import {
   useContext,
   useEffect,
@@ -16,6 +19,7 @@ import { Login } from './Components/Login/login';
 import { Register } from './Components/Register/register';
 import {
   ARTISTS_OF_THE_MONTH_PATH,
+  DASHBOARD_PATH,
   FORGOT_PASSWORD_PATH,
   HOME_PATH,
   JWT_TOKEN,
@@ -26,6 +30,7 @@ import {
   RENEW_PASSWORD_PATH,
   SESSION_EXPIRED_MESSAGE,
   SIGN_UP_PATH,
+  SPINNER_LOADING_DATA_MESSAGE,
   SURVEY_PATH,
   TOP_GENRES_PATH,
   USER_PROFILE_PATH
@@ -53,16 +58,21 @@ import { UserProfileWrapper } from './Components/UserProfileWrapper/userProfileW
 import { SURVEY_PATH_PERMISSIONS } from './Contexts/Authentication/pagePermissions';
 import { SideBar } from './Components/SideBar/sideBar';
 import { Navbar } from './Components/Navbar/navbar';
-import { containerClassName, mainContentClassName } from './App.styles';
+import {
+  containerClassName,
+  loadingSpinnerContainer,
+  loadingSpinnerStyle,
+  mainContentClassName
+} from './App.styles';
 import { IUiContext } from './Contexts/Ui/uiContext.types';
 import UiContext from './Contexts/Ui/uiContext';
+import { Dashboard } from './Components/Dashboard/dashboard';
 
 initializeIcons(undefined, { disableWarnings: true });
 
 export default function App(): JSX.Element {
   const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
   const uiContext: IUiContext = useContext(UiContext);
-
   const navigate: NavigateFunction = useNavigate();
   const services = useContext<ServiceContext>(ServiceContextInstance);
   const [userHasSurveyAnswers, setUserHasSurveyAnswers] = useState<boolean | undefined>(undefined);
@@ -70,6 +80,7 @@ export default function App(): JSX.Element {
   const NON_AUTH_PAGES = ["login", "forgotPassword", "renewPassword"];
   const isForbidden = authenticationContext.IsForbidden();
   const [isUserAuthenticated, setIsUserAuthenticated] = useState<boolean>(true);
+  const [shouldDisplaySpinner, setShouldDisplaySpinner] = useState<boolean>(false);
 
   useEffect(() => {
     document.body.style.margin = "0";
@@ -78,8 +89,66 @@ export default function App(): JSX.Element {
 
   useEffect(() => {
     handleAuthentication();
-    hasSurveyPath();
+    //hasSurveyPath();
   }, [authenticationContext.User, isForbidden]);
+
+  useEffect(() => {
+    const currentPath: string = window.location.href;
+    if (currentPath.includes(SIGN_UP_PATH) ||
+      currentPath.includes(LOGIN_PATH) ||
+      currentPath.includes(FORGOT_PASSWORD_PATH) ||
+      currentPath.includes(RENEW_PASSWORD_PATH) ||
+      currentPath.includes(USER_PROFILE_PATH) ||
+      currentPath.includes(MOVIE_WRAPPER_PATH) ||
+      currentPath.includes(SURVEY_PATH)
+    ) {
+      uiContext.setSideBarState(false);
+      return;
+    }
+    uiContext.setSideBarState(true);
+  });
+
+  useEffect(() => {
+    const currentPath: string = window.location.href;
+    if (currentPath.includes(SIGN_UP_PATH) ||
+      currentPath.includes(LOGIN_PATH) ||
+      currentPath.includes(FORGOT_PASSWORD_PATH) ||
+      currentPath.includes(RENEW_PASSWORD_PATH) ||
+      currentPath.includes(USER_PROFILE_PATH) ||
+      currentPath.includes(MOVIE_WRAPPER_PATH) ||
+      currentPath.includes(SURVEY_PATH)
+    ) {
+      uiContext.setNavbarState(false);
+      return;
+    }
+    uiContext.setNavbarState(true);
+  });
+
+  useEffect(() => {
+    const currentPath: string = window.location.href;
+    if (currentPath.includes(SIGN_UP_PATH) ||
+      currentPath.includes(LOGIN_PATH) ||
+      currentPath.includes(FORGOT_PASSWORD_PATH) ||
+      currentPath.includes(RENEW_PASSWORD_PATH) ||
+      currentPath.includes(USER_PROFILE_PATH) ||
+      currentPath.includes(DASHBOARD_PATH) ||
+      currentPath.includes(USER_PROFILE_PATH) ||
+      currentPath.includes(TOP_GENRES_PATH) ||
+      currentPath.includes(ARTISTS_OF_THE_MONTH_PATH)
+    ) {
+      uiContext.setSearchState(false);
+      return;
+    }
+    uiContext.setSearchState(true);
+  });
+
+  useEffect(() => {
+    setShouldDisplaySpinner(uiContext.shouldDisplaySpinner);
+    setTimeout(() => {
+      setShouldDisplaySpinner(false);
+      uiContext.setSpinnerState(false);
+    }, 2000);
+  }, [uiContext.shouldDisplaySpinner]);
 
   const handleAuthorizationExpired = (): void => {
     navigate(LOGIN_PATH);
@@ -148,35 +217,13 @@ export default function App(): JSX.Element {
       });
   };
 
-  useEffect(() => {
-    const currentPath: string = window.location.href;
-    if (currentPath.includes(SIGN_UP_PATH) ||
-      currentPath.includes(LOGIN_PATH) ||
-      currentPath.includes(FORGOT_PASSWORD_PATH) ||
-      currentPath.includes(RENEW_PASSWORD_PATH) ||
-      currentPath.includes(USER_PROFILE_PATH)
-    ) {
-      uiContext.setSideBarState(false);
-      return;
-    }
-    uiContext.setSideBarState(true);
-  });
-
-  useEffect(() => {
-    const currentPath: string = window.location.href;
-    if (currentPath.includes(SIGN_UP_PATH) ||
-      currentPath.includes(LOGIN_PATH) ||
-      currentPath.includes(FORGOT_PASSWORD_PATH) ||
-      currentPath.includes(RENEW_PASSWORD_PATH) ||
-      currentPath.includes(USER_PROFILE_PATH)
-    ) {
-      uiContext.setNavbarState(false);
-      return;
-    }
-    uiContext.setNavbarState(true);
-  });
-
   return (<div className={containerClassName}>
+    {shouldDisplaySpinner && <div className={loadingSpinnerContainer}>
+      <Spinner styles={loadingSpinnerStyle}
+        label={SPINNER_LOADING_DATA_MESSAGE}
+        ariaLive="assertive"
+        labelPosition="top" />
+    </div>}
     {isUserAuthenticated && (uiContext.shouldDisplayNavbar === true) ? <Navbar /> : <></>}
     {isUserAuthenticated && (uiContext.shouldDisplaySideBar === true) ? <SideBar /> : <></>}
     <div className={mainContentClassName}>
@@ -186,7 +233,6 @@ export default function App(): JSX.Element {
         <Route path={SURVEY_PATH} element={
           <AuthenticatedRoute unaunthenticatedRedirectUrl={LOGIN_PATH} permissions={SURVEY_PATH_PERMISSIONS}>
             {!userHasSurveyAnswers ? <Survey /> : <Navigate to={HOME_PATH} />}
-            {<Survey />}
           </AuthenticatedRoute>
         } />
         <Route path={HOME_PATH} element={
@@ -195,6 +241,7 @@ export default function App(): JSX.Element {
         <Route path={`${HOME_PATH}/:sideBarPage`} element={
           <HomePage />
         } />
+        <Route path={DASHBOARD_PATH} element={<Dashboard />} />
         <Route path={FORGOT_PASSWORD_PATH} element={<ForgotPassword />} />
         <Route path={`${RENEW_PASSWORD_PATH}/:email`} element={<RenewPassword />} />
         <Route path={`${MOVIE_WRAPPER_PATH}/:movieName`} element={<MovieWrapper />} />

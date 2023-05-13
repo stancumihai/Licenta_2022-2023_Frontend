@@ -22,17 +22,15 @@ import MovieContext from '../../Contexts/Movie/movieContext';
 import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
 import { IMovieContextType } from '../../Enums/movieContextType';
 import { IMovie } from '../../Models/IMovie';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const Navbar = (): JSX.Element => {
     const [showAdvancedSearch, setShowAdvancedSearch] = useState<boolean>(false);
-    // const [isAdvancedSearchEnabled, setIsAdvancedSearchEnabled] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>('');
     const [isRefreshConfirmationDisplayed, setIsRefreshConfirmationDisplayed] = useState<boolean>(false);
     const movieContext: IMovieContext = useContext(MovieContext);
-
-    // useEffect(() => {
-    //     setIsAdvancedSearchEnabled(props.areMoviesLoaded);
-    // }, [props.areMoviesLoaded])
+    const uiContext: IUiContext = useContext(UiContext);
 
     const handleOnAdvancedSearchClick = (): void => {
         setShowAdvancedSearch(true);
@@ -51,6 +49,7 @@ export const Navbar = (): JSX.Element => {
             const searchedMovies: IMovie[] = movieContext.movies.filter((movie: IMovie) => movie.title.includes(searchText));
             movieContext.setCurrentMovies(IMovieContextType.NONE, searchedMovies);
             setSearchText('');
+            uiContext.setSpinnerState(true);
         }
     };
 
@@ -65,34 +64,25 @@ export const Navbar = (): JSX.Element => {
 
     return <div className={containerClassName}>
         <div className={searchContainer}>
-            <TextField
-                // disabled={!isAdvancedSearchEnabled || props.isDashboardPageClicked}
+            {uiContext.shoudDisplaySearch ? <TextField
                 onChange={handleSearchBoxChange}
                 value={searchText}
                 onKeyDown={handleSearchBarEnterKeyPressed}
                 placeholder={'Search everything'}
                 iconProps={iconProps}
-                styles={textFieldStyles} />
-            <TbListSearch className={advancedSearchIconClassName}
-                onClick={handleOnAdvancedSearchClick} />
-            {/* <div style={(props.isDashboardPageClicked) ? { pointerEvents: 'none' } : {}}>
-                <TbListSearch className={advancedSearchIconClassName}
-                    onClick={handleOnAdvancedSearchClick} />
-            </div> */}
-            {/* <AdvancedSearch isOpen={props.isAdvancedSearchClosed !== undefined ? false : showAdvancedSearch}
-                handleCloseDialog={handleCloseDialog}
-                collectAdvancedSearchedMovies={props.collectAdvancedSearchedMovies}
-            /> */}
-
+                styles={textFieldStyles} /> : <></>}
+            {uiContext.shoudDisplaySearch ? <TbListSearch className={advancedSearchIconClassName}
+                onClick={handleOnAdvancedSearchClick} /> : <></>}
             <AdvancedSearch isOpen={showAdvancedSearch}
                 handleCloseDialog={handleCloseDialog}
-            // collectAdvancedSearchedMovies={props.collectAdvancedSearchedMovies}
             />
-
-            <IconButton iconProps={{ iconName: "Refresh" }}
-                // disabled={props.isDashboardPageClicked}
-                onClick={handleRefreshButtonClick}
-                styles={iconStyles} />
+            {
+                uiContext.shoudDisplaySearch ?
+                    <IconButton iconProps={{ iconName: "Refresh" }}
+                        // disabled={props.isDashboardPageClicked}
+                        onClick={handleRefreshButtonClick}
+                        styles={iconStyles} /> : <></>
+            }
             {<CustomDialog
                 mainText={"Are you sure you want to refresh movies?"}
                 isHidden={!isRefreshConfirmationDisplayed}
@@ -100,9 +90,6 @@ export const Navbar = (): JSX.Element => {
                 acceptedText="Yes"
                 cancelText='No' />}
         </div>
-        {/* <div style={!isAdvancedSearchEnabled ? { pointerEvents: 'none' } : {}}>
-            <ProfileSettings />
-        </div> */}
         <ProfileSettings />
     </div >
 }; 

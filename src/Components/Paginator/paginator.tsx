@@ -15,21 +15,10 @@ import { START_PAGE_INDEX } from '../../Library/constants';
 
 export const Paginator = (props: IPaginatorProps): JSX.Element => {
     const [selectedPageIndex, setSelectedPageIndex] = useState<number>(START_PAGE_INDEX);
-    const [previousUrl, setPreviousUrl] = useState<string>('');
 
     useEffect(() => {
-        const currentUrl = window.location.href;
-        if (currentUrl !== previousUrl) {
-            onGoToFirstPageClick();
-        }
-        setPreviousUrl(currentUrl);
-        if (props.isPageEdited === true) {
-            onGoToFirstPageClick();
-        }
-        if (props.loadFromPage) {
-            props.onPageChange(selectedPageIndex, false);
-        }
-    }, [props.totalItemsCount, props.isPageEdited]);
+        setSelectedPageIndex(1);
+    }, [props.shouldReset]);
 
     const getNumberOfPages = (): number => {
         return Math.ceil(props.totalItemsCount / props.itemsPerPage);
@@ -38,24 +27,24 @@ export const Paginator = (props: IPaginatorProps): JSX.Element => {
     const onPreviousPageClick = (): void => {
         const newSelectedPageIndex: number = selectedPageIndex - 1;
         setSelectedPageIndex(newSelectedPageIndex);
-        props.onPageChange(newSelectedPageIndex, false);
+        props.onPageChange(newSelectedPageIndex);
     };
 
     const onNextPageClick = (): void => {
         const newSelectedPageIndex: number = selectedPageIndex + 1;
         setSelectedPageIndex(newSelectedPageIndex);
-        props.onPageChange(newSelectedPageIndex, false);
+        props.onPageChange(newSelectedPageIndex);
     };
 
     const onGoToFirstPageClick = (): void => {
         setSelectedPageIndex(START_PAGE_INDEX);
-        props.onPageChange(START_PAGE_INDEX, false);
+        props.onPageChange(START_PAGE_INDEX);
     };
 
     const onGoToLastPageClick = (): void => {
         const lastPageIndex: number = getNumberOfPages();
         setSelectedPageIndex(lastPageIndex);
-        props.onPageChange(lastPageIndex, false);
+        props.onPageChange(lastPageIndex);
     };
 
     const isFirstPage = (): boolean => {

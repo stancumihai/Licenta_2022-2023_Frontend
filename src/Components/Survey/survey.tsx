@@ -7,7 +7,6 @@ import {
     ITooltipProps,
     IconButton,
     Label,
-    Spinner,
     TooltipHost
 } from '@fluentui/react';
 import {
@@ -29,7 +28,6 @@ import {
     MULTISELECT_ERROR_MESSAGE,
     REQUIRED_ASSET_LOCATION,
     SEARCHBOX_ERROR_MESSAGE,
-    SPINNER_LOADING_SURVEY_MESSAGE,
     SURVEY_TITLE
 } from '../../Library/constants';
 import { ISurveyAnswer } from '../../Models/ISurveyAnswer';
@@ -41,7 +39,6 @@ import {
     surveyContentClassName,
     informationClassName,
     labelStyles,
-    loadingSpinnerStyle,
     requiredAssetClassName,
     requiredAssetContainerClassName,
     sendButtonStyles,
@@ -68,6 +65,8 @@ import { IMovie } from '../../Models/IMovie';
 import { IPerson } from '../../Models/IPerson';
 import { useId } from '@fluentui/react-hooks';
 import { ISurveyUserAnswerBatch } from '../../Models/ISurveyUserAnswerBatch';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const Survey = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
@@ -114,6 +113,7 @@ export const Survey = (): JSX.Element => {
     const [firstPageDirectors, setFirstPageDirectors] = useState<IPerson[]>([]);
     const [firstPageActors, setFirstPageActors] = useState<IPerson[]>([]);
     const [firstPageMovies, setFirstPageMovies] = useState<IMovie[]>([]);
+    const uiContext: IUiContext = useContext(UiContext);
 
     const tooltipId = useId('tooltip');
     const tooltipProps: ITooltipProps = {
@@ -217,6 +217,12 @@ export const Survey = (): JSX.Element => {
         setAllMovies(allMovieData.data!.Data!);
         setAreAllMoviesLoaded(true);
     }, [allMovieData]);
+
+    useEffect(() => {
+        if (!areSurveyQuestionsLoaded) {
+            uiContext.setSpinnerState(true);
+        }
+    }, [areSurveyQuestionsLoaded]);
 
     const mapAnswersToOptions = (surveyAnswers: ISurveyAnswer[]): IChoiceGroupOption[] => {
         const results = surveyAnswers.map((surveyAnswer: ISurveyAnswer) => {
@@ -599,13 +605,8 @@ export const Survey = (): JSX.Element => {
                     mainTextClassName={mainTextClassName} />
             </div>
             {!areSurveyQuestionsLoaded ?
-                <div>
-                    <Spinner styles={loadingSpinnerStyle}
-                        label={SPINNER_LOADING_SURVEY_MESSAGE}
-                        ariaLive="assertive"
-                        labelPosition="top" />
-                </div> :
-
+                <>
+                </> :
                 <div className={surveyContentClassName}>
                     <h1 className={surveyTitleClassName}>{SURVEY_TITLE}</h1>
                     <div>

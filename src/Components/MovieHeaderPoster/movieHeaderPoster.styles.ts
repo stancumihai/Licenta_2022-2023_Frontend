@@ -13,7 +13,7 @@ export const headerPosterClassName: string = mergeStyles({
     left: '0',
     right: '0',
     bottom: '0',
-    zIndex: -2,
+    opacity: '0.3',
     width: 'inherit',
     height: 'inherit',
     backgroundSize: 'cover',

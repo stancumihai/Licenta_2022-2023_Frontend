@@ -12,20 +12,18 @@ import { IFetchResult } from '../../Hooks/useFetch.types';
 import { IPerson } from '../../Models/IPerson';
 import {
     containerClassName,
-    contentContainerClassName,
-    loadingSpinnerStyle
+    contentContainerClassName
 } from './artistsOfTheMonth.styles';
 import { PersonDetailsCard } from '../PersonDetailsCard/personDetailsCard';
-import { Spinner } from '@fluentui/react';
-import {
-    SPINNER_LOADING_DATA_MESSAGE
-} from '../../Library/constants';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const ArtistsOfTheMonth = (): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
     const personsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() => services.PersonsService.GetAristsOfTheMonth());
     const [persons, setPersons] = useState<IPerson[]>([]);
     const [arePersonsLoaded, setArePersonsLoaded] = useState<boolean>(false);
+    const uiContext: IUiContext = useContext(UiContext);
 
     useEffect(() => {
         if (personsData.isLoading) {
@@ -43,13 +41,15 @@ export const ArtistsOfTheMonth = (): JSX.Element => {
         }, 2000)
     }, [personsData]);
 
+    useEffect(() => {
+        if (!arePersonsLoaded) {
+            uiContext.setSpinnerState(true);
+        }
+    }, [arePersonsLoaded]);
+
     return < >
         {!arePersonsLoaded ?
             <>
-                <Spinner styles={loadingSpinnerStyle}
-                    label={SPINNER_LOADING_DATA_MESSAGE}
-                    ariaLive="assertive"
-                    labelPosition="top" />
             </> :
             <div className={containerClassName}>
                 <div className={contentContainerClassName}>

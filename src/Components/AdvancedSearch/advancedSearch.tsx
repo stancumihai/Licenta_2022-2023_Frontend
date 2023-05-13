@@ -46,10 +46,13 @@ import { IResponse } from '../../Models/IResponse';
 import MovieContext from '../../Contexts/Movie/movieContext';
 import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
 import { IMovieContextType } from '../../Enums/movieContextType';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
     const movieContext: IMovieContext = useContext(MovieContext);
+    const uiContext: IUiContext = useContext(UiContext);
     const [director, setDirector] = useState<string>('');
     const [actor, setActor] = useState<string>('');
     const [genre, setGenre] = useState<string>('');
@@ -58,32 +61,26 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
     const [choiceGroupOrdering, setChoiceGroupOrdering] = useState<string>('A');
     const [itemsPerPage, setItemsPerPage] = useState<number>(1);
     const tooltipId = useId('tooltip');
-
     const [actorsSearchPageNumber, setActorsSearchPageNumber] = useState<number>(1);
     const [areActorsLoaded, setAreActorsLoaded] = useState<boolean>(false);
     const actorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() =>
         services.PersonsService.GetPaginatedPersonsByProfession('actor', actorsSearchPageNumber));
     const [actorsSuggestions, setActorSuggestions] = useState<string[] | undefined>([]);
-
     const [directorsSearchPageNumber, setDirectorsSearchPageNumber] = useState<number>(1);
     const [areDirectorsLoaded, setAreDirectorsLoaded] = useState<boolean>(false);
     const directorsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() =>
         services.PersonsService.GetPaginatedPersonsByProfession('director', directorsSearchPageNumber));
     const [directorSuggestions, setDirectorSuggestions] = useState<string[] | undefined>([]);
-
     const [genresSearchPageNumber, setGenresSearchPageNumber] = useState<number>(1);
     const [genres, setGenres] = useState<string[]>([]);
     const [areGenresLoaded, setAreGenresLoaded] = useState<boolean>(false);
     const genresData: IFetchResult<string[]> = useFetch<string[]>(() => services.MovieService.GetMovieGenres());
     const [genresSuggestions, setGenresSuggestions] = useState<string[] | undefined>([]);
-
     const personsData: IFetchResult<IPerson[]> = useFetch<IPerson[]>(() => services.PersonsService.GetAll());
     const [persons, setPersons] = useState<IPerson[]>([]);
     const [arePersonsLoaded, setArePersonsLoaded] = useState<boolean>(false);
-
     const [firstPageDirectors, setFirstPageDirectors] = useState<IPerson[]>([]);
     const [firstPageActors, setFirstPageActors] = useState<IPerson[]>([]);
-
     const orderByDropdownOptions: IDropdownOption[] = [
         { key: 'releaseDate', text: 'Release Date' },
         { key: 'rating', text: 'Rating' },
@@ -244,10 +241,6 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
         }
     };
 
-    const handleCloseDialog = (): void => {
-
-    };
-
     const mapClickedSuggestion = (suggestion: string, e: any): void => {
         const personId: string | undefined = $(e.target)
             .closest('[id]')
@@ -282,16 +275,14 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
             orderBy: selectedOrderByDropdownOption.text,
             itemsPerPage: itemsPerPage,
         };
-        //props.collectAdvancedSearchedMovies(null);
         services.MovieService.GetAdvancedSearchMovieData(searchModel).then((data: IResponse<IMovie[]>) => {
             if (data.Status === 200) {
-                //props.collectAdvancedSearchedMovies(data.Data!);
                 movieContext.setCurrentMovies(IMovieContextType.NONE, data.Data);
                 props.handleCloseDialog();
                 handleResetClick();
+                uiContext.setSpinnerState(true);
                 return;
             }
-            // props.collectAdvancedSearchedMovies(null);
         });
     };
 
@@ -309,7 +300,7 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
         }
     };
     return <Modal isOpen={props.isOpen}
-        onDismiss={handleCloseDialog}
+        onDismiss={props.handleCloseDialog}
         isBlocking={true}
         styles={modalStyles}>
         <div className={contentStyles.header}>

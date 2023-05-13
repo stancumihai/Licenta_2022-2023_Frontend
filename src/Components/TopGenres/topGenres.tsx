@@ -6,7 +6,6 @@ import {
 import {
     containerClassName,
     contentContainerClassName,
-    loadingSpinnerStyle
 } from './topGenres.styles';
 import {
     ServiceContext,
@@ -14,17 +13,16 @@ import {
 } from '../../Core/serviceContext';
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
-import { Spinner } from '@fluentui/react';
-import {
-    SPINNER_LOADING_DATA_MESSAGE
-} from '../../Library/constants';
 import { TopGenresCard } from '../TopGenresCard/topGenresCard';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const TopGenres = (): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
     const genresData: IFetchResult<string[]> = useFetch<string[]>(() => services.MovieService.GetTopLikedGenres());
     const [genres, setGenres] = useState<string[]>();
     const [areGenresLoaded, setAreGenresLoaded] = useState<boolean>(false);
+    const uiContext: IUiContext = useContext(UiContext);
 
     useEffect(() => {
         if (genresData.isLoading) {
@@ -40,13 +38,15 @@ export const TopGenres = (): JSX.Element => {
         setAreGenresLoaded(true);
     }, [genresData]);
 
-    return < >
+    useEffect(() => {
+        if (!areGenresLoaded) {
+            uiContext.setSpinnerState(true);
+        }
+    }, [areGenresLoaded]);
+
+    return <>
         {!areGenresLoaded ?
             <>
-                <Spinner styles={loadingSpinnerStyle}
-                    label={SPINNER_LOADING_DATA_MESSAGE}
-                    ariaLive="assertive"
-                    labelPosition="top" />
             </> :
             <div className={containerClassName}>
                 <div className={contentContainerClassName}>

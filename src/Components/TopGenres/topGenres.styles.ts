@@ -1,4 +1,3 @@
-import { ISpinnerStyles } from '@fluentui/react';
 import { mergeStyles } from 'office-ui-fabric-react';
 import { COLOR2 } from '../../Library/constants';
 
@@ -23,18 +22,3 @@ export const contentContainerClassName: string = mergeStyles({
     gridTemplateColumns: 'auto auto',
     height: '100%'
 });
-
-export const loadingSpinnerStyle: Partial<ISpinnerStyles> = {
-    root: {
-        marginTop: '25vh',
-    },
-    circle: {
-        width: '200px',
-        height: '200px',
-        borderColor: `${COLOR2} #5d246c`
-    },
-    label: {
-        color: '#CCCCCC',
-        fontSize: '900',
-    }
-};

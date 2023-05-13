@@ -125,10 +125,22 @@ export const Dashboard = (): JSX.Element => {
 
     const getButtons = (): JSX.Element => {
         return <div className={buttonContainerClassName}>
-            <ButtonCard text='Genres' onClick={handleGenreClick} count={100} iconName={'Library'} />
-            <ButtonCard text='Runtime' onClick={handleHoursClick} count={100} iconName={'Timer'} />
-            <ButtonCard text='Movies' onClick={handleMoviesClick} count={100} iconName={'MyMoviesTV'} />
-            <ButtonCard text='All' onClick={handleAllClick} count={100} iconName={'DonutChart'} />
+            <ButtonCard text='Genres'
+                onClick={handleGenreClick}
+                count={100}
+                iconName={'Library'} />
+            <ButtonCard text='Runtime'
+                onClick={handleHoursClick}
+                count={100}
+                iconName={'Timer'} />
+            <ButtonCard text='Movies'
+                onClick={handleMoviesClick}
+                count={100}
+                iconName={'MyMoviesTV'} />
+            <ButtonCard text='All'
+                onClick={handleAllClick}
+                count={100}
+                iconName={'DonutChart'} />
         </div>
     };
 

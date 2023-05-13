@@ -2,7 +2,6 @@ import {
     ICheckboxStyles,
     IChoiceGroupStyles,
     ILabelStyles,
-    ISpinnerStyles,
     mergeStyles
 } from '@fluentui/react';
 import { IButtonStyles, ICalloutContentStyles, IChoiceGroupOptionStyles } from 'office-ui-fabric-react';
@@ -24,10 +23,6 @@ export const mainTextClassName: string = mergeStyles({
     marginLeft: '0.8vw'
 });
 export const containerClassName: string = mergeStyles({
-    width: '100vw',
-    height: '100vh',
-    background: 'linear-gradient(90deg, rgba(18,19,36,1) 0%, rgba(28,28,66,1) 49%, rgba(38,29,57,1) 100%)',
-    position: 'absolute',
     overflow: 'hidden'
 });
 export const surveyContentClassName: string = mergeStyles({
@@ -146,20 +141,6 @@ export const informationClassName: string = mergeStyles({
     color: COLOR2_D_20,
     top: '14.5vh'
 });
-export const loadingSpinnerStyle: Partial<ISpinnerStyles> = {
-    root: {
-        marginTop: '35vh',
-    },
-    circle: {
-        width: '200px',
-        height: '200px',
-        borderColor: `${COLOR2} #5d246c`
-    },
-    label: {
-        color: '#CCCCCC',
-        fontSize: '900',
-    }
-};
 export const requiredAssetClassName: string = mergeStyles({
     width: '10px',
     height: '10px',

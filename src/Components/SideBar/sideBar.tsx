@@ -8,7 +8,7 @@ import {
     NavigateFunction,
     useNavigate,
 } from 'react-router';
-import { IconButton } from 'office-ui-fabric-react';
+import { IconButton, mergeStyles } from 'office-ui-fabric-react';
 import Cookies from 'universal-cookie';
 import {
     REFRESH_TOKEN,
@@ -45,7 +45,6 @@ export const SideBar = (): JSX.Element => {
             iconName: 'Home',
             text: 'Home',
             handleSidebarNavigation: () => {
-                movieContext.setCurrentMovies(IMovieContextType.HOME);
                 navigate(HOME_PATH);
             }
         },
@@ -53,7 +52,6 @@ export const SideBar = (): JSX.Element => {
             iconName: 'Heart',
             text: 'My Collection',
             handleSidebarNavigation: () => {
-                movieContext.setCurrentMovies(IMovieContextType.COLLECTION);
                 navigate(MY_COLLECTION_PATH);
             },
         },
@@ -66,24 +64,18 @@ export const SideBar = (): JSX.Element => {
             iconName: 'History',
             text: 'History',
             count: movieContext.historyMovies.length,
-            handleSidebarNavigation: () => {
-                movieContext.setCurrentMovies(IMovieContextType.HISTORY);
-                navigate(MY_HISTORY_PATH)
-            },
-        },
-        {
-            iconName: 'BarChartVertical',
-            text: 'Charts',
-            count: movieContext.watchLaterMovies.length,
-            handleSidebarNavigation: () => navigate(DASHBOARD_PATH)
+            handleSidebarNavigation: () => navigate(MY_HISTORY_PATH)
         },
         {
             iconName: 'Calendar',
             text: 'Watch Later',
-            handleSidebarNavigation: () => {
-                movieContext.setCurrentMovies(IMovieContextType.WATCHLATER);
-                navigate(WATCH_LATER_PATH)
-            }
+            count: movieContext.watchLaterMovies.length,
+            handleSidebarNavigation: () => navigate(WATCH_LATER_PATH)
+        },
+        {
+            iconName: 'BarChartVertical',
+            text: 'Charts',
+            handleSidebarNavigation: () => navigate(DASHBOARD_PATH)
         },
         {
             iconName: 'Touch',
@@ -113,6 +105,42 @@ export const SideBar = (): JSX.Element => {
         handleSidebar();
     }, []);
 
+    const getSidebarIndex = (): number => {
+        const url: string = window.location.href;
+        switch (url) {
+            case "http://localhost:3000/home": {
+                return 0;
+            }
+            case "http://localhost:3000/home/myCollection": {
+                return 1;
+            }
+            case "http://localhost:3000/home/trending": {
+                return 2;
+            }
+            case "http://localhost:3000/home/myHistory": {
+                return 3;
+            }
+            case "http://localhost:3000/home/watchLater": {
+                return 4;
+            }
+            case "http://localhost:3000/charts": {
+                return 5;
+            }
+            case "http://localhost:3000/recommendations": {
+                return 6;
+            }
+            case "http://localhost:3000/topGenres": {
+                return 7;
+            }
+            case "http://localhost:3000/artistsOfTheMonth": {
+                return 8;
+            }
+            default: {
+                return -1;
+            }
+        }
+    };
+
     const handleSidebar = () => {
         const list = $('.list');
         for (let i: number = 0; i < list.length; i++) {
@@ -128,8 +156,12 @@ export const SideBar = (): JSX.Element => {
             }
         }
         if (!isSidebarClicked) {
+            const sidebarIndex: number = getSidebarIndex();
+            if (sidebarIndex === -1) {
+                return;
+            }
             setIsSidebarClicked(true);
-            const element: HTMLElement = list[0] as HTMLElement;
+            const element: HTMLElement = list[sidebarIndex] as HTMLElement;
             element.className = 'list active';
             return;
         }

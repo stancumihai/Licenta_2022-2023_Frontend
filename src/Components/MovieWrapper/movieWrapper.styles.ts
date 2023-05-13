@@ -1,16 +1,9 @@
 import { IRatingStyles, mergeStyles } from 'office-ui-fabric-react';
 
 export const containerClassName: string = mergeStyles({
-    width: '100%',
-    background: 'linear-gradient(90deg, rgba(18,19,36,1) 0%, rgba(28,28,66,1) 49%, rgba(38,29,57,1) 100%)',
-    maxWidth: '100%',
-    position: 'relative',
     marginLeft: 'auto',
     marginRight: 'auto',
-    height: '100vh',
-    paddingTop: '1vh',
-    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25)',
-    overflowY: 'hidden'
+    overflowY: 'hidden',
 });
 
 export const imageClassName: string = mergeStyles({
