@@ -6,14 +6,6 @@ export const containerClassName: string = mergeStyles({
     overflowY: 'hidden',
 });
 
-export const imageClassName: string = mergeStyles({
-    width: '17.5vw',
-    imageRendering: 'pixelated',
-    filter: 'hue-rotate("0deg")',
-    opacity: '1',
-    transition: 'filter 0.4s ease-in-out, opacity 0.4s ease-in-out'
-});
-
 export const innerContainer: string = mergeStyles({
     margin: '40px 0px',
     position: 'relative',
@@ -23,8 +15,9 @@ export const innerContainer: string = mergeStyles({
 export const contentContainerClassName: string = mergeStyles({
     marginTop: '5vh',
     width: '75%',
+    borderRadius: '10px',
     display: 'flex',
-    height: '92vh',
+    height: '100%',
     background: "#212121",
     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25)',
 });

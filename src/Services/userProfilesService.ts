@@ -9,4 +9,8 @@ export default class UserProfilesService extends BaseService<IUserProfileRead | 
     async GetByUserUid(userUid: string): Promise<IResponse<IUserProfileRead>> {
         return await APIHelper.request(`${this._endpoint}/user/${userUid}`, 'GET')
     };
+
+    async GetAllUserProfiles(): Promise<IResponse<IUserProfileRead[]>> {
+        return await APIHelper.request(`${this._endpoint}`, 'GET')
+    };
 };

@@ -20,10 +20,12 @@ import { Register } from './Components/Register/register';
 import {
   ARTISTS_OF_THE_MONTH_PATH,
   DASHBOARD_PATH,
+  DEFAULT_PATH,
   FORGOT_PASSWORD_PATH,
   HOME_PATH,
   JWT_TOKEN,
   LOGIN_PATH,
+  MANAGE_USERS_PATH,
   MOVIE_WRAPPER_PATH,
   RECOMMENDATIONS_PATH,
   REFRESH_TOKEN,
@@ -67,6 +69,7 @@ import {
 import { IUiContext } from './Contexts/Ui/uiContext.types';
 import UiContext from './Contexts/Ui/uiContext';
 import { Dashboard } from './Components/Dashboard/dashboard';
+import { ManageUsers } from './Components/ManageUsers/manageUsers';
 
 initializeIcons(undefined, { disableWarnings: true });
 
@@ -89,7 +92,7 @@ export default function App(): JSX.Element {
 
   useEffect(() => {
     handleAuthentication();
-    //hasSurveyPath();
+    hasSurveyPath();
   }, [authenticationContext.User, isForbidden]);
 
   useEffect(() => {
@@ -143,11 +146,16 @@ export default function App(): JSX.Element {
   });
 
   useEffect(() => {
-    setShouldDisplaySpinner(uiContext.shouldDisplaySpinner);
-    setTimeout(() => {
-      setShouldDisplaySpinner(false);
-      uiContext.setSpinnerState(false);
-    }, 2000);
+    if (!window.location.href.includes('http://localhost:3000/renewPassword/') &&
+      !window.location.href.includes('http://localhost:3000/forgotPassword') &&
+      !window.location.href.includes('http://localhost:3000/login') &&
+      !window.location.href.includes('http://localhost:3000/sign_up')) {
+      setShouldDisplaySpinner(uiContext.shouldDisplaySpinner);
+      setTimeout(() => {
+        setShouldDisplaySpinner(false);
+        uiContext.setSpinnerState(false);
+      }, 2000);
+    }
   }, [uiContext.shouldDisplaySpinner]);
 
   const handleAuthorizationExpired = (): void => {
@@ -161,8 +169,8 @@ export default function App(): JSX.Element {
   };
 
   const handleAuthentication = () => {
-    const trimmedUrl: string = trimUrl(window.location.href);
-    if (NON_AUTH_PAGES.includes(trimmedUrl)) {
+    const trimmedPageUrl: string = trimUrl(window.location.href);
+    if (NON_AUTH_PAGES.includes(trimmedPageUrl)) {
       return;
     }
     if (isForbidden === true) {
@@ -171,7 +179,7 @@ export default function App(): JSX.Element {
         var refreshToken = cookie.get(REFRESH_TOKEN);
         if ((refreshToken === undefined || refreshToken === "")) {
           if (!authenticationContext.IsAuthenticated()) {
-            if (NON_AUTH_PAGES.includes(trimmedUrl)) {
+            if (NON_AUTH_PAGES.includes(trimmedPageUrl)) {
               return;
             }
             window.alert(SESSION_EXPIRED_MESSAGE);
@@ -180,7 +188,6 @@ export default function App(): JSX.Element {
             navigate(LOGIN_PATH);
             return;
           }
-          hasSurveyPath();
           return;
         }
         const tokenModel: ITokenModel = {
@@ -241,6 +248,7 @@ export default function App(): JSX.Element {
         <Route path={`${HOME_PATH}/:sideBarPage`} element={
           <HomePage />
         } />
+        <Route path={MANAGE_USERS_PATH} element={<ManageUsers />} />
         <Route path={DASHBOARD_PATH} element={<Dashboard />} />
         <Route path={FORGOT_PASSWORD_PATH} element={<ForgotPassword />} />
         <Route path={`${RENEW_PASSWORD_PATH}/:email`} element={<RenewPassword />} />
@@ -249,6 +257,7 @@ export default function App(): JSX.Element {
         <Route path={TOP_GENRES_PATH} element={<TopGenres />} ></Route>
         <Route path={ARTISTS_OF_THE_MONTH_PATH} element={<ArtistsOfTheMonth />} ></Route>
         <Route path={USER_PROFILE_PATH} element={<UserProfileWrapper />} ></Route>
+        <Route path={DEFAULT_PATH} element={<HomePage />} ></Route>
       </Routes>
     </div>
   </div>

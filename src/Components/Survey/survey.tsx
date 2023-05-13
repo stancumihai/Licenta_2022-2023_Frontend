@@ -25,10 +25,12 @@ import {
     HOME_PATH,
     MAX_CHECKBOX_CHECKED_NUMBER,
     MAX_CHECKBOX_CHECKED_NUMBER_ERROR,
+    MULTICHOICE_AND_SINGLECHOICE_MAX_ANSWER_NUMBER,
     MULTISELECT_ERROR_MESSAGE,
     REQUIRED_ASSET_LOCATION,
     SEARCHBOX_ERROR_MESSAGE,
-    SURVEY_TITLE
+    SURVEY_TITLE,
+    TEXFIELD_MAX_ANSWER_NUMBER
 } from '../../Library/constants';
 import { ISurveyAnswer } from '../../Models/ISurveyAnswer';
 import { ISurveyQuestion } from '../../Models/ISurveyQuestion';
@@ -523,12 +525,13 @@ export const Survey = (): JSX.Element => {
         if (isCheckboxLimitSurpassed()) {
             setMultiselectMessage(MAX_CHECKBOX_CHECKED_NUMBER_ERROR);
             setTimeout(() => {
-            }, 200)
+                setMultiselectMessage('');
+            }, 2000)
             return;
         }
         setMultiselectMessage('');
         setTimeout(() => {
-        }, 200)
+        }, 200);
     };
 
     const handleSurveyError = (message: string): void => {
@@ -538,13 +541,13 @@ export const Survey = (): JSX.Element => {
         }, 2000)
     };
 
+
     const isReadyToSend = (): boolean => {
-        setMultiselectMessage('');
-        if (mappedSuggestions.length !== 3) {
+        if (mappedSuggestions.length < 3) {
             handleSurveyError(SEARCHBOX_ERROR_MESSAGE);
             return false;
         }
-        if (multiselectMessage === '') {
+        if (collectedData.length < 3) {
             handleSurveyError(MULTISELECT_ERROR_MESSAGE);
             return false;
         }
@@ -569,12 +572,11 @@ export const Survey = (): JSX.Element => {
     };
 
     const handleSendClick = () => {
-        setMappedSuggestions([]);
         if (!isReadyToSend()) {
             return;
         }
-        let textFieldData: ISurveyUserRowResponse[] = getTextfieldData();
-        textFieldData = textFieldData.concat(collectedData);
+        let textFieldData: ISurveyUserRowResponse[] = getTextfieldData().slice(-TEXFIELD_MAX_ANSWER_NUMBER);
+        textFieldData = textFieldData.concat(collectedData.slice(-MULTICHOICE_AND_SINGLECHOICE_MAX_ANSWER_NUMBER));
         const surveyUserAnswers: ISurveyUserAnswer[] = [];
         textFieldData.forEach((data: ISurveyUserRowResponse) => {
             const surveyUserAnswer: ISurveyUserAnswer = {
@@ -588,11 +590,11 @@ export const Survey = (): JSX.Element => {
         const surveyUserAnswerBatch: ISurveyUserAnswerBatch = {
             surveyUserAnswers: surveyUserAnswers
         };
-        services.SurveyUserAnswerService.AddInSuperBatches(surveyUserAnswerBatch).then((data: IResponse<ISurveyUserAnswerBatch>) => {
-        });
+        services.SurveyUserAnswerService.AddInSuperBatches(surveyUserAnswerBatch).then((data: IResponse<ISurveyUserAnswerBatch>) => { });
         setMultiselectMessage('');
         setSurveyErrorMessage('');
         setSurveyCreatedMessage('User survey created');
+        uiContext.setSpinnerState(true);
         setTimeout(() => {
             navigate(HOME_PATH);
         }, 1000);

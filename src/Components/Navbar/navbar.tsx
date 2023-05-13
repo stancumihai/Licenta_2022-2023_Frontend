@@ -24,6 +24,9 @@ import { IMovieContextType } from '../../Enums/movieContextType';
 import { IMovie } from '../../Models/IMovie';
 import UiContext from '../../Contexts/Ui/uiContext';
 import { IUiContext } from '../../Contexts/Ui/uiContext.types';
+import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
+import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
+import { UserType } from '../../Enums/UserType';
 
 export const Navbar = (): JSX.Element => {
     const [showAdvancedSearch, setShowAdvancedSearch] = useState<boolean>(false);
@@ -31,6 +34,7 @@ export const Navbar = (): JSX.Element => {
     const [isRefreshConfirmationDisplayed, setIsRefreshConfirmationDisplayed] = useState<boolean>(false);
     const movieContext: IMovieContext = useContext(MovieContext);
     const uiContext: IUiContext = useContext(UiContext);
+    const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
 
     const handleOnAdvancedSearchClick = (): void => {
         setShowAdvancedSearch(true);
@@ -62,24 +66,26 @@ export const Navbar = (): JSX.Element => {
         movieContext.setCurrentMovies(IMovieContextType.HOME);
     };
 
+    const isAdmin = (): boolean => {
+        return authenticationContext.User.role === UserType.Administrator;
+    };
+
     return <div className={containerClassName}>
         <div className={searchContainer}>
             {uiContext.shoudDisplaySearch ? <TextField
                 onChange={handleSearchBoxChange}
                 value={searchText}
                 onKeyDown={handleSearchBarEnterKeyPressed}
-                placeholder={'Search everything'}
+                placeholder={isAdmin() ? 'Search user' : 'Search movie'}
                 iconProps={iconProps}
                 styles={textFieldStyles} /> : <></>}
-            {uiContext.shoudDisplaySearch ? <TbListSearch className={advancedSearchIconClassName}
+            {uiContext.shoudDisplaySearch && !isAdmin() ? <TbListSearch className={advancedSearchIconClassName}
                 onClick={handleOnAdvancedSearchClick} /> : <></>}
             <AdvancedSearch isOpen={showAdvancedSearch}
-                handleCloseDialog={handleCloseDialog}
-            />
+                handleCloseDialog={handleCloseDialog} />
             {
-                uiContext.shoudDisplaySearch ?
+                uiContext.shoudDisplaySearch && !isAdmin() ?
                     <IconButton iconProps={{ iconName: "Refresh" }}
-                        // disabled={props.isDashboardPageClicked}
                         onClick={handleRefreshButtonClick}
                         styles={iconStyles} /> : <></>
             }

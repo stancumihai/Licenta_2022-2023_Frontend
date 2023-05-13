@@ -49,6 +49,7 @@ import {
     useNavigate
 } from 'react-router';
 import { HOME_PATH } from '../../Library/constants';
+import { UserType } from '../../Enums/UserType';
 
 export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -162,6 +163,10 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
         })
         setActors(actors);
     }, []);
+
+    const isAdmin = (): boolean => {
+        return authenticationContext.User.role === UserType.Administrator;
+    };
 
     const mapGenres = (): JSX.Element[] => {
         const genres: string[] = props.movieRating.movie.genres.split(',');
@@ -316,7 +321,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
         <div className={iconContainerClassName}>
             <div style={{ display: 'flex', marginLeft: '-60%' }}>
                 {!isWatchLaterPath() &&
-                    <div>
+                    <div style={isAdmin() ? { display: 'none' } : {}}>
                         <MdWatchLater onClick={handleWatchLaterClick}
                             className={!isWatchLaterChecked ?
                                 iconClassName :
@@ -329,7 +334,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             </div>
             <div style={{ display: 'flex', marginLeft: '-60%' }}>
                 {!isWatchLaterPath() &&
-                    <div>
+                    <div style={isAdmin() ? { display: 'none' } : {}}>
                         <AiOutlineLike onClick={handleMovieLikeClick}
                             className={!isMovieLiked ?
                                 iconClassName :
@@ -342,7 +347,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             </div>
             <div style={{ display: 'flex' }}>
                 {isWatchLaterPath() &&
-                    <div>
+                    <div style={isAdmin() ? { display: 'none' } : {}}>
                         <BiCheckCircle onClick={handleSeenClick}
                             className={!isMovieSeen || isWatchLaterPath() ?
                                 iconClassName :
@@ -382,7 +387,8 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
                     <span className={detailSpanTitleClassName}>Overview</span>
                     <p>{overviewExample}</p>
                 </li>
-                <li className={listItemClassName}>
+                <li style={isAdmin() ? { display: 'none' } : {}}
+                    className={listItemClassName}>
                     <span className={detailSpanTitleClassName}>My Rating</span>
                     <Rating max={5}
                         onChange={handleRatingChange}

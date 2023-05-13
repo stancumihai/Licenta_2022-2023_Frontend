@@ -4,7 +4,8 @@ import { IMessageCalloutProps } from './messageCallout.types';
 
 export const MessageCallout = (props: IMessageCalloutProps): JSX.Element => {
 
-    return <Callout className={calloutStyles.callout}
+    return <Callout styles={{ calloutMain: { borderRadius: '10px' } }}
+        className={calloutStyles.callout}
         role="dialog"
         onDismiss={() => props.setIsCalloutVisible(false)}
         setInitialFocus>

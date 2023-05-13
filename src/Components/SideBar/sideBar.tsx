@@ -8,7 +8,7 @@ import {
     NavigateFunction,
     useNavigate,
 } from 'react-router';
-import { IconButton, mergeStyles } from 'office-ui-fabric-react';
+import { IconButton } from 'office-ui-fabric-react';
 import Cookies from 'universal-cookie';
 import {
     REFRESH_TOKEN,
@@ -21,39 +21,79 @@ import {
     RECOMMENDATIONS_PATH,
     TOP_GENRES_PATH,
     ARTISTS_OF_THE_MONTH_PATH,
-    HOME_PATH
+    HOME_PATH,
+    MANAGE_USERS_PATH
 } from '../../Library/constants';
 import { CustomDialog } from '../CustomDialog/customDialog';
 import { SideBarListItem } from '../SidebarListItem/sideBarListItem';
 import './sideBar.css'
 import MovieContext from '../../Contexts/Movie/movieContext';
 import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
-import { IMovieContextType } from '../../Enums/movieContextType';
 import $ from 'jquery';
+import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
+import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
+import { UserType } from '../../Enums/UserType';
 
 export const SideBar = (): JSX.Element => {
     const cookie = new Cookies();
+    const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
     const movieContext: IMovieContext = useContext(MovieContext);
-
     const [isLogoutCustomDialogHidden, setIsLogoutCustomDialogHidden] = useState<boolean>(true);
     const [isSidebarClicked, setIsSidebarClicked] = useState<boolean>(false);
     const [isToggleActive, setIsToggleActive] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
 
-    const sidebarListItems = [
+    const sidebarAdminListItems = [
         {
             iconName: 'Home',
             text: 'Home',
+            handleSidebarNavigation: () => navigate(HOME_PATH)
+        },
+        {
+            iconName: 'Contact',
+            text: 'Users',
+            handleSidebarNavigation: () => navigate(MANAGE_USERS_PATH),
+        },
+        {
+            iconName: 'Trending12',
+            text: 'Trending',
+            handleSidebarNavigation: () => navigate(TRENDING_PATH),
+        },
+        {
+            iconName: 'BarChartVertical',
+            text: 'Charts',
+            handleSidebarNavigation: () => navigate(DASHBOARD_PATH)
+        },
+        {
+            iconName: 'FavoriteList',
+            text: 'Top Genres',
+            handleSidebarNavigation: () => navigate(TOP_GENRES_PATH)
+        },
+        {
+            iconName: 'Flashlight',
+            text: 'Arists Of The Month',
+            handleSidebarNavigation: () => navigate(ARTISTS_OF_THE_MONTH_PATH)
+        },
+        {
+            iconName: 'PowerButton',
+            text: 'Logout',
             handleSidebarNavigation: () => {
-                navigate(HOME_PATH);
+                setIsLogoutCustomDialogHidden(false)
             }
+        },
+    ];
+
+    const sidebarUserListItems = [
+        {
+            iconName: 'Home',
+            text: 'Home',
+            handleSidebarNavigation: () => navigate(HOME_PATH)
         },
         {
             iconName: 'Heart',
             text: 'My Collection',
-            handleSidebarNavigation: () => {
-                navigate(MY_COLLECTION_PATH);
-            },
+            count: movieContext.collectionMovies.length,
+            handleSidebarNavigation: () => navigate(MY_COLLECTION_PATH)
         },
         {
             iconName: 'Trending12',
@@ -102,10 +142,40 @@ export const SideBar = (): JSX.Element => {
     ];
 
     useEffect(() => {
-        handleSidebar();
+        handleSidebarMechanism();
     }, []);
 
-    const getSidebarIndex = (): number => {
+    const getSidebarAdminIndex = (): number => {
+        const url: string = window.location.href;
+        switch (url) {
+            case "http://localhost:3000/home": {
+                return 0;
+            }
+            case "http://localhost:3000/users": {
+                return 1;
+            }
+            case "http://localhost:3000/home/trending": {
+                return 2;
+            }
+            case "http://localhost:3000/charts": {
+                return 3;
+            }
+            case "http://localhost:3000/recommendations": {
+                return 4;
+            }
+            case "http://localhost:3000/topGenres": {
+                return 5;
+            }
+            case "http://localhost:3000/artistsOfTheMonth": {
+                return 6;
+            }
+            default: {
+                return -1;
+            }
+        }
+    };
+
+    const getSidebarUserIndex = (): number => {
         const url: string = window.location.href;
         switch (url) {
             case "http://localhost:3000/home": {
@@ -141,7 +211,15 @@ export const SideBar = (): JSX.Element => {
         }
     };
 
-    const handleSidebar = () => {
+    const isAdmin = (): boolean => {
+        return authenticationContext.User.role === UserType.Administrator;
+    };
+
+    const getSideBarListItems = (): ISidebarListItem[] => {
+        return isAdmin() ? sidebarAdminListItems : sidebarUserListItems;
+    };
+
+    const handleSidebarMechanism = () => {
         const list = $('.list');
         for (let i: number = 0; i < list.length; i++) {
             if (list[i] instanceof HTMLElement) {
@@ -156,7 +234,7 @@ export const SideBar = (): JSX.Element => {
             }
         }
         if (!isSidebarClicked) {
-            const sidebarIndex: number = getSidebarIndex();
+            const sidebarIndex: number = isAdmin() ? getSidebarAdminIndex() : getSidebarUserIndex();
             if (sidebarIndex === -1) {
                 return;
             }
@@ -192,7 +270,7 @@ export const SideBar = (): JSX.Element => {
     };
 
     return <div className='navigation'>
-        {sidebarListItems.map((sidebarListItem: ISidebarListItem, i: number) => {
+        {getSideBarListItems().map((sidebarListItem: ISidebarListItem, i: number) => {
             return <SideBarListItem key={i}
                 isToggleActive={isToggleActive}
                 sidebarListItem={sidebarListItem} />

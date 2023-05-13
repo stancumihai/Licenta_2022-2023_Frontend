@@ -9,6 +9,7 @@ export const imageClassName: string = mergeStyles({
     height: '50vh',
     transition: 'filter 0.4s ease-in-out, opacity 0.4s ease-in-out',
     filter: 'hue-rotate(0deg)',
+    borderTopLeftRadius: '10px',
     selectors: {
         ':hover': {
             filter: 'hue-rotate(90deg)',

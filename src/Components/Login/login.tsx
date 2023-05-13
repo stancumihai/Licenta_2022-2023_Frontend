@@ -57,6 +57,8 @@ import AuthentificationContext from '../../Contexts/Authentication/authenticatio
 import { IResponse } from '../../Models/IResponse';
 import { IUser } from '../../Models/User/IUser';
 import $ from 'jquery';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const Login = (): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -77,6 +79,7 @@ export const Login = (): JSX.Element => {
 
     const navigate: NavigateFunction = useNavigate();
     const cookie = new Cookies();
+    const uiContext: IUiContext = useContext(UiContext);
 
     const isReadyToSumbit = (data: ILoginFormData): boolean => {
         return data.Email !== "" && data.Password !== '';
@@ -131,6 +134,7 @@ export const Login = (): JSX.Element => {
                 cookie.set(JWT_TOKEN, data.Data.accessToken);
                 services.AuthenticationService.GetLoggedInUser().then((data: IResponse<IUser>) => {
                     authenticationContext.SetUpdatedUser(data.Data!);
+                    uiContext.setSpinnerState(true);
                     navigate(SURVEY_PATH);
                 });
                 return;

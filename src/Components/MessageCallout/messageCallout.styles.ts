@@ -5,6 +5,7 @@ import {
 
 export const calloutStyles = mergeStyleSets({
     callout: {
+        borderRadius:'30px',
         boxShadow: 'none',
         backgroundColor: 'transparent',
         marginLeft: '42vw',

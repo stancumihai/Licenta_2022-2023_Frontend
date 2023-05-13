@@ -29,6 +29,7 @@ import {
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import { NotificationsHoverCard } from '../NotificationsHoverCard/notificationsHoverCard';
+import { UserType } from '../../Enums/UserType';
 
 export const ProfileSettings = (): JSX.Element => {
     const navigate: NavigateFunction = useNavigate();
@@ -61,31 +62,33 @@ export const ProfileSettings = (): JSX.Element => {
         }
     };
 
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         try {
-    //             const webSocketUrl = "https://localhost:7145/notification";
-    //             const connection: HubConnection = new HubConnectionBuilder()
-    //                 .withUrl(webSocketUrl)
-    //                 .configureLogging(LogLevel.None)
-    //                 .build();
-    //             setConnection(connection);
-    //         } catch (e) {
-    //             console.log(e);
-    //         }
-    //     }, 5000)
-    // });
+    useEffect(() => {
+        if (authenticationContext.User.role !== UserType.Administrator) {
+            setTimeout(() => {
+                try {
+                    const webSocketUrl = "https://localhost:7145/notification";
+                    const connection: HubConnection = new HubConnectionBuilder()
+                        .withUrl(webSocketUrl)
+                        .configureLogging(LogLevel.None)
+                        .build();
+                    setConnection(connection);
+                } catch (e) {
+                    console.log(e);
+                }
+            }, 5000);
+        }
+    });
 
-    // useEffect(() => {
-    //     if (connection) {
-    //         connection.start()
-    //             .then(result => {
-    //                 connection.on('ReceiveNotification', (message: string) => {
-    //                     authenticationContext.setUpdatedNotifications(true);
-    //                 });
-    //             })
-    //     }
-    // }, [connection]);
+    useEffect(() => {
+        if (connection) {
+            connection.start()
+                .then(result => {
+                    connection.on('ReceiveNotification', (message: string) => {
+                        authenticationContext.setUpdatedNotifications(true);
+                    });
+                })
+        }
+    }, [connection]);
 
     const handleNotificationClick = (): void => {
         authenticationContext.setUpdatedNotifications(false);
@@ -98,9 +101,14 @@ export const ProfileSettings = (): JSX.Element => {
         }
     };
 
+    const isAdmin = (): boolean => {
+        return authenticationContext.User.role === UserType.Administrator;
+    };
+
     return <div className={containerClassName}>
         <div style={{ position: 'relative', display: 'inline-block' }}>
-            <IconButton styles={iconButtonStyles}
+            <IconButton style={isAdmin() ? { display: 'none' } : {}}
+                styles={iconButtonStyles}
                 iconProps={notificationIcon}
                 onClick={handleNotificationClick}
                 onMouseEnter={handleOnNotificationMouseEnter}
@@ -108,7 +116,8 @@ export const ProfileSettings = (): JSX.Element => {
             {authenticationContext.HasNotifications && <div className={notificationDotClassName}></div>}
             {showHoverCard && <NotificationsHoverCard />}
         </div>
-        <CommandButton iconProps={{ iconName: 'AccountManagement' }}
+        <CommandButton style={isAdmin() ? { display: 'none' } : {}}
+            iconProps={{ iconName: 'AccountManagement' }}
             styles={commandButtonStyles}
             menuProps={menuProps} />
     </div >

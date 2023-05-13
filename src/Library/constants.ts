@@ -24,6 +24,7 @@ export const SURVEY_PATH: string = '/survey';
 export const HOME_PATH: string = '/home';
 export const MY_COLLECTION_PATH: string = '/home/myCollection';
 export const TRENDING_PATH: string = '/home/trending';
+export const MANAGE_USERS_PATH: string = '/users';
 export const MY_HISTORY_PATH: string = '/home/myHistory';
 export const FORGOT_PASSWORD_PATH: string = '/forgotPassword';
 export const RENEW_PASSWORD_PATH: string = 'renewPassword';
@@ -82,7 +83,17 @@ export const START_PAGE_INDEX: number = 1;
 export const MAX_MOVIES_PER_PAGE: number = 8;
 export const MOVIE_NOT_FOUND_IMAGE_LOCATION: string = './assets/MovieNotFound.png'
 export const RADIAN: number = Math.PI / 180;
-
+export const MULTICHOICE_AND_SINGLECHOICE_MAX_ANSWER_NUMBER: number = 4;
+export const TEXFIELD_MAX_ANSWER_NUMBER: number = 3;
+export const VIEW_BUTTON_COLUMN_KEY: string = 'viewButton';
+export const DATE_OF_BIRTH_COLUMN_KEY: string = 'dateOfBirth';
+export const DATE_OF_BIRTH_COLUMN_NAME: string = 'Date Of Birth';
+export const COUNTRY_COLUMN_KEY: string = 'country';
+export const COUNTRY_COLUMN_NAME: string = 'Country';
+export const CITY_COLUMN_KEY: string = 'city';
+export const CITY_COLUMN_NAME: string = 'City';
+export const FULL_NAME_COLUMN_KEY: string = 'fullName';
+export const FULL_NAME_COLUMN_NAME: string = 'Full Name';
 ///COLOR_PALLETE
 export const COLOR1: string = '#f1edf2';
 export const COLOR1_D_20: string = '#c5b5c9';

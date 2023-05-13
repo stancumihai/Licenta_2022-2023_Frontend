@@ -1,5 +1,5 @@
 import { mergeStyles } from 'office-ui-fabric-react';
-import { FONT_FAMILY } from '../../Library/constants';
+import { COLOR2, FONT_FAMILY } from '../../Library/constants';
 import { IRatingStyles } from '@fluentui/react';
 
 export const containerClassName: string = mergeStyles({
@@ -40,7 +40,12 @@ export const detailSpanTitleClassName: string = mergeStyles({
 export const paragraphListingClassName: string = mergeStyles({
     display: 'inline-block',
     marginRight: '5px',
-    lineHeight: "0"
+    lineHeight: "0",
+    selectors: {
+        ':hover': {
+            color: COLOR2
+        }
+    }
 });
 
 export const iconClassName: string = mergeStyles({

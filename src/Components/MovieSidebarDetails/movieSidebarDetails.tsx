@@ -28,7 +28,10 @@ export const MovieSidebarDetails = (props: IMovieSidebarDetailsProps): JSX.Eleme
     };
 
     return <div className={detailsSidebarClassName}>
-        <img onClick={() => { navigate(HOME_PATH); }} className={imageClassName} src={props.imageSource} alt='Loading'></img>
+        <img onClick={() => { navigate(HOME_PATH); }}
+            className={imageClassName}
+            src={props.imageSource}
+            alt='Loading'></img>
         <div className={movieDetailsContainerClassName}>
             <ul className={listClassName}>
                 <IconContext.Provider

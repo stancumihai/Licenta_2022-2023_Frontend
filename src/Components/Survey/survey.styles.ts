@@ -5,7 +5,7 @@ import {
     mergeStyles
 } from '@fluentui/react';
 import { IButtonStyles, ICalloutContentStyles, IChoiceGroupOptionStyles } from 'office-ui-fabric-react';
-import { COLOR1, COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
+import { COLOR1, COLOR1_D_20, COLOR1_D_40, COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
 
 export const mainLogoDivClassName: string = mergeStyles({
     position: 'relative',
@@ -125,11 +125,11 @@ export const sendButtonStyles: Partial<IButtonStyles> = {
         fontSize: '17.5px'
     },
     rootHovered: {
-        backgroundColor: '#857fe5',
+        backgroundColor: COLOR1_D_20,
         color: 'white'
     },
     rootPressed: {
-        backgroundColor: '#a7a3ed',
+        backgroundColor: COLOR1_D_40,
         color: 'white'
     }
 };

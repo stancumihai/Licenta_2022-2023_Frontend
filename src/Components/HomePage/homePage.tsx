@@ -28,6 +28,12 @@ export const HomePage = (): JSX.Element => {
     const [shouldResetPaginator, setShouldResetPaginator] = useState<boolean>(false);
 
     useEffect(() => {
+        if (window.location.href !== 'http://localhost:3000/home') {
+            window.location.href = 'http://localhost:3000/home';
+        }
+    }, []);
+
+    useEffect(() => {
         setShouldResetPaginator(prev => !prev);
         switch (sideBarPage) {
             case 'myCollection':
@@ -49,7 +55,7 @@ export const HomePage = (): JSX.Element => {
 
     useEffect(() => {
         onPageChange(1);
-    }, [movieContext.currentUsedMovies])
+    }, [movieContext.currentUsedMovies]);
 
     const onPageChange = (selectedPageIndex: number): void => {
         setMoviesToDisplayInPage(movieContext.currentUsedMovies
