@@ -35,6 +35,7 @@ import {
   SPINNER_LOADING_DATA_MESSAGE,
   SURVEY_PATH,
   TOP_GENRES_PATH,
+  USER_DETAILS_PATH,
   USER_PROFILE_PATH
 } from './Library/constants';
 import { ForgotPassword } from './Components/ForgotPassword/forgotPassword';
@@ -56,7 +57,6 @@ import { TopGenres } from './Components/TopGenres/topGenres';
 import { AuthenticatedRoute } from './Components/AuthenticatedRoute/authenticatedRoute';
 import { Survey } from './Components/Survey/survey';
 import { ITokenModel } from './Models/User/ITokenModel';
-import { UserProfileWrapper } from './Components/UserProfileWrapper/userProfileWrapper';
 import { SURVEY_PATH_PERMISSIONS } from './Contexts/Authentication/pagePermissions';
 import { SideBar } from './Components/SideBar/sideBar';
 import { Navbar } from './Components/Navbar/navbar';
@@ -70,14 +70,17 @@ import { IUiContext } from './Contexts/Ui/uiContext.types';
 import UiContext from './Contexts/Ui/uiContext';
 import { Dashboard } from './Components/Dashboard/dashboard';
 import { ManageUsers } from './Components/ManageUsers/manageUsers';
+import { UserProfile } from './Components/UserProfile/userProfile';
+import { UserDetails } from './Components/UserDetails/userDetails';
+import { UserType } from './Enums/UserType';
 
 initializeIcons(undefined, { disableWarnings: true });
 
 export default function App(): JSX.Element {
+  const services = useContext<ServiceContext>(ServiceContextInstance);
   const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
   const uiContext: IUiContext = useContext(UiContext);
   const navigate: NavigateFunction = useNavigate();
-  const services = useContext<ServiceContext>(ServiceContextInstance);
   const [userHasSurveyAnswers, setUserHasSurveyAnswers] = useState<boolean | undefined>(undefined);
   const cookie = new Cookies();
   const NON_AUTH_PAGES = ["login", "forgotPassword", "renewPassword"];
@@ -119,7 +122,8 @@ export default function App(): JSX.Element {
       currentPath.includes(RENEW_PASSWORD_PATH) ||
       currentPath.includes(USER_PROFILE_PATH) ||
       currentPath.includes(MOVIE_WRAPPER_PATH) ||
-      currentPath.includes(SURVEY_PATH)
+      currentPath.includes(SURVEY_PATH) ||
+      currentPath.includes(USER_DETAILS_PATH)
     ) {
       uiContext.setNavbarState(false);
       return;
@@ -149,7 +153,10 @@ export default function App(): JSX.Element {
     if (!window.location.href.includes('http://localhost:3000/renewPassword/') &&
       !window.location.href.includes('http://localhost:3000/forgotPassword') &&
       !window.location.href.includes('http://localhost:3000/login') &&
-      !window.location.href.includes('http://localhost:3000/sign_up')) {
+      !window.location.href.includes('http://localhost:3000/sign_up') &&
+      !window.location.href.includes('http://localhost:3000/movie')) {
+      debugger;
+      console.log(uiContext.shouldDisplaySpinner);
       setShouldDisplaySpinner(uiContext.shouldDisplaySpinner);
       setTimeout(() => {
         setShouldDisplaySpinner(false);
@@ -214,14 +221,18 @@ export default function App(): JSX.Element {
   };
 
   const hasSurveyPath = (): void => {
-    services.UserService.UserHasSurveyAnswers(authenticationContext.User.uid!)
-      .then((data: IResponse<any>) => {
-        if (!data.Data!) {
-          setUserHasSurveyAnswers(false);
-          return;
-        }
-        setUserHasSurveyAnswers(true);
-      });
+    if (authenticationContext.User.role !== UserType.Administrator) {
+      services.UserService.UserHasSurveyAnswers(authenticationContext.User.uid!)
+        .then((data: IResponse<any>) => {
+          if (!data.Data!) {
+            setUserHasSurveyAnswers(false);
+            return;
+          }
+          setUserHasSurveyAnswers(true);
+        });
+      return;
+    }
+    setUserHasSurveyAnswers(true);
   };
 
   return (<div className={containerClassName}>
@@ -256,7 +267,8 @@ export default function App(): JSX.Element {
         <Route path={RECOMMENDATIONS_PATH} element={<Recommendations />} ></Route>
         <Route path={TOP_GENRES_PATH} element={<TopGenres />} ></Route>
         <Route path={ARTISTS_OF_THE_MONTH_PATH} element={<ArtistsOfTheMonth />} ></Route>
-        <Route path={USER_PROFILE_PATH} element={<UserProfileWrapper />} ></Route>
+        <Route path={USER_PROFILE_PATH} element={<UserProfile />} ></Route>
+        <Route path={USER_DETAILS_PATH} element={<UserDetails />} ></Route>
         <Route path={DEFAULT_PATH} element={<HomePage />} ></Route>
       </Routes>
     </div>

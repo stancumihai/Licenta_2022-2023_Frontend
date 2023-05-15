@@ -8,4 +8,5 @@ export interface IMovieContext {
     watchLaterMovies: IMovie[];
     setCurrentMovies: (movieContextType: IMovieContextType, otherCollection?: IMovie[]) => void;
     currentUsedMovies: IMovie[];
+    isAllDataLoaded: () => boolean;
 };

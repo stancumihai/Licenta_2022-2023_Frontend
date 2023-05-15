@@ -113,7 +113,8 @@ export const ProfileSettings = (): JSX.Element => {
                 onClick={handleNotificationClick}
                 onMouseEnter={handleOnNotificationMouseEnter}
                 onMouseLeave={() => setShowHoverCard(false)} />
-            {authenticationContext.HasNotifications && <div className={notificationDotClassName}></div>}
+            {authenticationContext.HasNotifications && <div style={isAdmin() ? { display: 'none' } : {}}
+                className={notificationDotClassName}></div>}
             {showHoverCard && <NotificationsHoverCard />}
         </div>
         <CommandButton style={isAdmin() ? { display: 'none' } : {}}

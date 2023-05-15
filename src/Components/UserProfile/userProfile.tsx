@@ -18,14 +18,14 @@ import {
     profileSettingsTitleClassName,
     saveSettingsButtonStyles,
     roundedImageClassName,
-    textFieldStyles
+    textFieldStyles,
+    progressIndicatorStyles
 } from './userProfile.styles';
 import {
     useContext,
     useEffect,
     useState
 } from 'react';
-import { IUserProfileProps } from './userProfile.types';
 import { IUserProfileRead } from '../../Models/UserProfile/IUserProfileRead';
 import {
     NavigateFunction,
@@ -39,7 +39,8 @@ import {
 import {
     DatePicker,
     DayOfWeek,
-    DefaultButton
+    DefaultButton,
+    ProgressIndicator
 } from 'office-ui-fabric-react';
 import { CustomDialog } from '../CustomDialog/customDialog';
 import {
@@ -50,8 +51,10 @@ import { IUserProfileUpdate } from '../../Models/UserProfile/IUserProfileUpdate'
 import { IUserProfileCreate } from '../../Models/UserProfile/IUserProfileCreate';
 import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
+import UserContext from '../../Contexts/User/userContext';
+import { IUserContext } from '../../Contexts/User/userContext.types';
 
-export const UserProfile = (props: IUserProfileProps): JSX.Element => {
+export const UserProfile = (): JSX.Element => {
     const defaultUserProfile: IUserProfileRead = {
         uid: '',
         userUid: '',
@@ -61,6 +64,8 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         city: ''
     };
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
+    const services = useContext<ServiceContext>(ServiceContextInstance);
+    const userContext: IUserContext = useContext(UserContext);
     const [fullName, setFullName] = useState<string>(defaultUserProfile.fullName);
     const [city, setCity] = useState<string>(defaultUserProfile.city);
     const [country, setCountry] = useState<string>(defaultUserProfile.country);
@@ -68,20 +73,47 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
     const [isFormDisabled, setIsFormDisabled] = useState<boolean>(true);
     const [isEditButtonClicked, setIsEditButtonClicked] = useState<boolean>(false);
     const [isSaveSettingsClicked, setIsSaveSettingsClicked] = useState<boolean>(false);
-    const services = useContext<ServiceContext>(ServiceContextInstance);
-
+    const [percentComplete, setPercentComplete] = useState(0);
+    const [displayProgessIndicator, setDisplayProgessIndicator] = useState<boolean>(false);
+    const [progressBarMessage, setProgressBarMessage] = useState<string>('')
     const navigate: NavigateFunction = useNavigate();
 
+    const getLoggedUserProfile = (): IUserProfileRead | undefined => {
+        return userContext.users.filter((u: IUserProfileRead) => u.userUid === authenticationContext.User.uid!)[0];
+    };
+
     useEffect(() => {
-        if (props.userProfile !== undefined) {
-            setFullName(props.userProfile!.fullName);
-            setCity(props.userProfile.city);
-            setCountry(props.userProfile.country);
-            setDateOfBirth(new Date(props.userProfile.dateOfBirth))
+        const userProfile: IUserProfileRead | undefined = getLoggedUserProfile();
+        if (userProfile !== undefined) {
+            setFullName(userProfile.fullName);
+            setCity(userProfile.city);
+            setCountry(userProfile.country);
+            setDateOfBirth(new Date(userProfile.dateOfBirth))
             return;
         }
         setIsFormDisabled(false);
     }, []);
+
+    useEffect(() => {
+        if (displayProgessIndicator === true) {
+            const intervalDelay = 50;
+            const intervalIncrement = 0.01;
+            setTimeout(() => {
+                setPercentComplete((intervalIncrement + percentComplete) % 1);
+                if ((intervalIncrement + percentComplete) > 0.51) {
+                    setProgressBarMessage('You will be redirected to Home Page!');
+                }
+                if ((intervalIncrement + percentComplete) > 1) {
+                    setProgressBarMessage('Profile Updated Succesfully!')
+                    setDisplayProgessIndicator(false);
+                    setTimeout(() => {
+                        window.location.href = 'http://localhost:3000/home';
+                    }, 1000)
+                    return;
+                }
+            }, intervalDelay);
+        }
+    });
 
     const onFullNameChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newFullName?: string | undefined): void => {
         setFullName(newFullName!);
@@ -96,15 +128,7 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
     };
 
     const handleEditButtonClick = (): void => {
-        if (props.userProfile === undefined) {
-            const userProfile: IUserProfileCreate = {
-                userUid: authenticationContext.User.uid!,
-                fullName,
-                city,
-                country,
-                dateOfBirth: new Date()
-            };
-            services.UserProfilesService.Add(userProfile);
+        if (getLoggedUserProfile() === undefined) {
             setTimeout(() => {
                 setIsSaveSettingsClicked(true);
             }, 500)
@@ -118,15 +142,21 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         setIsEditButtonClicked(false);
     };
 
-    const handlePushSettingsClick = (): void => {
+    const handleSaveSettingsClick = (): void => {
         setTimeout(() => {
             setIsFormDisabled(true);
             setIsEditButtonClicked(false);
             setIsSaveSettingsClicked(true);
         }, 500);
     };
+
+    const hasSameProfileData = () => {
+        return fullName === getLoggedUserProfile()!.fullName &&
+            city === getLoggedUserProfile()!.city &&
+            country === getLoggedUserProfile()!.country
+    };
+
     const handleCloseDialog = (accepted?: boolean): void => {
-        debugger;
         if (accepted === false) {
             setTimeout(() => {
                 setIsSaveSettingsClicked(false);
@@ -135,18 +165,32 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         }
         setTimeout(() => {
             setIsSaveSettingsClicked(false);
-            if (fullName === props.userProfile?.fullName &&
-                city === props.userProfile.city &&
-                country === props.userProfile.country) {
+            if (getLoggedUserProfile() === undefined) {
+                const userProfile: IUserProfileCreate = {
+                    userUid: authenticationContext.User.uid!,
+                    fullName,
+                    city,
+                    country,
+                    dateOfBirth
+                };
+                services.UserProfilesService.Add(userProfile);
+                setDisplayProgessIndicator(true);
+                return;
+            }
+            if (hasSameProfileData()) {
                 return;
             }
             const newUserProfile: IUserProfileUpdate = {
-                uid: props.userProfile?.uid,
+                uid: getLoggedUserProfile()!.uid,
                 fullName,
                 city,
                 country
             };
             services.UserProfilesService.Update(newUserProfile);
+            setDisplayProgessIndicator(true);
+            setFullName(newUserProfile.fullName);
+            setCity(newUserProfile.city);
+            setCountry(newUserProfile.country);
         }, 500);
     };
 
@@ -154,7 +198,15 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
         setDateOfBirth(date!);
     };
 
+
     return <div className={containerClassName}>
+        <div style={displayProgessIndicator === false ? { display: 'none' } : {}}>
+            <ProgressIndicator styles={progressIndicatorStyles}
+                label={progressBarMessage === '' ?
+                    (getLoggedUserProfile() !== undefined ? 'Updating Profile' : 'Creating Profile') : progressBarMessage}
+                percentComplete={percentComplete} />
+        </div>
+
         <div style={{ cursor: 'pointer' }} onClick={() => navigate(HOME_PATH)}>
             <IconButton iconProps={{ iconName: "Back" }}
                 styles={goBackIconStyles} />
@@ -208,23 +260,21 @@ export const UserProfile = (props: IUserProfileProps): JSX.Element => {
                     underlined
                     value={dateOfBirth}
                     firstDayOfWeek={DayOfWeek.Monday}
-                    borderless={true}
-                    minDate={new Date()}
-                />
+                    borderless={true} />
             </div>
             <div style={{ display: 'flex' }}>
-                <DefaultButton text={props.userProfile === undefined ? 'Create' : 'Edit'}
+                <DefaultButton text={getLoggedUserProfile() === undefined ? 'Create' : 'Edit'}
                     styles={editButtonStyles}
                     onClick={handleEditButtonClick} />
-                {isEditButtonClicked && props.userProfile !== undefined &&
+                {isEditButtonClicked && getLoggedUserProfile() !== undefined &&
                     <DefaultButton styles={saveSettingsButtonStyles}
                         text="Save"
-                        onClick={handlePushSettingsClick} />}
+                        onClick={handleSaveSettingsClick} />}
             </div>
             <div style={{ position: 'absolute' }}>
                 <CustomDialog acceptedButtonStyles={acceptedButtonStyles}
                     dialogStyles={dialogStyles}
-                    mainText={props.userProfile === undefined ?
+                    mainText={getLoggedUserProfile() === undefined ?
                         "Are you sure?" :
                         "Are you sure of updates?"}
                     isHidden={!isSaveSettingsClicked}

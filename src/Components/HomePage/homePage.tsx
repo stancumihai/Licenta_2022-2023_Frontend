@@ -20,6 +20,7 @@ import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
 import MovieContext from '../../Contexts/Movie/movieContext';
 import { useParams } from 'react-router-dom';
 import { IMovieContextType } from '../../Enums/movieContextType';
+import { PAGES } from './homePage.types';
 
 export const HomePage = (): JSX.Element => {
     const { sideBarPage } = useParams();
@@ -28,9 +29,7 @@ export const HomePage = (): JSX.Element => {
     const [shouldResetPaginator, setShouldResetPaginator] = useState<boolean>(false);
 
     useEffect(() => {
-        if (window.location.href !== 'http://localhost:3000/home') {
-            window.location.href = 'http://localhost:3000/home';
-        }
+        handlePageRedirection();
     }, []);
 
     useEffect(() => {
@@ -57,6 +56,21 @@ export const HomePage = (): JSX.Element => {
         onPageChange(1);
     }, [movieContext.currentUsedMovies]);
 
+    const handlePageRedirection = () => {
+        if (window.location.href !== 'http://localhost:3000/home') {
+            if (sideBarPage === undefined) {
+                window.location.href = 'http://localhost:3000/home';
+                return
+            }
+            for (let i = 0; i < PAGES.length; i++) {
+                if (PAGES[i].includes(sideBarPage)) {
+                    return;
+                }
+            }
+            window.location.href = 'http://localhost:3000/home';
+        }
+    };
+
     const onPageChange = (selectedPageIndex: number): void => {
         setMoviesToDisplayInPage(movieContext.currentUsedMovies
             .slice((selectedPageIndex - 1) * MAX_MOVIES_PER_PAGE,
@@ -64,17 +78,19 @@ export const HomePage = (): JSX.Element => {
     };
 
     return <div className={containerClassName}>
-        <div>
-            <div className={mainLogoDivClassName}>
-                <Logo mainLogoClassName={mainLogoClassName}
-                    mainTextClassName={mainTextClassName} />
-            </div>
-            <MovieCardsContainer moviesToDisplayInPage={moviesToDisplayInPage !== undefined ? moviesToDisplayInPage : []} />
-            <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}
-                totalItemsCount={movieContext.currentUsedMovies.length}
-                onPageChange={onPageChange}
-                shouldReset={shouldResetPaginator}
-            />
-        </div>
+        {movieContext.isAllDataLoaded() &&
+            <>
+                <div className={mainLogoDivClassName}>
+                    <Logo mainLogoClassName={mainLogoClassName}
+                        mainTextClassName={mainTextClassName} />
+                </div>
+                <MovieCardsContainer moviesToDisplayInPage={moviesToDisplayInPage !== undefined ? moviesToDisplayInPage : []} />
+                <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}
+                    totalItemsCount={movieContext.currentUsedMovies.length}
+                    onPageChange={onPageChange}
+                    shouldReset={shouldResetPaginator}
+                />
+            </>
+        }
     </div>
 };

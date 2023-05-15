@@ -14,5 +14,4 @@ export const MessageCallout = (props: IMessageCalloutProps): JSX.Element => {
         </h1>
         <h3 className={calloutStyles.message} >{props.notificationMessage}</h3>
     </Callout>
-
 };

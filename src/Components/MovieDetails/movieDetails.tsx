@@ -50,6 +50,9 @@ import {
 } from 'react-router';
 import { HOME_PATH } from '../../Library/constants';
 import { UserType } from '../../Enums/UserType';
+import { NavigateOptions } from 'react-router-dom';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -72,6 +75,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
         services.UserMovieRatingsService.GetByMovieAndUser(props.movieRating.movie.uid!));
     const [isConfirmationSeenDialogOpen, setIsConfirmationSeenDialogOpen] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
+    const uiContext: IUiContext = useContext(UiContext);
 
     useEffect(() => {
         if (movieRatingData.isLoading) {
@@ -236,25 +240,25 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             setIsConfirmationSeenDialogOpen(true);
             return;
         }
-        const seenMovie: ISeenMovieCreate = {
-            movieUid: props.movieRating.movie.uid!,
-            userUid: authenticationContext.User.uid!
-        };
+        // const seenMovie: ISeenMovieCreate = {
+        //     movieUid: props.movieRating.movie.uid!,
+        //     userUid: authenticationContext.User.uid!
+        // };
 
-        if (isMovieSeen) {
-            services.SeenMoviesService.Delete(historyEntranceId);
-            setIsMovieSeen(false);
-            setHistoryEntranceId('');
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
-            return;
-        }
-        services.SeenMoviesService.Add(seenMovie);
-        setIsMovieSeen(true);
-        setTimeout(() => {
-            window.location.reload();
-        }, 500);
+        // if (isMovieSeen) {
+        //     services.SeenMoviesService.Delete(historyEntranceId);
+        //     setIsMovieSeen(false);
+        //     setHistoryEntranceId('');
+        //     setTimeout(() => {
+        //         window.location.reload();
+        //     }, 500);
+        //     return;
+        // }
+        // services.SeenMoviesService.Add(seenMovie);
+        // setIsMovieSeen(true);
+        // setTimeout(() => {
+        //     window.location.reload();
+        // }, 500);
     };
 
     const processGlobalMovieRatingChange = (movieRating: IMovieRating, newMyRating: number, oldMyRating?: number) => {
@@ -304,15 +308,16 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
         setIsConfirmationSeenDialogOpen(false);
         if (accepted === true) {
             services.MovieSubscriptionsService.GetByUserAndMovie(props.movieRating.movie.uid!).then((data: IResponse<IMovieSubscriptionRead>) => {
-                services.MovieSubscriptionsService.Delete(data.Data!.uid!);
-                const seenMovie: ISeenMovieCreate = {
-                    movieUid: props.movieRating.movie.uid!,
-                    userUid: authenticationContext.User.uid!
-                };
-                services.SeenMoviesService.Add(seenMovie);
-                setTimeout(() => {
-                    navigate(HOME_PATH);
-                }, 500);
+                services.MovieSubscriptionsService.Delete(data.Data!.uid!).then(() => {
+                    const seenMovie: ISeenMovieCreate = {
+                        movieUid: props.movieRating.movie.uid!,
+                        userUid: authenticationContext.User.uid!
+                    };
+                    services.SeenMoviesService.Add(seenMovie).then(() => {
+                        navigate(HOME_PATH);
+                        uiContext.setRefreshState(true);
+                    });
+                });
             });
         }
     };

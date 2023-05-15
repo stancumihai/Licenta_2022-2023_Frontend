@@ -12,7 +12,8 @@ const MovieContext: React.Context<IMovieContext> = createContext<IMovieContext>(
     historyMovies: [],
     watchLaterMovies: [],
     setCurrentMovies: () => { },
-    currentUsedMovies: []
+    currentUsedMovies: [],
+    isAllDataLoaded: () => { return false; }
 });
 
 export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Element => {
@@ -91,8 +92,15 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         setAreHistoryMoviesLoaded(true);
     }, [historyMoviesData]);
 
-    const isInitialDataLoaded = () => {
+    const isInitialDataLoaded = (): boolean => {
         return areMoviesLoaded;
+    };
+
+    const isAllDataLoaded = (): boolean => {
+        return areMoviesLoaded &&
+            areCollectionMoviesLoaded &&
+            areHistoryMoviesLoaded &&
+            areWatchLaterMoviesLoaded;
     };
 
     const setCurrentMovies = (movieContextType: IMovieContextType, otherCollection?: IMovie[]) => {
@@ -126,7 +134,8 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         watchLaterMovies,
         historyMovies,
         setCurrentMovies,
-        currentUsedMovies
+        currentUsedMovies,
+        isAllDataLoaded
     }}> {isInitialDataLoaded() && children} </MovieContext.Provider>);
 };
 

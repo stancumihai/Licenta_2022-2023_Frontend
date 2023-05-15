@@ -1,6 +1,11 @@
 import { IContextualMenuItemStyles } from '@fluentui/react';
 import { IButtonStyles, IIconProps, mergeStyles } from 'office-ui-fabric-react';
-import { COLOR1, COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
+import {
+    COLOR1,
+    COLOR2,
+    COLOR2_D_20,
+    COLOR2_D_40,
+} from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
     width: 'fit-content',

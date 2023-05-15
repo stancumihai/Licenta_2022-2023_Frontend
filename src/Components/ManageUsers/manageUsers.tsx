@@ -12,15 +12,11 @@ import {
     IColumn,
     IIconProps,
     IObjectWithKey,
+    IconButton,
     MarqueeSelection,
-    Selection
+    Selection,
+    SelectionMode
 } from '@fluentui/react';
-import {
-    ServiceContext,
-    ServiceContextInstance
-} from '../../Core/serviceContext';
-import { useFetch } from '../../Hooks/useFetch';
-import { IFetchResult } from '../../Hooks/useFetch.types';
 import {
     DATE_OF_BIRTH_COLUMN_KEY,
     DATE_OF_BIRTH_COLUMN_NAME,
@@ -30,62 +26,46 @@ import {
     CITY_COLUMN_NAME,
     FULL_NAME_COLUMN_NAME,
     FULL_NAME_COLUMN_KEY,
-    MAX_MOVIES_PER_PAGE
+    MAX_MOVIES_PER_PAGE,
+    VIEW_BUTTON_COLUMN_KEY,
+    USER_DETAILS_PATH
 } from '../../Library/constants';
 import {
     buttonContainerClassName,
     containerClassName,
+    iconStyle,
     manageUsersListStyles,
     titleClassName
 } from './manageUsers.styles';
 import { IUserProfileRead } from '../../Models/UserProfile/IUserProfileRead';
 import { getShortDateAsString } from '../../Library/dateUtils';
 import { Paginator } from '../Paginator/paginator';
+import UserContext from '../../Contexts/User/userContext';
+import { IUserContext } from '../../Contexts/User/userContext.types';
+import {
+    NavigateFunction,
+    NavigateOptions,
+    useNavigate
+} from 'react-router';
 
 export const ManageUsers = (): JSX.Element => {
-    const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
-    const [users, setUsers] = useState<IUserProfileRead[]>([]);
-    const [areUsersLoaded, setAreUsersLoaded] = useState<boolean>(false);
-    const usersData: IFetchResult<IUserProfileRead[]> = useFetch<IUserProfileRead[]>(() => services.UserProfilesService.GetAllUserProfiles());
+    const userContext: IUserContext = useContext(UserContext);
     const [usersToDisplayInPage, setUsersToDisplayInPage] = useState<IUserProfileRead[] | undefined>(undefined);
     const [selection] = useState<Selection<IObjectWithKey>>(() => new Selection({
-        onSelectionChanged: () => {
-        }
+
     }));
-
-    useEffect(() => {
-        if (usersData.isLoading) {
-            return;
-        }
-        if (usersData.errors !== '' ||
-            usersData.data === null ||
-            usersData.data?.Error !== undefined ||
-            usersData.data?.Data === undefined) {
-            return;
-        }
-        setUsers(getDummyData(usersData.data.Data));
-        setAreUsersLoaded(true);
-        onPageChange(1);
-    }, [usersData]);
+    const navigate: NavigateFunction = useNavigate();
 
     useEffect(() => {
         onPageChange(1);
-    }, [users]);
-
-    const getDummyData = (usersData: IUserProfileRead[]): IUserProfileRead[] => {
-        const user1: IUserProfileRead = usersData[0];
-        const userProfiles1: IUserProfileRead[] = Array(10).fill(user1);
-        const user2: IUserProfileRead = usersData[0];
-        user2.fullName = "Stancu 2";
-        const userProfiles2: IUserProfileRead[] = Array(10).fill(user2);
-        return userProfiles1.concat(userProfiles2);
-    };
+    }, [userContext.currentUsedUsers]);
 
     const columns = [
-        { key: FULL_NAME_COLUMN_KEY, name: FULL_NAME_COLUMN_NAME, fieldName: FULL_NAME_COLUMN_KEY, minWidth: 100, maxWidth: 250, isResizable: true },
+        { key: FULL_NAME_COLUMN_KEY, name: FULL_NAME_COLUMN_NAME, fieldName: FULL_NAME_COLUMN_KEY, minWidth: 100, maxWidth: 300, isResizable: true },
         { key: DATE_OF_BIRTH_COLUMN_KEY, name: DATE_OF_BIRTH_COLUMN_NAME, fieldName: DATE_OF_BIRTH_COLUMN_KEY, minWidth: 100, maxWidth: 200, isResizable: true },
         { key: COUNTRY_COLUMN_KEY, name: COUNTRY_COLUMN_NAME, fieldName: COUNTRY_COLUMN_KEY, minWidth: 100, maxWidth: 200, isResizable: true },
         { key: CITY_COLUMN_KEY, name: CITY_COLUMN_NAME, fieldName: CITY_COLUMN_KEY, minWidth: 100, maxWidth: 200, isResizable: true },
+        { key: VIEW_BUTTON_COLUMN_KEY, name: '', fieldName: '', minWidth: 200, maxWidth: 300, isResizable: true }
     ];
 
     const onRenderItemColumn = (item: IUserProfileRead, index?: number, column?: IColumn): any => {
@@ -93,35 +73,44 @@ export const ManageUsers = (): JSX.Element => {
             case DATE_OF_BIRTH_COLUMN_KEY: {
                 return getShortDateAsString(new Date(item.dateOfBirth))
             }
+            case VIEW_BUTTON_COLUMN_KEY:
+                return (
+                    <IconButton
+                        id={item.uid}
+                        iconProps={{ iconName: 'RedEye' }}
+                        styles={iconStyle}
+                        onClick={handleSelectedUserClick}
+                    />);
             default:
                 return item[column!.key as keyof IUserProfileRead];
         };
     };
 
+    const handleSelectedUserClick = (): void => {
+        const selectedUser: IUserProfileRead = selection.getSelection()[0] as IUserProfileRead;
+        const navigateOptions: NavigateOptions = {
+            state: {
+                selectedUser: selectedUser,
+            }
+        };
+        navigate(USER_DETAILS_PATH, navigateOptions);
+    };
+
     const onPageChange = (selectedPageIndex: number): void => {
-        setUsersToDisplayInPage(users.slice((selectedPageIndex - 1) * MAX_MOVIES_PER_PAGE,
+        if (usersToDisplayInPage === undefined) {
+            userContext.setCurrentUsers(userContext.users);
+            setUsersToDisplayInPage(userContext.users.slice((selectedPageIndex - 1) * MAX_MOVIES_PER_PAGE,
+                selectedPageIndex * MAX_MOVIES_PER_PAGE));
+            return;
+        }
+        setUsersToDisplayInPage(userContext.currentUsedUsers.slice((selectedPageIndex - 1) * MAX_MOVIES_PER_PAGE,
             selectedPageIndex * MAX_MOVIES_PER_PAGE));
     };;
 
-    const getButton = (buttonStyles: IButtonStyles | undefined,
-        iconProps: IIconProps,
-        onClickFunction: MouseEventHandler<HTMLButtonElement>,
-        text: string,
-        isDisabled?: boolean): React.ReactNode => {
-        return <DefaultButton styles={buttonStyles}
-            iconProps={iconProps}
-            onClick={onClickFunction}
-            disabled={isDisabled}>
-            {text}
-        </DefaultButton>;
-    };
     return <div className={containerClassName}>
         <h1 className={titleClassName}>{'Users'}</h1>
         <hr />
-        <div className={buttonContainerClassName} >
-
-        </div>
-        {areUsersLoaded && usersToDisplayInPage !== undefined && <div >
+        {usersToDisplayInPage !== undefined && <div >
             <MarqueeSelection selection={selection}>
                 <DetailsList setKey={'users'}
                     getKey={item => item.uid}
@@ -131,10 +120,10 @@ export const ManageUsers = (): JSX.Element => {
                     onRenderItemColumn={onRenderItemColumn}
                     selectionPreservedOnEmptyClick={true}
                     selection={selection}
-                    selectionMode={1} />
+                    selectionMode={SelectionMode.single} />
             </MarqueeSelection>
             <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}
-                totalItemsCount={users.length}
+                totalItemsCount={userContext.currentUsedUsers.length}
                 onPageChange={onPageChange}
             />
         </div>}

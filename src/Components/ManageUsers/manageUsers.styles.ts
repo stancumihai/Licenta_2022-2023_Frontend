@@ -1,5 +1,15 @@
-import { IDetailsListStyles, IIconProps } from 'office-ui-fabric-react';
-import { COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
+import {
+    IButtonStyles,
+    IDetailsListStyles,
+    IIconProps
+} from 'office-ui-fabric-react';
+import {
+    COLOR1_D_40,
+    COLOR2,
+    COLOR2_D_20,
+    COLOR2_D_40,
+    FONT_FAMILY
+} from '../../Library/constants';
 import { mergeStyles } from '@fluentui/react';
 
 export const containerClassName: string = mergeStyles({
@@ -9,77 +19,110 @@ export const containerClassName: string = mergeStyles({
     overflowY: 'hidden'
 });
 
-export const iconStyle = {
+export const iconStyle: Partial<IButtonStyles> = {
     root: {
         color: COLOR2,
         fontSize: '30px',
         fontStyle: 'normal',
         fontWeight: 'normal',
         speak: 'none',
+        backgroundColor: 'transparent'
     },
     rootPressed: {
         color: COLOR2_D_20,
-        backgroundColor: '#FFFFFF'
+        backgroundColor: 'transparent'
     },
     rootHovered: {
         color: COLOR2_D_40,
-        backgroundColor: '#FFFFFF'
+        backgroundColor: 'transparent'
     },
+    icon: {
+        fontSize: '30px'
+    }
 };
 
 export const eyeIconProps: IIconProps = { iconName: 'RedEye' };
 
 export const manageUsersListStyles: Partial<IDetailsListStyles> = {
     root: {
+        backgroundColor: 'transparent',
+        borderRadius: "20px",
+        width: '100%',
+        height: "100vh",
         fontFamily: FONT_FAMILY,
-        marginTop: '7vh',
-        backgroundColor: '',
-        overflow: 'hidden',
+        color: '#393939',
+        margin: 'auto',
+        marginTop: '5%',
+        position: 'relative',
+        overflowX: 'hidden',
+        overflowY: 'hidden',
+        '& [role=grid]': {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'start',
+        },
+    },
+    headerWrapper: {
+        backgroundColor: 'transparent',
+        flex: '0 0 auto',
         selectors: {
-            '.ms-Viewport': {
-                maxWidth: '60vw'
+            '.ms-DetailsHeader-cell': {
+                borderBottom: `2px solid ${COLOR1_D_40}`,
+                fontFamily: FONT_FAMILY,
+                fontSize: '20px'
             },
+            '.ms-DetailsHeader-cellName': {
+                fontSize: '24px',
+                color: COLOR2,
+            }
+        },
+    },
+    contentWrapper: {
+        flex: '1 1 auto',
+        overflowY: 'auto',
+        height: '100%',
+        backgroundColor: 'transparent',
+        selectors: {
             '.ms-DetailsRow-cell': {
-                textOverflow: 'ellipsis'
+                fontFamily: FONT_FAMILY,
+                color: 'white',
+                selectors: {
+                    ":hover": {
+                        background: "transparent",
+                        color: COLOR2,
+                    },
+                }
+            },
+            '.ms-GroupHeader': {
+                fontFamily: FONT_FAMILY,
+                fontSize: '30px',
+            },
+            '.ms-GroupHeader-title': {
+                fontSize: '20px',
             }
         }
     },
     focusZone: {
-        selectors: {
-            '.ms-DetailsRow': {
-                backgroundColor: '',
-                fontStyle: 'normal',
-                fontSize: '24px',
-                fontWeight: '300',
-                maxHeight: '100px',
-                textOverflow: 'ellipsis',
-                ':hover': {
-                    backgroundColor: '#FFFFFF'
-                }
-            },
-            '.ms-GroupHeader-title': {
-                fontStyle: 'normal',
-                fontSize: '24px',
-                fontWeight: '300'
+        '.ms-DetailsRow': {
+            fontSize: '24px',
+            color: '#393939',
+            backgroundColor: 'transparent',
+            borderBottom: '1px solid #393939',
+            selectors: {
+                ":hover": {
+                    background: "transparent",
+                    color: 'white',
+                },
             }
+        },
+        '.ms-DetailsRow-cell': {
+            color: '#393939',
+            fontSize: '24px',
+        },
+        '.ms-Check.is-checked::before': {
+            background: COLOR2
         }
     },
-    headerWrapper: {
-        fontFamily: FONT_FAMILY,
-        selectors: {
-            '.ms-DetailsHeader': {
-                fontFamily: FONT_FAMILY
-            },
-            '.ms-DetailsHeader-cellName': {
-                fontStyle: 'normal',
-                fontSize: '24px',
-                fontWeight: '800'
-            }
-        }
-    },
-    contentWrapper: {
-        fontFamily: FONT_FAMILY
-    }
 };
 
 export const buttonContainerClassName: string = mergeStyles({
@@ -87,9 +130,9 @@ export const buttonContainerClassName: string = mergeStyles({
 });
 
 export const titleClassName: string = mergeStyles({
+    fontFamily: FONT_FAMILY,
     textAlign: 'center',
     fontStyle: 'normal',
-    marginTop: '7vh',
     height: '56px',
     fontWeight: '700',
     fontSize: '54px',

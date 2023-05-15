@@ -35,6 +35,7 @@ export const getMonthlySeenMoviesChartModels = (data: any) => {
 
 export const getMonthlyMoviesCount = (monthlySeenMovies: MonthlyAppUsageModel[]): MonthlyMovieCount[] => {
     let monthlyMovieCount: MonthlyMovieCount[] = [];
+    console.log(monthlySeenMovies);
     for (let i = 0; i < monthlySeenMovies.length; i++) {
         const currentMonthlySeenMovie: MonthlyAppUsageModel = monthlySeenMovies[i];
         monthlyMovieCount.push({

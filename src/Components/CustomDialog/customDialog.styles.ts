@@ -28,7 +28,7 @@ export const acceptedButtonStyles: Partial<IButtonStyles> = {
 export const dialogContentStyles: Partial<IDialogContentStyles> = {
     title: {
         marginTop: '10px',
-        fontSize: '17.5px'
+        fontSize: '17.5px',
     },
     topButton: {
         display: 'none'

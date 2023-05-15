@@ -35,6 +35,7 @@ export const TOP_GENRES_PATH: string = '/topGenres';
 export const ARTISTS_OF_THE_MONTH_PATH: string = '/artistsOfTheMonth';
 export const USER_PROFILE_PATH: string = '/profile';
 export const MOVIE_WRAPPER_PATH: string = '/movie';
+export const USER_DETAILS_PATH: string = '/userDetails';
 export const CHOICE_GROUP_TYPE: string = 'ms-ChoiceField';
 export const SURVEY_QUESTIONS_ENDPONT: string = 'surveyQuestions';
 export const SURVEY_USER_ANSWER_ENDPOINT: string = 'surveyUserAnswer';
@@ -94,6 +95,7 @@ export const CITY_COLUMN_KEY: string = 'city';
 export const CITY_COLUMN_NAME: string = 'City';
 export const FULL_NAME_COLUMN_KEY: string = 'fullName';
 export const FULL_NAME_COLUMN_NAME: string = 'Full Name';
+export const PROFILE_NOT_YEY_CREATED_WARNING: string = 'Please Create Profile!';
 ///COLOR_PALLETE
 export const COLOR1: string = '#f1edf2';
 export const COLOR1_D_20: string = '#c5b5c9';

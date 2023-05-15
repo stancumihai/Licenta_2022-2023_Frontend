@@ -1,6 +1,7 @@
 import {
     IDatePickerStyles,
     IDialogStyles,
+    IProgressIndicatorStyles,
     mergeStyles
 } from 'office-ui-fabric-react';
 import {
@@ -21,7 +22,7 @@ export const containerClassName: string = mergeStyles({
 
 export const contentClassName: string = mergeStyles({
     width: '22.5%',
-    height: "70%",
+    height: "80%",
     margin: 'auto',
     transform: 'translate(0%, 35%)',
     boxSizing: 'border-box',
@@ -154,6 +155,7 @@ export const profileSettingsTitleClassName: string = mergeStyles({
 export const dialogStyles: Partial<IDialogStyles> = {
     main: {
         maxWidth: 450,
+        left: "2.75%",
         borderTop: `4px solid ${COLOR2}`
     }
 };
@@ -247,5 +249,23 @@ export const iconButtonStyles: Partial<IButtonStyles> = {
     },
     icon: {
         fontSize: '120px'
+    }
+};
+
+export const progressIndicatorStyles: Partial<IProgressIndicatorStyles> = {
+    root: {
+        width: '50%',
+        height: '1px',
+        position: 'absolute',
+        top: '3.5vh',
+        left: '30vw'
+    },
+    progressBar: {
+        background: COLOR2
+    },
+    itemName: {
+        fontSize: '15px',
+        color: COLOR2,
+        fontFamily: FONT_FAMILY
     }
 };

@@ -52,4 +52,8 @@ export default class MoviesService extends BaseService<IMovie>  {
     async GetAdvancedSearchMovieData(searchModel: ISearchModel): Promise<IResponse<IMovie[]>> {
         return await APIHelper.request(`${this._endpoint}/advancedSearch/`, 'POST', searchModel)
     };
-};
+
+    async GetAllMoviesCollectionByUser(userUid: string): Promise<IResponse<IMovie[]>> {
+        return await APIHelper.request(`${this._endpoint}/collection/${userUid}`, 'GET')
+    };
+};  

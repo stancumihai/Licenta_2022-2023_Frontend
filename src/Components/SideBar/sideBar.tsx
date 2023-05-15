@@ -33,17 +33,20 @@ import $ from 'jquery';
 import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import { UserType } from '../../Enums/UserType';
+import UserContext from '../../Contexts/User/userContext';
+import { IUserContext } from '../../Contexts/User/userContext.types';
 
 export const SideBar = (): JSX.Element => {
     const cookie = new Cookies();
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
     const movieContext: IMovieContext = useContext(MovieContext);
+    const userContext: IUserContext = useContext(UserContext);
     const [isLogoutCustomDialogHidden, setIsLogoutCustomDialogHidden] = useState<boolean>(true);
     const [isSidebarClicked, setIsSidebarClicked] = useState<boolean>(false);
     const [isToggleActive, setIsToggleActive] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
 
-    const sidebarAdminListItems = [
+    const sidebarAdminListItems: ISidebarListItem[] = [
         {
             iconName: 'Home',
             text: 'Home',
@@ -52,6 +55,7 @@ export const SideBar = (): JSX.Element => {
         {
             iconName: 'Contact',
             text: 'Users',
+            count: userContext.users.length,
             handleSidebarNavigation: () => navigate(MANAGE_USERS_PATH),
         },
         {
@@ -83,7 +87,7 @@ export const SideBar = (): JSX.Element => {
         },
     ];
 
-    const sidebarUserListItems = [
+    const sidebarUserListItems: ISidebarListItem[] = [
         {
             iconName: 'Home',
             text: 'Home',
@@ -152,6 +156,9 @@ export const SideBar = (): JSX.Element => {
                 return 0;
             }
             case "http://localhost:3000/users": {
+                return 1;
+            }
+            case "http://localhost:3000/userDetails": {
                 return 1;
             }
             case "http://localhost:3000/home/trending": {

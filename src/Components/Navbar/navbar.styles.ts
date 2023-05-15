@@ -1,5 +1,6 @@
 import { IButtonStyles, ITextFieldStyles, mergeStyles } from 'office-ui-fabric-react';
-import { COLOR1, COLOR2, FONT_FAMILY } from '../../Library/constants';
+import { COLOR1, COLOR2, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
+import { IMessageBarStyles } from '@fluentui/react';
 
 export const containerClassName: string = mergeStyles({
     padding: '2vh',
@@ -112,3 +113,21 @@ export const iconStyles: Partial<IButtonStyles> = {
     }
 };
 
+export const messageBarStyles: Partial<IMessageBarStyles> = {
+    root: {
+        width: '220px',
+        background: COLOR2,
+        borderRadius: '20px',
+        position: 'absolute',
+        marginLeft: '58.5vw',
+        bottom: '6vh'
+    },
+    icon: {
+        color: COLOR1,
+    },
+    text: {
+        color: COLOR1,
+        fontFamily: FONT_FAMILY,
+        fontSize: '15px'
+    }
+};
