@@ -22,7 +22,8 @@ import {
     TOP_GENRES_PATH,
     ARTISTS_OF_THE_MONTH_PATH,
     HOME_PATH,
-    MANAGE_USERS_PATH
+    MANAGE_USERS_PATH,
+    JWT_TOKEN
 } from '../../Library/constants';
 import { CustomDialog } from '../CustomDialog/customDialog';
 import { SideBarListItem } from '../SidebarListItem/sideBarListItem';
@@ -253,7 +254,7 @@ export const SideBar = (): JSX.Element => {
     };
 
     const handleLogout = (): void => {
-        cookie.getAll();
+        cookie.remove(JWT_TOKEN);
         cookie.remove(REFRESH_TOKEN);
         navigate(LOGIN_PATH);
     };

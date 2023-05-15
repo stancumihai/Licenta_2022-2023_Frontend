@@ -1,4 +1,4 @@
-import { buttonContainerClassName, containerClassName } from './dashboard.styles';
+import { buttonContainerClassName, containerClassName, contentContainerClassName } from './dashboard.styles';
 import {
     useContext,
     useState,
@@ -27,6 +27,8 @@ import AuthentificationContext from '../../Contexts/Authentication/authenticatio
 import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import { UserType } from '../../Enums/UserType';
 import { ISeenMovieRead } from '../../Models/SeenMovie/ISeenMovieRead';
+import { AgeViewershipModel } from '../../Models/AgeViewershipModel';
+import { chartTitleClassName } from '../Chart/charts.styles';
 
 export const Dashboard = (): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -35,10 +37,17 @@ export const Dashboard = (): JSX.Element => {
     const [areMonthlySeenMoviesLoadedd, setAreMonthlySeenMoviesLoaded] = useState<boolean>(false);
     const monthlySeenMoviesData: IFetchResult<MonthlyAppUsageModel[]> = useFetch<MonthlyAppUsageModel[]>(() => services.SeenMoviesService.GetMonthlySeenMovies());
     const [monthlySeenMovies, setMonthlySeenMovies] = useState<MonthlyAppUsageModel[]>([]);
+
     const [areTopSeenGenresLoaded, setAreTopSeenGenresLoaded] = useState<boolean>(false);
     const topSeenGenresData: IFetchResult<ITopGenreModel[]> = useFetch<ITopGenreModel[]>(() => services.SeenMoviesService.GetTopSeenGenres());
     const [topSeenGenres, setTopSeenGenres] = useState<ITopGenreModel[]>();
+
+    const [areTopAgeViewershipsLoaded, setAreTopAgeViewershipsLoaded] = useState<boolean>(false);
+    const topAgeViewershipsData: IFetchResult<AgeViewershipModel[]> = useFetch<AgeViewershipModel[]>(() => services.SeenMoviesService.GetTopViewershipByAge());
+    const [topAgeViewerships, setTopAgeViewerships] = useState<AgeViewershipModel[]>();
+    const [dataTitle, setDataTitle] = useState<string>("");
     const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false);
+    const [firstButtonClicked, setFirstButtonClicked] = useState<boolean>(false);
 
     useEffect(() => {
         if (monthlySeenMoviesData.isLoading) {
@@ -68,6 +77,26 @@ export const Dashboard = (): JSX.Element => {
         setTopSeenGenres(topSeenGenresData.data!.Data!);
         setAreTopSeenGenresLoaded(true);
     }, [topSeenGenresData]);
+
+    useEffect(() => {
+        if (topAgeViewershipsData.isLoading) {
+            return;
+        }
+        if (topAgeViewershipsData.errors !== "" ||
+            topAgeViewershipsData.data?.Error !== undefined ||
+            topAgeViewershipsData.data == null ||
+            topAgeViewershipsData.data.Data === undefined) {
+            return;
+        }
+        setTopAgeViewerships(topAgeViewershipsData.data!.Data!);
+        setAreTopAgeViewershipsLoaded(true);
+    }, [topAgeViewershipsData]);
+
+    useEffect(() => {
+        if (!firstButtonClicked) {
+            setFirstButtonActive();
+        }
+    }, [firstButtonClicked]);
 
     const filterTopSeenGenresDataByUser = (): ITopGenreModel[] => {
         let filterTopSeenGenres: ITopGenreModel[] = [];
@@ -108,6 +137,7 @@ export const Dashboard = (): JSX.Element => {
     };
 
     const handleGenreClick = () => {
+        setDataTitle('Genres Data')
         setIsButtonClicked((prev) => !prev);
         const chartData: IChartData[] = [
             {
@@ -119,6 +149,7 @@ export const Dashboard = (): JSX.Element => {
     };
 
     const handleHoursClick = () => {
+        setDataTitle('Runtime Data')
         setIsButtonClicked((prev) => !prev);
         const chartData: IChartData[] = [
             {
@@ -132,6 +163,7 @@ export const Dashboard = (): JSX.Element => {
     };
 
     const handleMoviesClick = () => {
+        setDataTitle('Movies Data')
         setIsButtonClicked((prev) => !prev);
         const chartData: IChartData[] = [
             {
@@ -145,24 +177,21 @@ export const Dashboard = (): JSX.Element => {
     };
 
     const handlePeopleClick = () => {
+        setDataTitle('Viewership Data')
         setIsButtonClicked((prev) => !prev);
         const chartData: IChartData[] = [
             {
-                graphType: GraphTypes.BAR_CHART,
-                data: isAdmin() ?
-                    getMonthlySeenMoviesChartModels(getMonthlyMoviesCount(monthlySeenMovies)) :
-                    getMonthlySeenMoviesChartModels(getMonthlyMoviesCount(filterMonthySeenMovisByUser()))
+                graphType: GraphTypes.SIMPLE_LINE_CHART,
+                data: topAgeViewerships!
             }
         ];
         setChartData(chartData);
     };
 
     const handleAllClick = () => {
+        setDataTitle('All')
         setIsButtonClicked((prev) => !prev);
         const chartData: IChartData[] = [
-            {
-                graphType: GraphTypes.PIE_CHART, data: topSeenGenres!
-            },
             {
                 graphType: GraphTypes.BAR_CHART,
                 data: isAdmin() ?
@@ -174,58 +203,87 @@ export const Dashboard = (): JSX.Element => {
                 data: isAdmin() ?
                     getMonthlySeenMoviesChartModels(getMonthlyMoviesCount(monthlySeenMovies)) :
                     getMonthlySeenMoviesChartModels(getMonthlyMoviesCount(filterMonthySeenMovisByUser()))
-            }
+            },
+            {
+                graphType: GraphTypes.PIE_CHART, data: topSeenGenres!
+            },
         ];
+        if (isAdmin()) {
+            chartData.push({
+                graphType: GraphTypes.SIMPLE_LINE_CHART,
+                data: topAgeViewerships!
+            });
+        }
         setChartData(chartData);
+    };
+
+    const setFirstButtonActive = (): void => {
+        if (!firstButtonClicked) {
+            const firstButton = $('#buttonsChartContainer');
+            if (firstButton.length === 0) {
+                setTimeout(() => {
+                    setFirstButtonActive();
+                    return;
+                }, 500);
+            }
+            firstButton.children().first().click();
+            setFirstButtonClicked(true);
+        }
     };
 
     const getButtons = (): JSX.Element => {
         if (isAdmin()) {
-            return <div className={buttonContainerClassName}>
+
+            return <div id='buttonsChartContainer'
+                className={buttonContainerClassName}>
                 <ButtonCard text='Genres'
                     onClick={handleGenreClick}
-                    count={100}
+                    count={120}
                     iconName={'Library'} />
                 <ButtonCard text='Runtime'
                     onClick={handleHoursClick}
-                    count={100}
+                    count={115}
                     iconName={'Timer'} />
                 <ButtonCard text='People'
                     onClick={handlePeopleClick}
-                    count={100}
+                    count={123}
                     iconName={'Contact'} />
                 <ButtonCard text='All'
                     onClick={handleAllClick}
-                    count={100}
+                    count={114}
                     iconName={'DonutChart'} />
             </div>
         }
-        return <div className={buttonContainerClassName}>
+        return <div id='buttonsChartContainer'
+            className={buttonContainerClassName}>
             <ButtonCard text='Genres'
                 onClick={handleGenreClick}
-                count={100}
+                count={121}
                 iconName={'Library'} />
             <ButtonCard text='Runtime'
                 onClick={handleHoursClick}
-                count={100}
+                count={223}
                 iconName={'Timer'} />
             <ButtonCard text='Movies'
                 onClick={handleMoviesClick}
-                count={100}
+                count={321}
                 iconName={'MyMoviesTV'} />
             <ButtonCard text='All'
                 onClick={handleAllClick}
-                count={100}
+                count={254}
                 iconName={'DonutChart'} />
         </div>
     };
 
     return <div className={containerClassName}>
         {isDataLoaded() &&
-            <>
+            < >
                 {getButtons()}
-                {chartData.length !== 0 && <Chart chartData={chartData}
-                    isButtonClicked={isButtonClicked} />}
+                <div className={contentContainerClassName}>
+                    <h2 className={chartTitleClassName}>{dataTitle}</h2>
+                    {chartData.length !== 0 && <Chart chartData={chartData}
+                        isButtonClicked={isButtonClicked} />}
+                </div>
             </>
         }
     </div>

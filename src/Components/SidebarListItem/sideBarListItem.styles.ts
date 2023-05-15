@@ -65,7 +65,7 @@ export const activeSideBarListItemClassName: string = mergeStyles({
 });
 
 export const countSidebarListItemClassName: string = mergeStyles({
-    left: "14vw",
+    left: "12.5vw",
     marginTop: '2.3vh',
     color: 'white',
     position: 'fixed'

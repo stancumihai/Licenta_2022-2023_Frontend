@@ -11,7 +11,7 @@ import { IButtonCardProps } from './buttonCard.types';
 export const ButtonCard = (props: IButtonCardProps): JSX.Element => {
     return <div className={containerClassName} onClick={props.onClick}>
         <div className={doubleGridItemClassName}>
-            <h2 className={mainTextClassName}>100</h2>
+            <h2 className={mainTextClassName}>{props.count}</h2>
             <p className={mainTextClassName}>{props.text}</p>
         </div>
         <div className={singleGridItemClassName}>

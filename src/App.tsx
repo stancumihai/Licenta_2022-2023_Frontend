@@ -83,7 +83,7 @@ export default function App(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();
   const [userHasSurveyAnswers, setUserHasSurveyAnswers] = useState<boolean | undefined>(undefined);
   const cookie = new Cookies();
-  const NON_AUTH_PAGES = ["login", "forgotPassword", "renewPassword"];
+  const NON_AUTH_PAGES = ["login", "forgotPassword", "renewPassword", ''];
   const isForbidden = authenticationContext.IsForbidden();
   const [isUserAuthenticated, setIsUserAuthenticated] = useState<boolean>(true);
   const [shouldDisplaySpinner, setShouldDisplaySpinner] = useState<boolean>(false);
@@ -155,8 +155,6 @@ export default function App(): JSX.Element {
       !window.location.href.includes('http://localhost:3000/login') &&
       !window.location.href.includes('http://localhost:3000/sign_up') &&
       !window.location.href.includes('http://localhost:3000/movie')) {
-      debugger;
-      console.log(uiContext.shouldDisplaySpinner);
       setShouldDisplaySpinner(uiContext.shouldDisplaySpinner);
       setTimeout(() => {
         setShouldDisplaySpinner(false);
@@ -178,6 +176,10 @@ export default function App(): JSX.Element {
   const handleAuthentication = () => {
     const trimmedPageUrl: string = trimUrl(window.location.href);
     if (NON_AUTH_PAGES.includes(trimmedPageUrl)) {
+      if (trimmedPageUrl === '') {
+        navigate(LOGIN_PATH);
+        return;
+      }
       return;
     }
     if (isForbidden === true) {
@@ -269,7 +271,7 @@ export default function App(): JSX.Element {
         <Route path={ARTISTS_OF_THE_MONTH_PATH} element={<ArtistsOfTheMonth />} ></Route>
         <Route path={USER_PROFILE_PATH} element={<UserProfile />} ></Route>
         <Route path={USER_DETAILS_PATH} element={<UserDetails />} ></Route>
-        <Route path={DEFAULT_PATH} element={<HomePage />} ></Route>
+        {/* <Route path={DEFAULT_PATH} element={<HomePage />} ></Route> */}
       </Routes>
     </div>
   </div>

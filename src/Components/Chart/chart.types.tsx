@@ -5,6 +5,8 @@ import { GraphTypes } from '../../Enums/graphTypes';
 import { CustomLineChart } from './CustomLineChart/customLineChart';
 import { CustomBarChart } from './CustomBarChart/customBarChart';
 import { CustomPieChart } from './CustomPieChart/customPieChart';
+import { useEffect } from 'react';
+import { COLOR2, COLOR2_D_20, COLOR2_D_40 } from '../../Library/constants';
 
 export interface IChart {
     name: string;
@@ -38,28 +40,34 @@ export interface IChartDashboardProps {
 
 export const NAME_PROPERTY: string = "name";
 export const VALUE_PROPERTY: string = "value";
-export const COLORS_PALLETE: string[] = ["#4a8ddc", "#4c5d8a", "#f3c911", "#dc5b57",
-    "#33ae81", "#94c6f0", "#e37d78", "#9a64a0"];
+export const COLORS_PALLETE: string[] = ['#9B3CB5', '#FF5E78', "#FF915D", "#FFC654",
+    "#F9F871", "#E33C99", "#008DDB", "#009F94"];
 
 export const getChartData = (data: Array<any>, isPieChart?: boolean): Array<IChart> => {
     const result: Array<IChart> = new Array<IChart>();
-    data.forEach((entry: any): void => {
+    data.forEach((entry: any, i: number): void => {
         if (isPieChart !== undefined) {
             result.push({
                 name: entry[Object.keys(entry)[0]],
-                value: entry[Object.keys(entry)[1]].length
+                value: entry[Object.keys(entry)[1]].length,
+                color: COLORS_PALLETE[i]
             });
             return;
         }
         result.push({
             name: entry[Object.keys(entry)[0]],
-            value: entry[Object.keys(entry)[1]]
+            value: entry[Object.keys(entry)[1]],
+            color: COLORS_PALLETE[i]
         });
     });
     return result;
 };
 
 export const CustomTooltip = (props: ICustomChartTooltipProps) => {
+
+    useEffect(() => {
+
+    });
 
     const formatMessage = (value: string): string => {
         return `${Number(value).toLocaleString()}`;
@@ -87,37 +95,19 @@ export const CustomTooltip = (props: ICustomChartTooltipProps) => {
 export const mapChart = (chartData: IChartData) => {
     switch (chartData.graphType) {
         case GraphTypes.SIMPLE_LINE_CHART: {
-            return <div>
-                <CustomLineChart
-                    key={"linesChart"}
-                    data={getChartData(chartData.data)}
-                    label={"Requests By Areas Impacted"}
-                    width={500}
-                    height={500}
-                />
-            </div>
+            return <CustomLineChart data={getChartData(chartData.data)}
+                width={500}
+                height={500} />
         }
         case GraphTypes.BAR_CHART: {
-            return <div>
-                <CustomBarChart
-                    key={"areasImapactedChart"}
-                    data={getChartData(chartData.data)}
-                    label={"Requests By Areas Impacted"}
-                    width={500}
-                    height={500}
-                />
-            </div>
+            return <CustomBarChart data={getChartData(chartData.data)}
+                width={500}
+                height={500} />
         }
         default: {
-            return <div>
-                <CustomPieChart
-                    key={"statusChart"}
-                    data={getChartData(chartData.data, true)}
-                    label={"Requests By Type"}
-                    width={500}
-                    height={500}
-                />
-            </div>
+            return <CustomPieChart data={getChartData(chartData.data, true)}
+                width={500}
+                height={500} />
         }
     }
 };

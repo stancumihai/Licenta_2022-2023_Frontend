@@ -17,8 +17,8 @@ export const Chart = (props: IChartDashboardProps): JSX.Element => {
         });
         setCharts(chartArray);
     }, [props.isButtonClicked]);
-
-    return <div className={containerClassName}>
+  
+    return <div id='charts' className={containerClassName}>
         {charts !== null && charts}
     </div>
 };

@@ -16,7 +16,8 @@ import {
     buttonTextClassName,
     disabledButtonTextClassName,
     disabledIconClassName,
-    ratingStyles
+    ratingStyles,
+    seenMoviesCountClassName
 } from './movieDetails.styles';
 import {
     IMovieDetailsProps,
@@ -33,7 +34,6 @@ import { IResponse } from '../../Models/IResponse';
 import { ILikedMovieCreate } from '../../Models/LikedMovie/ILikedMovieCreate';
 import { IMovieSubscriptionCreate } from '../../Models/MovieSubscription/IMovieSubscriptionCreate';
 import { IMovieSubscriptionRead } from '../../Models/MovieSubscription/IMovieSubscriptionRead';
-import { ISeenMovieRead } from '../../Models/SeenMovie/ISeenMovieRead';
 import { ISeenMovieCreate } from '../../Models/SeenMovie/ISeenMovieCreate';
 import { Rating } from '@fluentui/react';
 import { RatingSize } from 'office-ui-fabric-react';
@@ -50,9 +50,9 @@ import {
 } from 'react-router';
 import { HOME_PATH } from '../../Library/constants';
 import { UserType } from '../../Enums/UserType';
-import { NavigateOptions } from 'react-router-dom';
 import UiContext from '../../Contexts/Ui/uiContext';
 import { IUiContext } from '../../Contexts/Ui/uiContext.types';
+import { ISeenMovieRead } from '../../Models/SeenMovie/ISeenMovieRead';
 
 export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -66,9 +66,6 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const [isWatchLaterChecked, setIsWatchLaterChecked] = useState<boolean>(false);
     const [movieSubscriptionId, setMovieSubscriptionId] = useState<string>('');
 
-    const [isMovieSeen, setIsMovieSeen] = useState<boolean>(false);
-    const [historyEntranceId, setHistoryEntranceId] = useState<string>('');
-
     const [movieRating, setMovieRating] = useState<number>(0);
     const [isMovieRatingLoaded, setIsMovieRatingLoaded] = useState<boolean>(false);
     const movieRatingData: IFetchResult<IUserMovieRatingRead> = useFetch<IUserMovieRatingRead>(() =>
@@ -76,6 +73,11 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const [isConfirmationSeenDialogOpen, setIsConfirmationSeenDialogOpen] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
     const uiContext: IUiContext = useContext(UiContext);
+
+    const [seenMovies, setSeenMovies] = useState<ISeenMovieRead[]>([]);
+    const [areSeenMovisLoaded, setAreSeenMoviesLoaded] = useState<boolean>(false);
+    const seenMoviesData: IFetchResult<ISeenMovieRead[]> = useFetch<ISeenMovieRead[]>(() =>
+        services.SeenMoviesService.GetByUserAndMovie(props.movieRating.movie.uid!));
 
     useEffect(() => {
         if (movieRatingData.isLoading) {
@@ -134,23 +136,18 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     }, [isWatchLaterChecked, movieSubscriptionId]);
 
     useEffect(() => {
-        if (!isMovieSeen) {
-            services.SeenMoviesService.GetByUserAndMovie(props.movieRating.movie.uid!).then((data: IResponse<ISeenMovieRead>) => {
-                if (data.Status! === 404 || data.Status! === 500) {
-                    setTimeout(() => {
-                        setIsMovieSeen(false);
-                        setHistoryEntranceId('');
-                    }, 500);
-                    return;
-                }
-                setTimeout(() => {
-                    setIsMovieSeen(true);
-                    setHistoryEntranceId(data.Data!.uid!);
-                }, 500);
-                return;
-            });
+        if (seenMoviesData.isLoading) {
+            return;
         }
-    }, [isMovieSeen, historyEntranceId]);
+        if (seenMoviesData.errors !== "" ||
+            seenMoviesData.data?.Error !== undefined ||
+            seenMoviesData.data == null ||
+            seenMoviesData.data.Data === undefined) {
+            return;
+        }
+        setSeenMovies(seenMoviesData.data!.Data!);
+        setAreSeenMoviesLoaded(true);
+    }, [seenMoviesData]);
 
     useEffect(() => {
         const directors: IPerson[] = props.moviePersons.filter((moviePerson: IPerson) => {
@@ -240,25 +237,6 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             setIsConfirmationSeenDialogOpen(true);
             return;
         }
-        // const seenMovie: ISeenMovieCreate = {
-        //     movieUid: props.movieRating.movie.uid!,
-        //     userUid: authenticationContext.User.uid!
-        // };
-
-        // if (isMovieSeen) {
-        //     services.SeenMoviesService.Delete(historyEntranceId);
-        //     setIsMovieSeen(false);
-        //     setHistoryEntranceId('');
-        //     setTimeout(() => {
-        //         window.location.reload();
-        //     }, 500);
-        //     return;
-        // }
-        // services.SeenMoviesService.Add(seenMovie);
-        // setIsMovieSeen(true);
-        // setTimeout(() => {
-        //     window.location.reload();
-        // }, 500);
     };
 
     const processGlobalMovieRatingChange = (movieRating: IMovieRating, newMyRating: number, oldMyRating?: number) => {
@@ -295,7 +273,6 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
                 rating: rating!
             };
             services.UserMovieRatingsService.Update(userMovieRating);
-            //oldMyRating este pentru update
             processGlobalMovieRatingChange(props.movieRating, rating! * 2, oldMyRating * 2);
         }
     };
@@ -326,11 +303,11 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
         <div className={iconContainerClassName}>
             <div style={{ display: 'flex', marginLeft: '-60%' }}>
                 {!isWatchLaterPath() &&
-                    <div style={isAdmin() ? { display: 'none' } : {}}>
-                        <MdWatchLater onClick={handleWatchLaterClick}
-                            className={!isWatchLaterChecked ?
-                                iconClassName :
-                                disabledIconClassName} />
+                    <div onClick={handleWatchLaterClick}
+                        style={isAdmin() ? { display: 'none' } : {}}>
+                        <MdWatchLater className={!isWatchLaterChecked ?
+                            iconClassName :
+                            disabledIconClassName} />
                         <p style={{ bottom: '1.5vh' }} className={!isWatchLaterChecked ?
                             buttonTextClassName :
                             disabledButtonTextClassName}>Save to Watch Later</p>
@@ -339,11 +316,11 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             </div>
             <div style={{ display: 'flex', marginLeft: '-60%' }}>
                 {!isWatchLaterPath() &&
-                    <div style={isAdmin() ? { display: 'none' } : {}}>
-                        <AiOutlineLike onClick={handleMovieLikeClick}
-                            className={!isMovieLiked ?
-                                iconClassName :
-                                disabledIconClassName} />
+                    <div onClick={handleMovieLikeClick}
+                        style={isAdmin() ? { display: 'none' } : {}}>
+                        <AiOutlineLike className={!isMovieLiked ?
+                            iconClassName :
+                            disabledIconClassName} />
                         <p className={!isMovieLiked ?
                             buttonTextClassName :
                             disabledButtonTextClassName}>Like</p>
@@ -352,15 +329,18 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             </div>
             <div style={{ display: 'flex' }}>
                 {isWatchLaterPath() &&
-                    <div style={isAdmin() ? { display: 'none' } : {}}>
-                        <BiCheckCircle onClick={handleSeenClick}
-                            className={!isMovieSeen || isWatchLaterPath() ?
+                    <>
+                        <div onClick={handleSeenClick}
+                            style={isAdmin() ? { display: 'none' } : {}}>
+                            <BiCheckCircle className={isWatchLaterPath() ?
                                 iconClassName :
                                 disabledIconClassName} />
-                        <p style={{ bottom: '1.5vh' }} className={!isMovieSeen || isWatchLaterPath() ?
-                            buttonTextClassName :
-                            disabledButtonTextClassName}>Seen</p>
-                    </div>
+                            <p style={{ bottom: '1.5vh' }} className={isWatchLaterPath() ?
+                                buttonTextClassName :
+                                disabledButtonTextClassName}>Seen</p>
+                        </div>
+                        <p className={seenMoviesCountClassName}>{seenMovies.length}</p>
+                    </>
                 }
             </div>
         </div>

@@ -3,7 +3,8 @@ import {
   Pie,
   PieChart,
   Cell,
-  Tooltip
+  Tooltip,
+  Legend
 } from 'recharts';
 import {
   ICustomChartProps,
@@ -13,6 +14,8 @@ import {
 } from '../chart.types';
 import { CustomPieLabelData } from './customPieChart.types';
 import { RADIAN } from '../../../Library/constants';
+import { legendWrapperStyle } from '../charts.styles';
+import './customPieChart.css';
 
 export const CustomPieChart = (props: ICustomChartProps): JSX.Element => {
 
@@ -28,7 +31,7 @@ export const CustomPieChart = (props: ICustomChartProps): JSX.Element => {
     );
   };
 
-  return <div style={{ width: '100%', height: '100%' }}>
+  return <div style={{ width: '100%', height: '100%', marginTop: '20px' }}>
     <ResponsiveContainer
       width={500}
       height={500} >
@@ -40,6 +43,7 @@ export const CustomPieChart = (props: ICustomChartProps): JSX.Element => {
               active={true}
             />
           } />
+        <Legend wrapperStyle={legendWrapperStyle} />
         <Pie
           isAnimationActive={true}
           data={props.data}
@@ -53,8 +57,7 @@ export const CustomPieChart = (props: ICustomChartProps): JSX.Element => {
         >
           {props.data?.map(
             (entry, index) => (
-              <Cell
-                key={`cell-${index}`}
+              <Cell key={`cell-${index}`}
                 fill={COLORS_PALLETE[index % COLORS_PALLETE.length]}
               />
             )

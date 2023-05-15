@@ -78,19 +78,14 @@ export const HomePage = (): JSX.Element => {
     };
 
     return <div className={containerClassName}>
-        {movieContext.isAllDataLoaded() &&
-            <>
-                <div className={mainLogoDivClassName}>
-                    <Logo mainLogoClassName={mainLogoClassName}
-                        mainTextClassName={mainTextClassName} />
-                </div>
-                <MovieCardsContainer moviesToDisplayInPage={moviesToDisplayInPage !== undefined ? moviesToDisplayInPage : []} />
-                <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}
-                    totalItemsCount={movieContext.currentUsedMovies.length}
-                    onPageChange={onPageChange}
-                    shouldReset={shouldResetPaginator}
-                />
-            </>
-        }
+        <div className={mainLogoDivClassName}>
+            <Logo mainLogoClassName={mainLogoClassName}
+                mainTextClassName={mainTextClassName} />
+        </div>
+        <MovieCardsContainer moviesToDisplayInPage={moviesToDisplayInPage !== undefined ? moviesToDisplayInPage : []} />
+        <Paginator itemsPerPage={MAX_MOVIES_PER_PAGE}
+            totalItemsCount={movieContext.currentUsedMovies.length}
+            onPageChange={onPageChange}
+            shouldReset={shouldResetPaginator} />
     </div>
 };

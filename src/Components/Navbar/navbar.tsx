@@ -11,7 +11,6 @@ import {
 import { TbListSearch } from "react-icons/tb";
 import {
     useContext,
-    useEffect,
     useState
 } from 'react';
 import { AdvancedSearch } from '../AdvancedSearch/advancedSearch';
@@ -63,17 +62,18 @@ export const Navbar = (): JSX.Element => {
     const handleSearchBarEnterKeyPressed = (e: any) => {
         if (e.key === 'Enter') {
             if (!isOnUserContext()) {
-                const searchedMovies: IMovie[] = movieContext.movies.filter((movie: IMovie) => movie.title.includes(searchText));
+                const searchedMovies: IMovie[] = movieContext.movies.filter((movie: IMovie) =>
+                    movie.title.toLowerCase().includes(searchText) ||
+                    movie.title.includes(searchText));
+                console.log(searchedMovies);
                 movieContext.setCurrentMovies(IMovieContextType.NONE, searchedMovies);
                 setSearchText('');
                 uiContext.setSpinnerState(true);
                 return;
             }
-            const searchedUsers: IUserProfileRead[] = userContext.users.filter((user: IUserProfileRead) => user.fullName
-                .toLowerCase()
-                .includes(searchText) ||
-                user.fullName
-                    .includes(searchText));
+            const searchedUsers: IUserProfileRead[] = userContext.users.filter((user: IUserProfileRead) =>
+                user.fullName.toLowerCase().includes(searchText) ||
+                user.fullName.includes(searchText));
             userContext.setCurrentUsers(searchedUsers);
             setSearchText('');
             uiContext.setSpinnerState(true);

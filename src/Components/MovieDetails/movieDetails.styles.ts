@@ -1,5 +1,5 @@
 import { mergeStyles } from 'office-ui-fabric-react';
-import { COLOR2, FONT_FAMILY } from '../../Library/constants';
+import { COLOR1, COLOR1_D_40, COLOR2, FONT_FAMILY } from '../../Library/constants';
 import { IRatingStyles } from '@fluentui/react';
 
 export const containerClassName: string = mergeStyles({
@@ -110,7 +110,16 @@ export const disabledButtonTextClassName: string = mergeStyles({
     fontFamily: FONT_FAMILY,
     display: 'inline-block',
     position: 'relative',
-    bottom: '1.05vh'
+    bottom: '1.05vh',
+    selectors: {
+        ":hover": {
+            cursor: 'pointer',
+            color: 'red'
+        },
+        ":active": {
+            color: '#666',
+        }
+    }
 });
 
 export const ratingStyles: Partial<IRatingStyles> = {
@@ -128,3 +137,18 @@ export const ratingStyles: Partial<IRatingStyles> = {
         }
     }
 };
+
+export const seenMoviesCountClassName: string = mergeStyles({
+    color: COLOR1,
+    fontFamily: FONT_FAMILY,
+    position: 'absolute',
+    left: '6vw',
+    bottom: '1.4vh',
+    marginLeft: '0.3vw',
+    selectors: {
+        ':hover': {
+            color: COLOR1_D_40,
+            cursor: 'pointer'
+        }
+    }
+});
