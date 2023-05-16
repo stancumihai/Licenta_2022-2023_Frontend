@@ -33,6 +33,7 @@ import {
   SESSION_EXPIRED_MESSAGE,
   SIGN_UP_PATH,
   SPINNER_LOADING_DATA_MESSAGE,
+  STATISTICS_PATH,
   SURVEY_PATH,
   TOP_GENRES_PATH,
   USER_DETAILS_PATH,
@@ -73,6 +74,7 @@ import { ManageUsers } from './Components/ManageUsers/manageUsers';
 import { UserProfile } from './Components/UserProfile/userProfile';
 import { UserDetails } from './Components/UserDetails/userDetails';
 import { UserType } from './Enums/UserType';
+import { Statistics } from './Components/Statistics/statistics';
 
 initializeIcons(undefined, { disableWarnings: true });
 
@@ -123,7 +125,9 @@ export default function App(): JSX.Element {
       currentPath.includes(USER_PROFILE_PATH) ||
       currentPath.includes(MOVIE_WRAPPER_PATH) ||
       currentPath.includes(SURVEY_PATH) ||
-      currentPath.includes(USER_DETAILS_PATH)
+      currentPath.includes(USER_DETAILS_PATH) ||
+      currentPath.includes(STATISTICS_PATH) ||
+      currentPath.includes(DASHBOARD_PATH)
     ) {
       uiContext.setNavbarState(false);
       return;
@@ -138,7 +142,6 @@ export default function App(): JSX.Element {
       currentPath.includes(FORGOT_PASSWORD_PATH) ||
       currentPath.includes(RENEW_PASSWORD_PATH) ||
       currentPath.includes(USER_PROFILE_PATH) ||
-      currentPath.includes(DASHBOARD_PATH) ||
       currentPath.includes(USER_PROFILE_PATH) ||
       currentPath.includes(TOP_GENRES_PATH) ||
       currentPath.includes(ARTISTS_OF_THE_MONTH_PATH)
@@ -263,6 +266,7 @@ export default function App(): JSX.Element {
         } />
         <Route path={MANAGE_USERS_PATH} element={<ManageUsers />} />
         <Route path={DASHBOARD_PATH} element={<Dashboard />} />
+        <Route path={STATISTICS_PATH} element={<Statistics />} />
         <Route path={FORGOT_PASSWORD_PATH} element={<ForgotPassword />} />
         <Route path={`${RENEW_PASSWORD_PATH}/:email`} element={<RenewPassword />} />
         <Route path={`${MOVIE_WRAPPER_PATH}/:movieName`} element={<MovieWrapper />} />

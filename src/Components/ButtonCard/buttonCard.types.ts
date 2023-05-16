@@ -3,4 +3,7 @@ export interface IButtonCardProps {
     onClick: () => void;
     count?: number;
     iconName?: string;
+    leftMargin?: boolean;
+    mainTextClassName?: string;
+    id: string;
 };

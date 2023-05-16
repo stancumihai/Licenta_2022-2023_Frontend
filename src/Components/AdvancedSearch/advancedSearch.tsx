@@ -319,8 +319,7 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
                 onChange={handleOrderBySelection}
                 options={orderByDropdownOptions}
                 onMouseEnter={handleDropDownMouseEnter}
-                styles={dropdownStyles}
-            />
+                styles={dropdownStyles} />
             <ChoiceGroup onChange={handleChoiceGroupOrderingClick}
                 defaultSelectedKey={orderByOptions[0].key.toString()}
                 styles={choiceGroupStyles}

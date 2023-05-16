@@ -12,7 +12,8 @@ import {
     SEEN_MOVIE_ENDPOINT,
     USER_MOVIE_RATING_ENDPOINT,
     SURVEY_USER_ANSWER_ENDPOINT,
-    USER_PROFILE_ENDPOINT
+    USER_PROFILE_ENDPOINT,
+    RECOMMENDATIONS_ENDPOINT
 } from '../Library/constants';
 import AuthenticationService from '../Services/authenticationService';
 import KnownForService from '../Services/knownForService';
@@ -28,6 +29,7 @@ import MovieSubscriptionsService from '../Services/movieSubscriptionsService';
 import SeenMoviesService from '../Services/seenMovieService';
 import UserMovieRatingsService from '../Services/userMovieRatings';
 import UserProfilesService from '../Services/userProfilesService';
+import RecommendationService from '../Services/recommendationsService';
 
 export class ServiceContext {
     private _surveyQuestionsService?: SurveyQuestionsService;
@@ -44,6 +46,7 @@ export class ServiceContext {
     private _seenMoviesService?: SeenMoviesService;
     private _userMovieRatingsService?: UserMovieRatingsService;
     private _userProfilesService?: UserProfilesService;
+    private _recommendationService?: RecommendationService;
 
     get SurveyUserAnswerService(): SurveyUserAnswerService {
         if (this._surveyUserAnswerService == null) {
@@ -143,6 +146,13 @@ export class ServiceContext {
             this._userProfilesService = new UserProfilesService(USER_PROFILE_ENDPOINT);
         }
         return this._userProfilesService;
+    };
+
+    get RecommendationService(): RecommendationService {
+        if (this._recommendationService == null) {
+            this._recommendationService = new RecommendationService(RECOMMENDATIONS_ENDPOINT);
+        }
+        return this._recommendationService;
     };
 };
 

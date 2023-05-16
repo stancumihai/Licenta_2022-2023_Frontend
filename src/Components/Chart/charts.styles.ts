@@ -17,7 +17,7 @@ export const chartTitleClassName: string = mergeStyles({
     color: COLOR1,
     position: 'relative',
     fontSize: '30px',
-    marginTop: '6vh',
+    marginTop: '5vh',
     marginBottom: '3vh'
 });
 

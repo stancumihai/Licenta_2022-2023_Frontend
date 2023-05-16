@@ -17,7 +17,7 @@ import { ITopGenreModel } from '../../Models/ITopGenreModel';
 import {
     getMonthlyMoviesCount,
     getMonthlyRuntime,
-    getMonthlySeenMoviesChartModels
+    getFormattedChartModels
 } from '../../Helpers/ChartHelper/chartDataLogic';
 import { ButtonCard } from '../ButtonCard/buttonCard';
 import { GraphTypes } from '../../Enums/graphTypes';
@@ -27,7 +27,7 @@ import AuthentificationContext from '../../Contexts/Authentication/authenticatio
 import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import { UserType } from '../../Enums/UserType';
 import { ISeenMovieRead } from '../../Models/SeenMovie/ISeenMovieRead';
-import { AgeViewershipModel } from '../../Models/AgeViewershipModel';
+import { IAgeViewershipModel } from '../../Models/IAgeViewershipModel';
 import { chartTitleClassName } from '../Chart/charts.styles';
 
 export const Dashboard = (): JSX.Element => {
@@ -43,8 +43,8 @@ export const Dashboard = (): JSX.Element => {
     const [topSeenGenres, setTopSeenGenres] = useState<ITopGenreModel[]>();
 
     const [areTopAgeViewershipsLoaded, setAreTopAgeViewershipsLoaded] = useState<boolean>(false);
-    const topAgeViewershipsData: IFetchResult<AgeViewershipModel[]> = useFetch<AgeViewershipModel[]>(() => services.SeenMoviesService.GetTopViewershipByAge());
-    const [topAgeViewerships, setTopAgeViewerships] = useState<AgeViewershipModel[]>();
+    const topAgeViewershipsData: IFetchResult<IAgeViewershipModel[]> = useFetch<IAgeViewershipModel[]>(() => services.SeenMoviesService.GetTopViewershipByAge());
+    const [topAgeViewerships, setTopAgeViewerships] = useState<IAgeViewershipModel[]>();
     const [dataTitle, setDataTitle] = useState<string>("");
     const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false);
     const [firstButtonClicked, setFirstButtonClicked] = useState<boolean>(false);
@@ -155,8 +155,8 @@ export const Dashboard = (): JSX.Element => {
             {
                 graphType: GraphTypes.BAR_CHART,
                 data: isAdmin() ?
-                    getMonthlySeenMoviesChartModels(getMonthlyRuntime(monthlySeenMovies)) :
-                    getMonthlySeenMoviesChartModels(getMonthlyRuntime(filterMonthySeenMovisByUser()))
+                    getFormattedChartModels(getMonthlyRuntime(monthlySeenMovies)) :
+                    getFormattedChartModels(getMonthlyRuntime(filterMonthySeenMovisByUser()))
             }
         ];
         setChartData(chartData);
@@ -169,8 +169,8 @@ export const Dashboard = (): JSX.Element => {
             {
                 graphType: GraphTypes.BAR_CHART,
                 data: isAdmin() ?
-                    getMonthlySeenMoviesChartModels(getMonthlyMoviesCount(monthlySeenMovies)) :
-                    getMonthlySeenMoviesChartModels(getMonthlyMoviesCount(filterMonthySeenMovisByUser()))
+                    getFormattedChartModels(getMonthlyMoviesCount(monthlySeenMovies)) :
+                    getFormattedChartModels(getMonthlyMoviesCount(filterMonthySeenMovisByUser()))
             }
         ];
         setChartData(chartData);
@@ -195,14 +195,14 @@ export const Dashboard = (): JSX.Element => {
             {
                 graphType: GraphTypes.BAR_CHART,
                 data: isAdmin() ?
-                    getMonthlySeenMoviesChartModels(getMonthlyRuntime(monthlySeenMovies)) :
-                    getMonthlySeenMoviesChartModels(getMonthlyRuntime(filterMonthySeenMovisByUser()))
+                    getFormattedChartModels(getMonthlyRuntime(monthlySeenMovies)) :
+                    getFormattedChartModels(getMonthlyRuntime(filterMonthySeenMovisByUser()))
             },
             {
                 graphType: GraphTypes.BAR_CHART,
                 data: isAdmin() ?
-                    getMonthlySeenMoviesChartModels(getMonthlyMoviesCount(monthlySeenMovies)) :
-                    getMonthlySeenMoviesChartModels(getMonthlyMoviesCount(filterMonthySeenMovisByUser()))
+                    getFormattedChartModels(getMonthlyMoviesCount(monthlySeenMovies)) :
+                    getFormattedChartModels(getMonthlyMoviesCount(filterMonthySeenMovisByUser()))
             },
             {
                 graphType: GraphTypes.PIE_CHART, data: topSeenGenres!
@@ -236,19 +236,24 @@ export const Dashboard = (): JSX.Element => {
 
             return <div id='buttonsChartContainer'
                 className={buttonContainerClassName}>
-                <ButtonCard text='Genres'
+                <ButtonCard
+                    id='Genres'
+                    text='Genres'
                     onClick={handleGenreClick}
                     count={120}
                     iconName={'Library'} />
-                <ButtonCard text='Runtime'
+                <ButtonCard id='Runtime'
+                    text='Runtime'
                     onClick={handleHoursClick}
                     count={115}
                     iconName={'Timer'} />
-                <ButtonCard text='People'
+                <ButtonCard id='People'
+                    text='People'
                     onClick={handlePeopleClick}
                     count={123}
                     iconName={'Contact'} />
-                <ButtonCard text='All'
+                <ButtonCard id='All'
+                    text='All'
                     onClick={handleAllClick}
                     count={114}
                     iconName={'DonutChart'} />
@@ -256,19 +261,23 @@ export const Dashboard = (): JSX.Element => {
         }
         return <div id='buttonsChartContainer'
             className={buttonContainerClassName}>
-            <ButtonCard text='Genres'
+            <ButtonCard id='Genres'
+                text='Genres'
                 onClick={handleGenreClick}
                 count={121}
                 iconName={'Library'} />
-            <ButtonCard text='Runtime'
+            <ButtonCard id='Runtime'
+                text='Runtime'
                 onClick={handleHoursClick}
                 count={223}
                 iconName={'Timer'} />
-            <ButtonCard text='Movies'
+            <ButtonCard id='Movies'
+                text='Movies'
                 onClick={handleMoviesClick}
                 count={321}
                 iconName={'MyMoviesTV'} />
-            <ButtonCard text='All'
+            <ButtonCard id='All'
+                text='All'
                 onClick={handleAllClick}
                 count={254}
                 iconName={'DonutChart'} />

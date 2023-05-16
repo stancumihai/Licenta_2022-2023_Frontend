@@ -1,5 +1,5 @@
 import { APIHelper } from '../Configuration/apiHelper';
-import { AgeViewershipModel } from '../Models/AgeViewershipModel';
+import { IAgeViewershipModel } from '../Models/IAgeViewershipModel';
 import { MonthlyAppUsageModel } from '../Models/IMonthlyAppUsage';
 import { IMovie } from '../Models/IMovie';
 import { IResponse } from '../Models/IResponse';
@@ -33,7 +33,7 @@ export default class SeenMoviesService extends BaseService<ISeenMovieRead | ISee
         return await APIHelper.request(`${this._endpoint}/user/${userUid}`, 'GET')
     };
 
-    async GetTopViewershipByAge(): Promise<IResponse<AgeViewershipModel[]>> {
+    async GetTopViewershipByAge(): Promise<IResponse<IAgeViewershipModel[]>> {
         return await APIHelper.request(`${this._endpoint}/topAgeViewership`, 'GET')
     };
 };

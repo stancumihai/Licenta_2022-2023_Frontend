@@ -23,7 +23,8 @@ import {
     ARTISTS_OF_THE_MONTH_PATH,
     HOME_PATH,
     MANAGE_USERS_PATH,
-    JWT_TOKEN
+    JWT_TOKEN,
+    STATISTICS_PATH
 } from '../../Library/constants';
 import { CustomDialog } from '../CustomDialog/customDialog';
 import { SideBarListItem } from '../SidebarListItem/sideBarListItem';
@@ -47,6 +48,12 @@ export const SideBar = (): JSX.Element => {
     const [isToggleActive, setIsToggleActive] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
 
+    useEffect(() => {
+        // console.log(movieContext.collectionMovies.length);
+        // console.log(movieContext.historyMovies.length);
+        // console.log(movieContext.watchLaterMovies.length);
+    }, []);
+
     const sidebarAdminListItems: ISidebarListItem[] = [
         {
             iconName: 'Home',
@@ -60,13 +67,13 @@ export const SideBar = (): JSX.Element => {
             handleSidebarNavigation: () => navigate(MANAGE_USERS_PATH),
         },
         {
-            iconName: 'Trending12',
-            text: 'Trending',
-            handleSidebarNavigation: () => navigate(TRENDING_PATH),
+            iconName: 'BarChartVertical',
+            text: 'Statistics',
+            handleSidebarNavigation: () => navigate(STATISTICS_PATH),
         },
         {
-            iconName: 'BarChartVertical',
-            text: 'Charts',
+            iconName: 'Trending12',
+            text: 'Trending',
             handleSidebarNavigation: () => navigate(DASHBOARD_PATH)
         },
         {
@@ -162,20 +169,17 @@ export const SideBar = (): JSX.Element => {
             case "http://localhost:3000/userDetails": {
                 return 1;
             }
-            case "http://localhost:3000/home/trending": {
+            case "http://localhost:3000/statistics": {
                 return 2;
             }
             case "http://localhost:3000/charts": {
                 return 3;
             }
-            case "http://localhost:3000/recommendations": {
+            case "http://localhost:3000/topGenres": {
                 return 4;
             }
-            case "http://localhost:3000/topGenres": {
-                return 5;
-            }
             case "http://localhost:3000/artistsOfTheMonth": {
-                return 6;
+                return 5;
             }
             default: {
                 return -1;

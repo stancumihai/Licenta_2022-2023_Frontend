@@ -19,7 +19,7 @@ export const getMonthlyRuntime = (monthlySeenMovies: MonthlyAppUsageModel[]): Mo
     return monthlyRuntime;
 };
 
-export const getMonthlySeenMoviesChartModels = (data: any) => {
+export const getFormattedChartModels = (data: any) => {
     return data!.map((chartData: any) => {
         const month: number = chartData[Object.keys(chartData)[0]];
         const year: number = chartData[Object.keys(chartData)[1]];
