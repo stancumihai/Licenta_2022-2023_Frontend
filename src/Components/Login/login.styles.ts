@@ -117,7 +117,7 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
     field: {
         fontFamily: FONT_FAMILY,
         paddingLeft: '15px',
-        fontSize: '12.5px',
+        fontSize: '13px',
         backgroundImage: "linear-gradient(to right, #49494D, #0C0B0F)",
         boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25)',
         color: 'white',

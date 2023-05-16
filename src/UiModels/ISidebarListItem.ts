@@ -3,5 +3,4 @@ export interface ISidebarListItem {
     text: string;
     count?: number;
     handleSidebarNavigation: () => void;
-    function2?: (page: string) => number;
 };
