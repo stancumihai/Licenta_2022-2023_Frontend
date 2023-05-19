@@ -19,7 +19,8 @@ export const buttonContainerClassName: string = mergeStyles({
     justifyContent: 'center',
     margin: 'auto',
     display: 'flex',
-    position: 'fixed'
+    position: 'fixed',
+    top: '5%'
 });
 
 export const contentContainerClassName: string = mergeStyles({

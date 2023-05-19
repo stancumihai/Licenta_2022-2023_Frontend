@@ -133,11 +133,12 @@ export const Dashboard = (): JSX.Element => {
 
     const isDataLoaded = (): boolean => {
         return areMonthlySeenMoviesLoadedd &&
-            areTopSeenGenresLoaded;
+            areTopSeenGenresLoaded &&
+            areTopAgeViewershipsLoaded;
     };
 
     const handleGenreClick = () => {
-        setDataTitle('Genres Data')
+        setDataTitle('Top Seen Genres')
         setIsButtonClicked((prev) => !prev);
         const chartData: IChartData[] = [
             {
@@ -149,7 +150,7 @@ export const Dashboard = (): JSX.Element => {
     };
 
     const handleHoursClick = () => {
-        setDataTitle('Runtime Data')
+        setDataTitle('Most Seen Movie Runtimes')
         setIsButtonClicked((prev) => !prev);
         const chartData: IChartData[] = [
             {
@@ -163,7 +164,7 @@ export const Dashboard = (): JSX.Element => {
     };
 
     const handleMoviesClick = () => {
-        setDataTitle('Movies Data')
+        setDataTitle('Most Movies')
         setIsButtonClicked((prev) => !prev);
         const chartData: IChartData[] = [
             {
@@ -177,7 +178,7 @@ export const Dashboard = (): JSX.Element => {
     };
 
     const handlePeopleClick = () => {
-        setDataTitle('Viewership Data')
+        setDataTitle('Ages That Watched The Most Movies')
         setIsButtonClicked((prev) => !prev);
         const chartData: IChartData[] = [
             {
@@ -189,28 +190,33 @@ export const Dashboard = (): JSX.Element => {
     };
 
     const handleAllClick = () => {
-        setDataTitle('All')
+        setDataTitle('General')
         setIsButtonClicked((prev) => !prev);
         const chartData: IChartData[] = [
             {
                 graphType: GraphTypes.BAR_CHART,
+                title: 'Best Runtimes',
                 data: isAdmin() ?
                     getFormattedChartModels(getMonthlyRuntime(monthlySeenMovies)) :
                     getFormattedChartModels(getMonthlyRuntime(filterMonthySeenMovisByUser()))
             },
             {
                 graphType: GraphTypes.BAR_CHART,
+                title: 'Most Movies',
                 data: isAdmin() ?
                     getFormattedChartModels(getMonthlyMoviesCount(monthlySeenMovies)) :
                     getFormattedChartModels(getMonthlyMoviesCount(filterMonthySeenMovisByUser()))
             },
             {
-                graphType: GraphTypes.PIE_CHART, data: topSeenGenres!
+                graphType: GraphTypes.PIE_CHART,
+                title: 'Top Genres',
+                data: isAdmin() ? topSeenGenres! : filterTopSeenGenresDataByUser()
             },
         ];
         if (isAdmin()) {
             chartData.push({
                 graphType: GraphTypes.SIMPLE_LINE_CHART,
+                title: 'Top Ages',
                 data: topAgeViewerships!
             });
         }

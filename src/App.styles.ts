@@ -12,7 +12,7 @@ export const containerClassName: string = mergeStyles({
 export const mainContentClassName: string = mergeStyles({
     width: '88%',
     marginLeft: '8.75%',
-    height: '87.5%',
+    height: '89%',
 });
 
 export const loadingSpinnerStyle: Partial<ISpinnerStyles> = {

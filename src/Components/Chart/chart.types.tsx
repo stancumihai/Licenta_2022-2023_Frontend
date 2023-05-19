@@ -5,8 +5,6 @@ import { GraphTypes } from '../../Enums/graphTypes';
 import { CustomLineChart } from './CustomLineChart/customLineChart';
 import { CustomBarChart } from './CustomBarChart/customBarChart';
 import { CustomPieChart } from './CustomPieChart/customPieChart';
-import { useEffect } from 'react';
-import { COLOR2, COLOR2_D_20, COLOR2_D_40 } from '../../Library/constants';
 
 export interface IChart {
     name: string;
@@ -16,10 +14,12 @@ export interface IChart {
 
 export interface ICustomChartProps {
     data?: IChart[];
-    label?: string;
     width?: number;
     height?: number;
     type?: CurveType;
+    maxY?: number;
+    maxX?: number;
+    title?: string;
 };
 
 export interface ICustomChartTooltipProps {
@@ -31,6 +31,9 @@ export interface ICustomChartTooltipProps {
 export interface IChartData {
     graphType: GraphTypes;
     data: Array<any>;
+    maxY?: number;
+    maxX?: number;
+    title?: string;
 }
 
 export interface IChartDashboardProps {
@@ -46,28 +49,30 @@ export const COLORS_PALLETE: string[] = ['#9B3CB5', '#FF5E78', "#FF915D", "#FFC6
 export const getChartData = (data: Array<any>, isPieChart?: boolean): Array<IChart> => {
     const result: Array<IChart> = new Array<IChart>();
     data.forEach((entry: any, i: number): void => {
-        if (isPieChart !== undefined) {
+        let value = entry[Object.keys(entry)[1]].length;
+        if (value === undefined) {
+            value = entry[Object.keys(entry)[1]];
+        }
+        if (value !== 0) {
+            if (isPieChart !== undefined) {
+                result.push({
+                    name: entry[Object.keys(entry)[0]],
+                    value: value,
+                    color: COLORS_PALLETE[i]
+                });
+                return;
+            }
             result.push({
                 name: entry[Object.keys(entry)[0]],
-                value: entry[Object.keys(entry)[1]].length,
+                value: entry[Object.keys(entry)[1]],
                 color: COLORS_PALLETE[i]
             });
-            return;
         }
-        result.push({
-            name: entry[Object.keys(entry)[0]],
-            value: entry[Object.keys(entry)[1]],
-            color: COLORS_PALLETE[i]
-        });
     });
     return result;
 };
 
 export const CustomTooltip = (props: ICustomChartTooltipProps) => {
-
-    useEffect(() => {
-
-    });
 
     const formatMessage = (value: string): string => {
         return `${Number(value).toLocaleString()}`;
@@ -80,8 +85,8 @@ export const CustomTooltip = (props: ICustomChartTooltipProps) => {
     };
 
     return <div className={customTooltipClassName}>
-        {props.payload!.map((entry: any) => (
-            <Label>{`${entry["name"]}: ${formatMessage(entry.value)}`}</Label>
+        {props.payload!.map((entry: any, i: number) => (
+            <Label key={i}>{`${entry["name"]}: ${formatMessage(entry.value)}`}</Label>
         ))}
         {props.payload!.length > 0 && (
             <Label>
@@ -97,17 +102,22 @@ export const mapChart = (chartData: IChartData) => {
         case GraphTypes.SIMPLE_LINE_CHART: {
             return <CustomLineChart data={getChartData(chartData.data)}
                 width={500}
-                height={500} />
+                height={500}
+                title={chartData.title} />
         }
         case GraphTypes.BAR_CHART: {
             return <CustomBarChart data={getChartData(chartData.data)}
                 width={500}
-                height={500} />
+                height={500}
+                maxX={chartData.maxX}
+                maxY={chartData.maxY}
+                title={chartData.title} />
         }
         default: {
             return <CustomPieChart data={getChartData(chartData.data, true)}
                 width={500}
-                height={500} />
+                height={500}
+                title={chartData.title} />
         }
     }
 };

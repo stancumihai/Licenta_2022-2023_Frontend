@@ -1,9 +1,12 @@
-import React from "react";
+import {
+    useEffect,
+    useState
+} from "react";
 import { IResponse } from "../Models/IResponse";
 import { IFetchResult } from "./useFetch.types";
 
-export const useFetch = <T>(fetchPromise: () => Promise<IResponse<T>>, dependencies?: React.DependencyList[]): IFetchResult<T> => {
-    const [fetchData, setFetchData] = React.useState<IFetchResult<T>>(
+export const useFetch = <T>(fetchPromise: () => Promise<IResponse<T>>, dependencies: string[] = []): IFetchResult<T> => {
+    const [fetchData, setFetchData] = useState<IFetchResult<T>>(
         {
             data: null,
             isLoading: true,
@@ -11,7 +14,7 @@ export const useFetch = <T>(fetchPromise: () => Promise<IResponse<T>>, dependenc
         }
     )
 
-    React.useEffect(() => {
+    useEffect(() => {
         fetchPromise()
             .then((response: IResponse<T>) =>
                 setFetchData(prevFetchData => {
@@ -38,7 +41,7 @@ export const useFetch = <T>(fetchPromise: () => Promise<IResponse<T>>, dependenc
                 })
             )
 
-    }, [dependencies]);
+    }, dependencies);
 
     return fetchData;
 };

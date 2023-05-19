@@ -53,23 +53,10 @@ export const dropdownStyles: Partial<IDropdownStyles> = {
 };
 
 export const chartsContainerClassName: string = mergeStyles({
-    background: 'red',
-    width: "100%",
-    height: '50%',
-    marginTop: '7.5%',
-    selectors: {
-        '::-webkit-scrollbar': {
-            width: '6px',
-            height: '6px'
-        },
-        '::-webkit-scrollbar-track': {
-            background: 'transparent'
-        },
-        '::-webkit-scrollbar-thumb': {
-            backgroundColor: COLOR2,
-            borderRadius: '5px',
-        }
-    }
+    width: '100%',
+    height: '100%',
+    marginTop: '10%',
+    marginLeft: '-5%',
 });
 
 export const selectedDateInfoClassName: string = mergeStyles({

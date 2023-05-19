@@ -13,7 +13,8 @@ const MovieContext: React.Context<IMovieContext> = createContext<IMovieContext>(
     watchLaterMovies: [],
     setCurrentMovies: () => { },
     currentUsedMovies: [],
-    isAllDataLoaded: () => { return false; }
+    refreshMovies: false,
+    setRefreshMoviesState: () => { },
 });
 
 export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Element => {
@@ -24,16 +25,16 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
 
     const [collectionMovies, setCollectionMovies] = useState<IMovie[]>([]);
     const [areCollectionMoviesLoaded, setAreCollectionMoviesLoaded] = useState<boolean>(false);
-    const colectionMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesCollection());
+    const [refreshMovies, setRefreshMovies] = useState<boolean>(false);
+    const colectionMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesCollection(), [refreshMovies.toString()]);
 
     const [historyMovies, setHistoryMovies] = useState<IMovie[]>([]);
     const [areHistoryMoviesLoaded, setAreHistoryMoviesLoaded] = useState<boolean>(false);
-    const historyMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesHistory());
+    const historyMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesHistory(), [refreshMovies.toString()]);
 
     const [watchLaterMovies, setWatchLaterMovies] = useState<IMovie[]>([]);
     const [areWatchLaterMoviesLoaded, setAreWatchLaterMoviesLoaded] = useState<boolean>(false);
-    const watchLaterMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesSubscription());
-
+    const watchLaterMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesSubscription(), [refreshMovies.toString()]);
     const [currentUsedMovies, setCurrentUserMovies] = useState<IMovie[]>([]);
 
     useEffect(() => {
@@ -49,6 +50,15 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         setMovies(movieData.data!.Data!);
         setAreMoviesLoaded(true);
     }, [movieData]);
+
+    const waitForCollectionToBeLoaded = () => {
+        if (areCollectionMoviesLoaded === false) {
+            setTimeout(() => {
+                waitForCollectionToBeLoaded();
+                return;
+            }, 100);
+        }
+    };
 
     useEffect(() => {
         if (colectionMoviesData.isLoading) {
@@ -96,13 +106,6 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         return areMoviesLoaded;
     };
 
-    const isAllDataLoaded = (): boolean => {
-        return areMoviesLoaded &&
-            areCollectionMoviesLoaded &&
-            areHistoryMoviesLoaded &&
-            areWatchLaterMoviesLoaded;
-    };
-
     const setCurrentMovies = (movieContextType: IMovieContextType, otherCollection?: IMovie[]) => {
         if (otherCollection !== undefined) {
             setCurrentUserMovies(otherCollection);
@@ -128,6 +131,13 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         }
     };
 
+    const setRefreshMoviesState = (): void => {
+        setRefreshMovies(prev => !prev);
+        setAreHistoryMoviesLoaded(false);
+        setAreCollectionMoviesLoaded(false);
+        setAreWatchLaterMoviesLoaded(false);
+    };
+
     return (<MovieContext.Provider value={{
         movies,
         collectionMovies,
@@ -135,7 +145,8 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         historyMovies,
         setCurrentMovies,
         currentUsedMovies,
-        isAllDataLoaded
+        setRefreshMoviesState,
+        refreshMovies
     }}> {isInitialDataLoaded() && children} </MovieContext.Provider>);
 };
 

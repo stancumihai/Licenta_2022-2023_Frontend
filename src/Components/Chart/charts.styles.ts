@@ -18,8 +18,16 @@ export const chartTitleClassName: string = mergeStyles({
     position: 'relative',
     fontSize: '30px',
     marginTop: '5vh',
-    marginBottom: '3vh'
 });
+
+export const chartSubTitleClassName: string = mergeStyles(({
+    fontFamily: FONT_FAMILY,
+    color: COLOR1,
+    fontSize: '20px',
+    top: '0',
+    margin: 0,
+    marginBottom: '2%'
+}));
 
 export const legendWrapperStyle: CSSProperties = {
     height: '30%',

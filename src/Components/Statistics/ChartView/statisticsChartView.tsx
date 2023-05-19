@@ -7,9 +7,7 @@ import {
 } from 'office-ui-fabric-react';
 import {
     useState,
-    useCallback,
     useContext,
-    useEffect
 } from 'react';
 import {
     calendarClassName,
@@ -27,19 +25,13 @@ import {
     ServiceContext,
     ServiceContextInstance
 } from '../../../Core/serviceContext';
-import { IFetchResult } from '../../../Hooks/useFetch.types';
-import { useFetch } from '../../../Hooks/useFetch';
 import { IAccuracyPeriodModel } from '../../../Models/IAccuracyPeriodModel';
 import { getFormattedChartModels } from '../../../Helpers/ChartHelper/chartDataLogic';
+import { IMonthlyRecommendationStatusModel } from '../../../Models/IMonthlyRecommendationStatusModel';
+import { IResponse } from '../../../Models/IResponse';
 
 export const StatisticsChartView = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
-
-    const [recommendationsPerMonth, setRecommendationsPerMonth] = useState<IAccuracyPeriodModel[]>([]);
-    const [areRecommendationsPerMonthLoaded, setAreRecommendationsPerMonthLoaded] = useState<boolean>(false);
-    const recommendationsPerMonthData: IFetchResult<IAccuracyPeriodModel[]> =
-        useFetch<IAccuracyPeriodModel[]>(() => services.RecommendationService.GetAccuracyPerMonths());
-
     const [selectedDate, setSelectedDate] = useState<Date>();
     const algorithmDropdownOptions: IDropdownOption[] = [
         { key: 'algorithm1', text: 'Algorithm 1' },
@@ -47,31 +39,33 @@ export const StatisticsChartView = (): JSX.Element => {
     ];
     const [selectedAlgorithmDropdownOption, setSelectedAlgorithmDropdownOption] = useState<IDropdownOption>();
     const [isChartButtonClicked, setIsChartButtonClicked] = useState<boolean>(false);
-
-
-    useEffect(() => {
-        if (recommendationsPerMonthData.isLoading) {
-            return;
-        }
-        if (recommendationsPerMonthData.errors !== "" ||
-            recommendationsPerMonthData.data?.Error !== undefined ||
-            recommendationsPerMonthData.data == null ||
-            recommendationsPerMonthData.data.Data === undefined) {
-            return;
-        }
-        console.log(recommendationsPerMonthData.data.Data);
-        setRecommendationsPerMonth(recommendationsPerMonthData.data.Data!)
-        setAreRecommendationsPerMonthLoaded(true);
-    }, [recommendationsPerMonthData]);
+    const [selectedDateChartData, setSelectedDateChartData] = useState<IChartData[] | undefined>(undefined);
+    const [algorithmData, setAlgorithmData] = useState<IChartData[] | undefined>(undefined);
 
     const handleAlgorithmSelection = (event: React.FormEvent<HTMLDivElement>, newAlgorithm?: IDropdownOption): void => {
-        setSelectedAlgorithmDropdownOption(newAlgorithm!);
+        services.RecommendationService.GetAccuracyPerMonthsByAlgorithm(newAlgorithm!.text).then((data: IResponse<IAccuracyPeriodModel[]>) => {
+            setSelectedAlgorithmDropdownOption(newAlgorithm!);
+            setIsChartButtonClicked((prev) => !prev);
+            setAlgorithmData([{
+                graphType: GraphTypes.BAR_CHART,
+                data: getFormattedChartModels(data.Data),
+                maxY: 1,
+                title: 'Accuracy Per Months'
+            }]);
+        });
     };
 
-    const onSelectDate = useCallback((date: Date): void => {
-        setIsChartButtonClicked((prev) => !prev);
+    const onSelectedDateChange = (date: Date, selectedDateRangeArray?: Date[] | undefined): void => {
         setSelectedDate(date);
-    }, []);
+        services.RecommendationService.GetMonthlyRecommendationStatuses(date!.getFullYear(), date!.getMonth() + 1, selectedAlgorithmDropdownOption!.text)
+            .then((data: IResponse<IMonthlyRecommendationStatusModel[]>) => {
+                setSelectedDateChartData([{
+                    graphType: GraphTypes.PIE_CHART,
+                    data: data.Data!
+                }]);
+                setIsChartButtonClicked((prev) => !prev);
+            });
+    };
 
     const handleDropDownMouseEnter = (event: any): void => {
         $(event.target).css('color', 'white');
@@ -82,15 +76,8 @@ export const StatisticsChartView = (): JSX.Element => {
             .css('color', COLOR2);
     };
 
-    const chartData: IChartData[] = [
-        {
-            graphType: GraphTypes.BAR_CHART,
-            data: getFormattedChartModels(recommendationsPerMonth)
-        }
-    ];
-
     return <div className={containerClassName}>
-        {areRecommendationsPerMonthLoaded &&
+        {
             <>
                 <div className={inputsContainerClassName}>
                     <Dropdown selectedKey={selectedAlgorithmDropdownOption ? selectedAlgorithmDropdownOption.key : undefined}
@@ -108,7 +95,7 @@ export const StatisticsChartView = (): JSX.Element => {
                                     showGoToToday
                                     highlightSelectedMonth
                                     isDayPickerVisible={false}
-                                    onSelectDate={onSelectDate}
+                                    onSelectDate={onSelectedDateChange}
                                     value={selectedDate}
                                     strings={defaultCalendarStrings} />
                             </>
@@ -116,8 +103,11 @@ export const StatisticsChartView = (): JSX.Element => {
                     </div>
                 </div>
                 <div className={chartsContainerClassName}>
-                    {chartData.length !== 0 && <Chart chartData={chartData}
-                        isButtonClicked={isChartButtonClicked} />}
+                    {selectedAlgorithmDropdownOption !== undefined && algorithmData !== undefined &&
+                        <Chart chartData={selectedDateChartData === undefined ?
+                            algorithmData! :
+                            selectedDateChartData}
+                            isButtonClicked={isChartButtonClicked} />}
                 </div>
             </>
         }

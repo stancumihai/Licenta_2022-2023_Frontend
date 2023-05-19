@@ -43,8 +43,12 @@ export const Navbar = (): JSX.Element => {
     const [searchText, setSearchText] = useState<string>('');
     const [isRefreshConfirmationDisplayed, setIsRefreshConfirmationDisplayed] = useState<boolean>(false);
 
+    const isAdmin = (): boolean => {
+        return authenticationContext.User.role === UserType.Administrator;
+    };
+
     const currentUserHasProfile = (): boolean => {
-        return userContext.users.filter((u: IUserProfileRead) => u.userUid === authenticationContext.User.uid!)[0] != null;
+        return userContext.users.filter((u: IUserProfileRead) => u.userUid === authenticationContext.User.uid!)[0] != null || isAdmin();;
     };
 
     const handleOnAdvancedSearchClick = (): void => {
@@ -65,7 +69,6 @@ export const Navbar = (): JSX.Element => {
                 const searchedMovies: IMovie[] = movieContext.movies.filter((movie: IMovie) =>
                     movie.title.toLowerCase().includes(searchText) ||
                     movie.title.includes(searchText));
-                console.log(searchedMovies);
                 movieContext.setCurrentMovies(IMovieContextType.NONE, searchedMovies);
                 setSearchText('');
                 uiContext.setSpinnerState(true);
@@ -96,6 +99,7 @@ export const Navbar = (): JSX.Element => {
     return <div className={containerClassName}>
         <div className={searchContainer}>
             {uiContext.shoudDisplaySearch ? <TextField
+                disabled={!currentUserHasProfile()}
                 onChange={handleSearchBoxChange}
                 value={searchText}
                 onKeyDown={handleSearchBarEnterKeyPressed}
@@ -104,11 +108,12 @@ export const Navbar = (): JSX.Element => {
                 styles={textFieldStyles} /> : <></>}
             {uiContext.shoudDisplaySearch && !isOnUserContext() ? <TbListSearch className={advancedSearchIconClassName}
                 onClick={handleOnAdvancedSearchClick} /> : <></>}
-            <AdvancedSearch isOpen={showAdvancedSearch}
+            <AdvancedSearch isOpen={showAdvancedSearch && currentUserHasProfile()}
                 handleCloseDialog={handleCloseDialog} />
             {
                 uiContext.shoudDisplaySearch && !isOnUserContext() ?
                     <IconButton iconProps={{ iconName: "Refresh" }}
+                        disabled={!currentUserHasProfile()}
                         onClick={handleRefreshButtonClick}
                         styles={iconStyles} /> : <></>
             }
@@ -121,8 +126,7 @@ export const Navbar = (): JSX.Element => {
         </div>
         <div style={currentUserHasProfile() ||
             authenticationContext.User.role === UserType.Administrator ? { display: 'none' } : {}}>
-            <MessageBar
-                messageBarType={MessageBarType.severeWarning}
+            <MessageBar messageBarType={MessageBarType.severeWarning}
                 isMultiline={false}
                 styles={messageBarStyles} >
                 {PROFILE_NOT_YEY_CREATED_WARNING}

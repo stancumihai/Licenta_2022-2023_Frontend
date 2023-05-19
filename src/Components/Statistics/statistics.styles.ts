@@ -1,5 +1,9 @@
 import { mergeStyles } from 'office-ui-fabric-react';
-import { FONT_FAMILY, COLOR1 } from '../../Library/constants';
+import {
+    FONT_FAMILY,
+    COLOR1,
+    COLOR2
+} from '../../Library/constants';
 
 export const containerClassName: string = mergeStyles({
     width: '75vw',
@@ -10,6 +14,21 @@ export const containerClassName: string = mergeStyles({
     justifyContent: 'center',
     marginRight: '1vw',
     height: '100%',
+    overflow: 'scroll',
+    overflowX: 'hidden',
+    selectors: {
+        '::-webkit-scrollbar': {
+            width: '6px',
+            height: '6px'
+        },
+        '::-webkit-scrollbar-track': {
+            background: 'transparent'
+        },
+        '::-webkit-scrollbar-thumb': {
+            backgroundColor: COLOR2,
+            borderRadius: '5px',
+        }
+    }
 });
 
 export const buttonContainerClassName: string = mergeStyles({

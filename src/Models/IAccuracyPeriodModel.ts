@@ -4,7 +4,6 @@ export interface IAccuracyPeriodModel {
     accuracy: number;
 };
 
-
 export interface AccuracyPeriodModelChartModel {
     date: string;
     accuracy: number;

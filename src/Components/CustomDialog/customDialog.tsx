@@ -38,7 +38,7 @@ export const CustomDialog = (props: ICustomDialogProps): JSX.Element => {
                         onClick={() => props.handleCloseDialog(true)}
                         text={props.acceptedText} />
                     <DefaultButton style={{ marginLeft: '10px', marginTop: '3.5vh' }}
-                        onClick={() => props.handleCloseDialog()}
+                        onClick={() => props.handleCloseDialog(false)}
                         text={props.cancelText} />
                 </div>
             </DialogFooter>

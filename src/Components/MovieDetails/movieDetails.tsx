@@ -26,7 +26,10 @@ import {
 import { MdWatchLater } from "react-icons/md";
 import { AiOutlineLike } from "react-icons/ai";
 import { BiCheckCircle } from "react-icons/bi";
-import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
+import {
+    ServiceContext,
+    ServiceContextInstance
+} from '../../Core/serviceContext';
 import { ILikedMovieRead } from '../../Models/LikedMovie/ILikedMovieRead';
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
@@ -43,7 +46,10 @@ import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import { IMovieRating } from '../../Models/IMovieRating';
 import { CustomDialog } from '../CustomDialog/customDialog';
-import { acceptedButtonStyles, dialogStyles } from '../HomePage/homePage.styles';
+import {
+    acceptedButtonStyles,
+    dialogStyles
+} from '../HomePage/homePage.styles';
 import {
     NavigateFunction,
     useNavigate
@@ -75,7 +81,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const uiContext: IUiContext = useContext(UiContext);
 
     const [seenMovies, setSeenMovies] = useState<ISeenMovieRead[]>([]);
-    const [areSeenMovisLoaded, setAreSeenMoviesLoaded] = useState<boolean>(false);
+    const [areSeenMoviesLoaded, setAreSeenMoviesLoaded] = useState<boolean>(false);
     const seenMoviesData: IFetchResult<ISeenMovieRead[]> = useFetch<ISeenMovieRead[]>(() =>
         services.SeenMoviesService.GetByUserAndMovie(props.movieRating.movie.uid!));
 

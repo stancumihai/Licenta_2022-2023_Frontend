@@ -22,7 +22,7 @@ export const ButtonCard = (props: IButtonCardProps): JSX.Element => {
     };
 
     return <div id={props.id}
-        style={props.leftMargin === true ? { marginLeft: '20%' } : {}}
+        style={props.leftMargin === true ? { marginLeft: '10%' } : {}}
         className={containerClassName}
         onClick={handleClick}>
         <div className={doubleGridItemClassName}>

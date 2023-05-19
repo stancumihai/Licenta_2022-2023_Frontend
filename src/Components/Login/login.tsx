@@ -12,6 +12,7 @@ import {
     LOCK_LOGO_LOCATION,
     LOGIN,
     LOGIN_SERVER_ERROR,
+    REFRESH_TOKEN,
     REMEMBER_ME,
     SIGN_UP,
     SIGN_UP_PATH,
@@ -35,7 +36,7 @@ import {
     textErrorFieldStyles,
     nushClassName as textfieldContainerClassName,
 } from './login.styles';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { IsModified } from '../../Library/types';
 import { ILoginFormData } from './login.types';
 import { Background } from '../Background/background';
@@ -59,6 +60,8 @@ import { IUser } from '../../Models/User/IUser';
 import $ from 'jquery';
 import UiContext from '../../Contexts/Ui/uiContext';
 import { IUiContext } from '../../Contexts/Ui/uiContext.types';
+import MovieContext from '../../Contexts/Movie/movieContext';
+import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
 
 export const Login = (): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -76,10 +79,15 @@ export const Login = (): JSX.Element => {
             Password: false
         }
     );
-
     const navigate: NavigateFunction = useNavigate();
     const cookie = new Cookies();
     const uiContext: IUiContext = useContext(UiContext);
+    const movieContext: IMovieContext = useContext(MovieContext);
+
+    useEffect(() => {
+        cookie.remove(JWT_TOKEN);
+        cookie.remove(REFRESH_TOKEN);
+    }, []);
 
     const isReadyToSumbit = (data: ILoginFormData): boolean => {
         return data.Email !== "" && data.Password !== '';
@@ -135,6 +143,7 @@ export const Login = (): JSX.Element => {
                 services.AuthenticationService.GetLoggedInUser().then((data: IResponse<IUser>) => {
                     authenticationContext.SetUpdatedUser(data.Data!);
                     uiContext.setSpinnerState(true);
+                    movieContext.setRefreshMoviesState();
                     navigate(SURVEY_PATH);
                 });
                 return;

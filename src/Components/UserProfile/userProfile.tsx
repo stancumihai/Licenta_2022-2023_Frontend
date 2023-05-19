@@ -157,7 +157,7 @@ export const UserProfile = (): JSX.Element => {
     };
 
     const handleCloseDialog = (accepted?: boolean): void => {
-        if (accepted === false) {
+        if (!accepted) {
             setTimeout(() => {
                 setIsSaveSettingsClicked(false);
             }, 500);

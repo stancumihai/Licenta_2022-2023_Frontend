@@ -37,6 +37,7 @@ import AuthentificationContext from '../../Contexts/Authentication/authenticatio
 import { UserType } from '../../Enums/UserType';
 import UserContext from '../../Contexts/User/userContext';
 import { IUserContext } from '../../Contexts/User/userContext.types';
+import { IUserProfileRead } from '../../Models/UserProfile/IUserProfileRead';
 
 export const SideBar = (): JSX.Element => {
     const cookie = new Cookies();
@@ -47,12 +48,6 @@ export const SideBar = (): JSX.Element => {
     const [isSidebarClicked, setIsSidebarClicked] = useState<boolean>(false);
     const [isToggleActive, setIsToggleActive] = useState<boolean>(false);
     const navigate: NavigateFunction = useNavigate();
-
-    useEffect(() => {
-        // console.log(movieContext.collectionMovies.length);
-        // console.log(movieContext.historyMovies.length);
-        // console.log(movieContext.watchLaterMovies.length);
-    }, []);
 
     const sidebarAdminListItems: ISidebarListItem[] = [
         {
@@ -73,7 +68,7 @@ export const SideBar = (): JSX.Element => {
         },
         {
             iconName: 'Trending12',
-            text: 'Trending',
+            text: 'Charts',
             handleSidebarNavigation: () => navigate(DASHBOARD_PATH)
         },
         {
@@ -270,6 +265,10 @@ export const SideBar = (): JSX.Element => {
         }
     };
 
+    const currentUserHasProfile = (): boolean => {
+        return userContext.users.filter((u: IUserProfileRead) => u.userUid === authenticationContext.User.uid!)[0] != null || isAdmin();
+    };
+
     const handleToggleButton = () => {
         $('.navigation').toggleClass('active');
         if (!isToggleActive) {
@@ -283,12 +282,14 @@ export const SideBar = (): JSX.Element => {
 
     return <div className='navigation'>
         {getSideBarListItems().map((sidebarListItem: ISidebarListItem, i: number) => {
-            return <SideBarListItem key={i}
+            return <SideBarListItem
+                key={i}
                 isToggleActive={isToggleActive}
                 sidebarListItem={sidebarListItem} />
         })}
         <div className='toggle'>
             <IconButton onClick={handleToggleButton}
+                disabled={!currentUserHasProfile()}
                 iconProps={!isToggleActive ? { iconName: "GlobalNavButton" } : { iconName: 'Cancel' }}
                 styles={!isToggleActive ? inActiveIconButtonStyles : activeIconButtonStyles} />
         </div>

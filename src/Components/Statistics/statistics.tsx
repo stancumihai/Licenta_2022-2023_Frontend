@@ -16,16 +16,18 @@ import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import { IRecommendationRead } from '../../Models/Recommendation/IRecommendationRead';
 import { IRecommendationUpdate } from '../../Models/Recommendation/IRecommendationUpdate';
+import { SetAlgorithmView } from './SetAlgorithmView/setAlgorithmView';
 
 
 export const Statistics = (): JSX.Element => {
     const [firstButtonClicked, setFirstButtonClicked] = useState<boolean>(false);
-    const [showSummary, setShowSummary] = useState<boolean>(false);
+    const [pageIndex, setPageIndex] = useState<number>(1);
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const [recommendations, setRecommendations] = useState<IRecommendationRead[] | IRecommendationUpdate[]>([]);
     const [areRecommendationsLoaded, setAreRecommendationsLoaded] = useState<boolean>(false);
     const recommendationsData: IFetchResult<IRecommendationRead[] | IRecommendationUpdate[]> =
         useFetch<IRecommendationRead[] | IRecommendationUpdate[]>(() => services.RecommendationService.GetAll());
+
     useEffect(() => {
         if (recommendationsData.isLoading) {
             return;
@@ -61,11 +63,23 @@ export const Statistics = (): JSX.Element => {
     };
 
     const handleSummaryClick = () => {
-        setShowSummary(true);
+        setPageIndex(1);
     };
 
     const handleChartsClick = () => {
-        setShowSummary(false);
+        setPageIndex(2);
+    };
+
+    const handleSetAlgorithmClick = () => {
+        setPageIndex(3);
+    };
+
+    const getPageByPageIndex = () => {
+        switch (pageIndex) {
+            case 1: return <StatisticsSummaryView />;
+            case 2: return <StatisticsChartView />;
+            default: return <SetAlgorithmView />
+        }
     };
 
     const getButtons = (): JSX.Element => {
@@ -81,15 +95,19 @@ export const Statistics = (): JSX.Element => {
                 mainTextClassName={mainTextClassName}
                 text='Charts'
                 onClick={handleChartsClick}
-                iconName={'BarChartVertical'} />  /</div>
+                iconName={'BarChartVertical'} />
+            <ButtonCard id={'Set'}
+                leftMargin={true}
+                mainTextClassName={mainTextClassName}
+                text='SetAlgorithm'
+                onClick={handleSetAlgorithmClick}
+                iconName={'FunctionalManagerDashboard'} />
+            /</div>
     };
 
     return <div className={containerClassName}>
         {getButtons()}
-        {showSummary ?
-            <StatisticsSummaryView /> :
-            <StatisticsChartView />
-        }
+        {getPageByPageIndex()}
     </div>
 };
 

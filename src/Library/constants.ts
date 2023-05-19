@@ -45,6 +45,7 @@ export const USER_ENDPOINT: string = 'users';
 export const USER_MOVIE_RATING_ENDPOINT: string = 'userMovieRatings';
 export const USER_PROFILE_ENDPOINT: string = 'userProfiles';
 export const RECOMMENDATIONS_ENDPOINT: string = 'recommendations';
+export const ALGORITHM_CHANGES_ENDPOINT: string = 'algorithmChanges';
 export const MOVIE_ENDPOINT: string = 'movies';
 export const MOVIE_RATING_ENDPOINT: string = 'movieRatings';
 export const PERSON_ENDPOINT: string = 'persons';

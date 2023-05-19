@@ -1,13 +1,12 @@
-import { FontWeights, mergeStyles } from 'office-ui-fabric-react';
-import { FONT_FAMILY, COLOR1, COLOR1_D_20, COLOR1_D_40, COLOR2 } from '../../Library/constants';
+import { FontWeights, ICalloutContentStyles, mergeStyles } from 'office-ui-fabric-react';
+import {
+    FONT_FAMILY,
+    COLOR1,
+    COLOR1_D_20,
+    COLOR1_D_40,
+    COLOR2
+} from '../../Library/constants';
 import { mergeStyleSets } from '@fluentui/react';
-
-export const doubleGridItemClassName: string = mergeStyles({
-    position: 'relative',
-    width: '66.7%',
-    height: '100%',
-    borderRadius: '10px  0 0 10px',
-});
 
 export const countTextClassName: string = mergeStyles({
     fontFamily: FONT_FAMILY,
@@ -26,20 +25,14 @@ export const dataTypeTextClassName: string = mergeStyles({
     fontFamily: FONT_FAMILY,
     textAlign: 'center',
     color: COLOR1,
-    fontSize: '20px',
+    marginLeft: '5%',
+    fontSize: '18px',
     selectors: {
         ':hover': {
             color: COLOR1_D_20,
             cursor: 'pointer'
         }
     }
-});
-
-export const singleGridItemClassName: string = mergeStyles({
-    position: 'relative',
-    width: '33.3%',
-    height: '100%',
-    borderRight: `5px solid ${COLOR1_D_20}`,
 });
 
 export const listItemClassName: string = mergeStyles({
@@ -64,8 +57,7 @@ export const listItemCalloutClassName: string = mergeStyles({
 });
 
 export const listItemContainerClassName: string = mergeStyles({
-    textAlign: 'center',
-    marginLeft: '-30px'
+    marginLeft: '-15%'
 });
 
 export const informationCardContainerClassName: string = mergeStyles({

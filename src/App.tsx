@@ -20,7 +20,6 @@ import { Register } from './Components/Register/register';
 import {
   ARTISTS_OF_THE_MONTH_PATH,
   DASHBOARD_PATH,
-  DEFAULT_PATH,
   FORGOT_PASSWORD_PATH,
   HOME_PATH,
   JWT_TOKEN,
@@ -98,7 +97,7 @@ export default function App(): JSX.Element {
   useEffect(() => {
     handleAuthentication();
     hasSurveyPath();
-  }, [authenticationContext.User, isForbidden]);
+  }, [authenticationContext.User, isForbidden, userHasSurveyAnswers]);
 
   useEffect(() => {
     const currentPath: string = window.location.href;
@@ -225,19 +224,31 @@ export default function App(): JSX.Element {
     }
   };
 
+  const waitForSurveyAnswersLoaded = (): void => {
+    if (userHasSurveyAnswers === undefined) {
+      setTimeout(() => {
+        waitForSurveyAnswersLoaded();
+        return;
+      }, 200);
+    }
+  };
+
   const hasSurveyPath = (): void => {
     if (authenticationContext.User.role !== UserType.Administrator) {
       services.UserService.UserHasSurveyAnswers(authenticationContext.User.uid!)
         .then((data: IResponse<any>) => {
           if (!data.Data!) {
             setUserHasSurveyAnswers(false);
+            waitForSurveyAnswersLoaded();
             return;
           }
           setUserHasSurveyAnswers(true);
+          waitForSurveyAnswersLoaded();
         });
       return;
     }
     setUserHasSurveyAnswers(true);
+    waitForSurveyAnswersLoaded();
   };
 
   return (<div className={containerClassName}>

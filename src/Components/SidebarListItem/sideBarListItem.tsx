@@ -24,7 +24,7 @@ export const SideBarListItem = (props: ISidebarListItemProps): JSX.Element => {
         })
     };
 
-    return <>
+    return <div>
         <li title={props.sidebarListItem!.text} key={props.sidebarListItem!.text}
             className='list'
             onClick={props.sidebarListItem!.handleSidebarNavigation}
@@ -39,5 +39,5 @@ export const SideBarListItem = (props: ISidebarListItemProps): JSX.Element => {
                 </p>
             </a>
         </li>
-    </>
+    </div>
 };
