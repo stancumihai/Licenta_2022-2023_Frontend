@@ -113,3 +113,9 @@ export const contentClassName: string = mergeStyles({
     gridTemplateColumns: 'auto auto',
     marginTop: '10%'
 });
+
+export const errorMessageClassName: string = mergeStyles({
+    fontFamily: FONT_FAMILY,
+    color: COLOR2,
+    fontSize: '20px'
+});

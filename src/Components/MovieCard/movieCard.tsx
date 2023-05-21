@@ -1,4 +1,5 @@
 import {
+    useContext,
     useEffect,
     useState
 } from 'react';
@@ -14,13 +15,22 @@ import {
     NavigateOptions,
     useNavigate
 } from 'react-router';
-import { MOVIE_NOT_FOUND_IMAGE_LOCATION, MOVIE_WRAPPER_PATH, MY_COLLECTION_PATH, MY_HISTORY_PATH, WATCH_LATER_PATH } from '../../Library/constants';
+import {
+    MOVIE_NOT_FOUND_IMAGE_LOCATION,
+    MOVIE_WRAPPER_PATH
+} from '../../Library/constants';
+import { IUserMovieRatingCreate } from '../../Models/UserMovieRating/IUserMovieRatingCreate';
+import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
+import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
+import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
+import { IUserMovieSearchCreate } from '../../Models/UserMovieSearch/IUserMovieSearchCreate';
 
 export const MovieCard = (props: IMovieCardProps): JSX.Element => {
     const MOVIE_QUERY_URL: string = 'https://api.themoviedb.org/3/search/movie?api_key=aa32df38f33efcf6781400cf7584d8bb&query='
     const POSTERS_QUERY_URL: string = 'https://api.themoviedb.org/3/movie';
     const IMAGE_SOURCE_URL: string = 'https://image.tmdb.org/t/p/w185/';
-
+    const services = useContext<ServiceContext>(ServiceContextInstance);
+    const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
     const [imageSource, setImageSource] = useState<string>('');
     const [ratingToBeDisplayed, setRatingToBeDisplayed] = useState<number>(0);
     const navigate: NavigateFunction = useNavigate();
@@ -69,6 +79,12 @@ export const MovieCard = (props: IMovieCardProps): JSX.Element => {
     };
 
     const handleMovieCardClick = (): void => {
+        const userMovieSearch: IUserMovieSearchCreate = {
+            userUid: authenticationContext.User.uid!,
+            movieUid: props.movieUid,
+            createdAt: new Date()
+        };
+        services.UserMovieSearchesService.Add(userMovieSearch);
         const navigateOptions: NavigateOptions = {
             state: {
                 id: props.movieUid,

@@ -23,9 +23,9 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
     const [areMoviesLoaded, setAreMoviesLoaded] = useState<boolean>(false);
     const movieData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetAll());
 
+    const [refreshMovies, setRefreshMovies] = useState<boolean>(false);
     const [collectionMovies, setCollectionMovies] = useState<IMovie[]>([]);
     const [areCollectionMoviesLoaded, setAreCollectionMoviesLoaded] = useState<boolean>(false);
-    const [refreshMovies, setRefreshMovies] = useState<boolean>(false);
     const colectionMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesCollection(), [refreshMovies.toString()]);
 
     const [historyMovies, setHistoryMovies] = useState<IMovie[]>([]);
@@ -50,15 +50,6 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         setMovies(movieData.data!.Data!);
         setAreMoviesLoaded(true);
     }, [movieData]);
-
-    const waitForCollectionToBeLoaded = () => {
-        if (areCollectionMoviesLoaded === false) {
-            setTimeout(() => {
-                waitForCollectionToBeLoaded();
-                return;
-            }, 100);
-        }
-    };
 
     useEffect(() => {
         if (colectionMoviesData.isLoading) {

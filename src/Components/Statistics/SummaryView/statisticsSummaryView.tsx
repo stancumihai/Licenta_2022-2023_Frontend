@@ -35,8 +35,8 @@ export const StatisticsSummaryView = (): JSX.Element => {
         {areSummaryStatisticsLoaded && <>
             <h1 className={titleClassName}>General Statistics</h1>
             <div className={contentContainerClassName}>
-                {summaryStatistics.map((summaryStatistic: ISummaryMonthlyStatistics) => {
-                    return <MonthySummaryStatisticCard summaryStatistic={summaryStatistic} />
+                {summaryStatistics.map((summaryStatistic: ISummaryMonthlyStatistics, i: number) => {
+                    return <MonthySummaryStatisticCard key={i} summaryStatistic={summaryStatistic} />
                 })}
             </div>
         </>}

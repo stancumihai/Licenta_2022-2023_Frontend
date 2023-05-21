@@ -9,6 +9,7 @@ import {
     dialogStyles,
     dropdownStyles,
     editButtonStyles,
+    errorMessageClassName,
     progressIndicatorStyles,
     saveButtonStyles
 } from './setAlgorithmView.styles';
@@ -29,6 +30,7 @@ export const SetAlgorithmView = (): JSX.Element => {
     const [selectedAlgorithmDropdownOption, setSelectedAlgorithmDropdownOption] = useState<IDropdownOption>();
     const [isEditButtonClicked, setIsEditButtonClicked] = useState<boolean>(false);
     const [isSaveClicked, setIsSaveClicked] = useState<boolean>(false);
+    const [invalidMessage, setInvalidMessage] = useState<string>('');
     const [displayProgessIndicator, setDisplayProgessIndicator] = useState<boolean>(false);
     const [percentComplete, setPercentComplete] = useState(0);
     const services = useContext<ServiceContext>(ServiceContextInstance);
@@ -89,12 +91,33 @@ export const SetAlgorithmView = (): JSX.Element => {
         }, 500);
     };
 
+    const hasInvalidAlgorithmChange = () => {
+        const lastAlgorithmChange = algorithmChanges[algorithmChanges.length - 1];
+        if (lastAlgorithmChange.algorithmName === selectedAlgorithmDropdownOption!.text) {
+            setInvalidMessage("Algorithm already in use!");
+            return true;
+        }
+        const lastAlgorithmChangeStartDate: Date = new Date(lastAlgorithmChange.startDate);
+        lastAlgorithmChangeStartDate.setMonth(new Date(lastAlgorithmChangeStartDate).getMonth() + 2);
+        if (lastAlgorithmChangeStartDate >= new Date()) {
+            setInvalidMessage("Already have algorithm change for this month!");
+            return true;
+        }
+        return false;
+    };
+
     const handleCloseDialog = (accepted?: boolean): void => {
         if (!accepted) {
             setIsSaveClicked(false);
             return;
         }
         setIsSaveClicked(false);
+        if (hasInvalidAlgorithmChange()) {
+            setTimeout(() => {
+                setInvalidMessage('');
+            }, 3000);
+            return;
+        }
         const algorithmChange: IAlgorithmChangeCreate = {
             algorithmName: selectedAlgorithmDropdownOption!.text,
             startDate: new Date(),
@@ -110,6 +133,7 @@ export const SetAlgorithmView = (): JSX.Element => {
                 label={'Changing Algorithm...'}
                 percentComplete={percentComplete} />
         </div>
+        <p className={errorMessageClassName}>{invalidMessage}</p>
         <div className={contentClassName}>
             <div>
                 <Dropdown selectedKey={selectedAlgorithmDropdownOption ? selectedAlgorithmDropdownOption.key : undefined}

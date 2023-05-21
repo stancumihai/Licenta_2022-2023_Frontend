@@ -14,7 +14,8 @@ import {
     SURVEY_USER_ANSWER_ENDPOINT,
     USER_PROFILE_ENDPOINT,
     RECOMMENDATIONS_ENDPOINT,
-    ALGORITHM_CHANGES_ENDPOINT
+    ALGORITHM_CHANGES_ENDPOINT,
+    USER_MOVIES_SEARCHES_ENDPOINT
 } from '../Library/constants';
 import AuthenticationService from '../Services/authenticationService';
 import KnownForService from '../Services/knownForService';
@@ -32,6 +33,7 @@ import UserMovieRatingsService from '../Services/userMovieRatings';
 import UserProfilesService from '../Services/userProfilesService';
 import RecommendationService from '../Services/recommendationsService';
 import AlgorithmChangesService from '../Services/algorithmChangesService';
+import UserMovieSearchesService from '../Services/userMovieSearchesService';
 
 export class ServiceContext {
     private _surveyQuestionsService?: SurveyQuestionsService;
@@ -50,6 +52,7 @@ export class ServiceContext {
     private _userProfilesService?: UserProfilesService;
     private _recommendationService?: RecommendationService;
     private _algorithmChangesService?: AlgorithmChangesService;
+    private _userMovieSearchesService?: UserMovieSearchesService;
 
     get SurveyUserAnswerService(): SurveyUserAnswerService {
         if (this._surveyUserAnswerService == null) {
@@ -157,11 +160,19 @@ export class ServiceContext {
         }
         return this._recommendationService;
     };
+
     get AlgorithmChangesService(): AlgorithmChangesService {
         if (this._algorithmChangesService == null) {
             this._algorithmChangesService = new AlgorithmChangesService(ALGORITHM_CHANGES_ENDPOINT);
         }
         return this._algorithmChangesService;
+    };
+
+    get UserMovieSearchesService(): UserMovieSearchesService {
+        if (this._userMovieSearchesService == null) {
+            this._userMovieSearchesService = new UserMovieSearchesService(USER_MOVIES_SEARCHES_ENDPOINT);
+        }
+        return this._userMovieSearchesService;
     };
 };
 
