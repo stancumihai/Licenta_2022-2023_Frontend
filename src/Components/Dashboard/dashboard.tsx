@@ -38,9 +38,19 @@ export const Dashboard = (): JSX.Element => {
     const monthlySeenMoviesData: IFetchResult<MonthlyAppUsageModel[]> = useFetch<MonthlyAppUsageModel[]>(() => services.SeenMoviesService.GetMonthlySeenMovies());
     const [monthlySeenMovies, setMonthlySeenMovies] = useState<MonthlyAppUsageModel[]>([]);
 
+    // const [arePredictedMoviesCountLoaded, setArePredictedMoviesCountLoaded] = useState<boolean>(false);
+    // const predictedMoviesCountData: IFetchResult<ITopGenreModel[]> = useFetch<ITopGenreModel[]>(() => services.SeenMoviesService.GetTopSeenGenres());
+    // const [predictedMoviesCount, setPredictedMoviesCount] = useState<ITopGenreModel[]>();
+    // const [arePredictedMoviesRuntimeLoaded, setArePredictedMovieRuntimeLoaded] = useState<boolean>(false);
+    // const predictedMoviesRuntimeData: IFetchResult<ITopGenreModel[]> = useFetch<ITopGenreModel[]>(() => services.SeenMoviesService.GetTopSeenGenres());
+    // const [predictedMoviesRuntime, setPredictedMoviesRuntime] = useState<ITopGenreModel[]>();
     const [areTopSeenGenresLoaded, setAreTopSeenGenresLoaded] = useState<boolean>(false);
     const topSeenGenresData: IFetchResult<ITopGenreModel[]> = useFetch<ITopGenreModel[]>(() => services.SeenMoviesService.GetTopSeenGenres());
     const [topSeenGenres, setTopSeenGenres] = useState<ITopGenreModel[]>();
+
+    // const [arePredictedGenresLoaded, setArePredictedGenresLoaded] = useState<boolean>(false);
+    // const predictedGenresData: IFetchResult<ITopGenreModel[]> = useFetch<ITopGenreModel[]>(() => services.SeenMoviesService.GetTopSeenGenres());
+    // const [predictedGenres, setPredictedGenres] = useState<ITopGenreModel[]>();
 
     const [areTopAgeViewershipsLoaded, setAreTopAgeViewershipsLoaded] = useState<boolean>(false);
     const topAgeViewershipsData: IFetchResult<IAgeViewershipModel[]> = useFetch<IAgeViewershipModel[]>(() => services.SeenMoviesService.GetTopViewershipByAge());

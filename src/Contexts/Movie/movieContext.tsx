@@ -40,7 +40,7 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
     useEffect(() => {
         if (movieData.isLoading) {
             return;
-        }
+        } 
         if (movieData.errors !== "" ||
             movieData.data?.Error !== undefined ||
             movieData.data == null ||
