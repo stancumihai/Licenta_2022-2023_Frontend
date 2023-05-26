@@ -25,17 +25,18 @@ import {
     ServiceContext,
     ServiceContextInstance
 } from '../../../Core/serviceContext';
-import { IAccuracyPeriodModel } from '../../../Models/IAccuracyPeriodModel';
+import { IAccuracyPeriodModel } from '../../../Models/ChartModels/IAccuracyPeriodModel';
 import { getFormattedChartModels } from '../../../Helpers/ChartHelper/chartDataLogic';
-import { IMonthlyRecommendationStatusModel } from '../../../Models/IMonthlyRecommendationStatusModel';
+import { IMonthlyRecommendationStatusModel } from '../../../Models/ChartModels/IMonthlyRecommendationStatusModel';
 import { IResponse } from '../../../Models/IResponse';
 
 export const StatisticsChartView = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const [selectedDate, setSelectedDate] = useState<Date>();
     const algorithmDropdownOptions: IDropdownOption[] = [
-        { key: 'algorithm1', text: 'Algorithm 1' },
-        { key: 'algorithm2', text: 'Algorithm 2' },
+        { key: 'decision_tree', text: 'Decision Tree Classifier' },
+        { key: 'kneighbours', text: 'K Neighbors Classifier' },
+        { key: 'random_forest', text: 'Random Forest Classifier' }
     ];
     const [selectedAlgorithmDropdownOption, setSelectedAlgorithmDropdownOption] = useState<IDropdownOption>();
     const [isChartButtonClicked, setIsChartButtonClicked] = useState<boolean>(false);
@@ -107,7 +108,7 @@ export const StatisticsChartView = (): JSX.Element => {
                         <Chart chartData={selectedDateChartData === undefined ?
                             algorithmData! :
                             selectedDateChartData}
-                            isButtonClicked={isChartButtonClicked} />}
+                            chartChangeIsMadeFlag={isChartButtonClicked} />}
                 </div>
             </>
         }

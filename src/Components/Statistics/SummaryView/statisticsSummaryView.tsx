@@ -3,7 +3,7 @@ import {
     ServiceContext,
     ServiceContextInstance
 } from '../../../Core/serviceContext';
-import { ISummaryMonthlyStatistics } from '../../../Models/ISummaryMonthlyStatistics';
+import { ISummaryMonthlyStatistics } from '../../../Models/ChartModels/ISummaryMonthlyStatistics';
 import { useFetch } from '../../../Hooks/useFetch';
 import { IFetchResult } from '../../../Hooks/useFetch.types';
 import { contentContainerClassName, titleClassName } from './statisticsSummaryView.styles';

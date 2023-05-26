@@ -5,7 +5,6 @@ import {
     FONT_FAMILY
 } from '../../Library/constants';
 
-// backgroundColor: 'rgba(255, 255, 255 , 0.1)',
 export const containerClassName: string = mergeStyles({
     width: '15vw',
     height: '12.5vh',

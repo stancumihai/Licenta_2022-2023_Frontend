@@ -22,11 +22,11 @@ export const Chart = (props: IChartDashboardProps): JSX.Element => {
         waitForChartData();
         setCharts(null);
         const chartArray: JSX.Element[] = [];
-        props.chartData.forEach((chartData: IChartData) => {
-            chartArray.push(mapChart(chartData));
+        props.chartData.forEach((chartData: IChartData, i: number) => {
+            chartArray.push(mapChart(chartData, i));
         });
         setCharts(chartArray);
-    }, [props.isButtonClicked]);
+    }, [props.chartChangeIsMadeFlag]);
 
     return <div id='charts' className={containerClassName}>
         {charts !== null && charts}

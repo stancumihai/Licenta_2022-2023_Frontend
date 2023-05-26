@@ -1,4 +1,4 @@
-import { ISeenMovieRead } from './SeenMovie/ISeenMovieRead';
+import { ISeenMovieRead } from '../SeenMovie/ISeenMovieRead';
 
 export interface MonthlyAppUsageModel {
     month: number;

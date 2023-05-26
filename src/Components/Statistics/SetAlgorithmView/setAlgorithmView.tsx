@@ -24,8 +24,9 @@ import { AlgorithmChangeStatisticInfoCard } from '../../AlgorithmChangeStatistic
 
 export const SetAlgorithmView = (): JSX.Element => {
     const algorithmDropdownOptions: IDropdownOption[] = [
-        { key: 'algorithm1', text: 'Algorithm 1' },
-        { key: 'algorithm2', text: 'Algorithm 2' },
+        { key: 'decision_tree', text: 'Decision Tree Classifier' },
+        { key: 'kneighbours', text: 'K Neighbors Classifier' },
+        { key: 'random_forest', text: 'Random Forest Classifier' }
     ];
     const [selectedAlgorithmDropdownOption, setSelectedAlgorithmDropdownOption] = useState<IDropdownOption>();
     const [isEditButtonClicked, setIsEditButtonClicked] = useState<boolean>(false);

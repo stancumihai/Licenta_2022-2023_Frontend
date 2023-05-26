@@ -1,4 +1,4 @@
-import { IAccuracyPeriodModel } from '../../../Models/IAccuracyPeriodModel';
+import { IAccuracyPeriodModel } from '../../../Models/ChartModels/IAccuracyPeriodModel';
 
 export interface IStatisticsChartViewProps {
 };

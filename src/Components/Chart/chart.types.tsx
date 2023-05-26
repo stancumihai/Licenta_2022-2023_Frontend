@@ -5,6 +5,7 @@ import { GraphTypes } from '../../Enums/graphTypes';
 import { CustomLineChart } from './CustomLineChart/customLineChart';
 import { CustomBarChart } from './CustomBarChart/customBarChart';
 import { CustomPieChart } from './CustomPieChart/customPieChart';
+import { CustomScatterChart } from './CustomScatterChart/customScatterChart';
 
 export interface IChart {
     name: string;
@@ -13,7 +14,7 @@ export interface IChart {
 };
 
 export interface ICustomChartProps {
-    data?: IChart[];
+    data?: any;
     width?: number;
     height?: number;
     type?: CurveType;
@@ -38,7 +39,7 @@ export interface IChartData {
 
 export interface IChartDashboardProps {
     chartData: IChartData[];
-    isButtonClicked: boolean;
+    chartChangeIsMadeFlag: boolean;
 };
 
 export const NAME_PROPERTY: string = "name";
@@ -62,6 +63,7 @@ export const getChartData = (data: Array<any>, isPieChart?: boolean): Array<ICha
                 });
                 return;
             }
+
             result.push({
                 name: entry[Object.keys(entry)[0]],
                 value: entry[Object.keys(entry)[1]],
@@ -97,24 +99,32 @@ export const CustomTooltip = (props: ICustomChartTooltipProps) => {
 };
 
 
-export const mapChart = (chartData: IChartData) => {
+export const mapChart = (chartData: IChartData, i: number) => {
     switch (chartData.graphType) {
         case GraphTypes.SIMPLE_LINE_CHART: {
-            return <CustomLineChart data={getChartData(chartData.data)}
+            return <CustomLineChart key={i}
+                data={getChartData(chartData.data)}
                 width={500}
                 height={500}
                 title={chartData.title} />
         }
         case GraphTypes.BAR_CHART: {
-            return <CustomBarChart data={getChartData(chartData.data)}
+            return <CustomBarChart key={i}
+                data={getChartData(chartData.data)}
                 width={500}
                 height={500}
                 maxX={chartData.maxX}
                 maxY={chartData.maxY}
                 title={chartData.title} />
         }
+        case GraphTypes.SCATTER_CHART: {
+            return <CustomScatterChart data={chartData.data}
+                title={chartData.title}
+                key={i} />
+        }
         default: {
-            return <CustomPieChart data={getChartData(chartData.data, true)}
+            return <CustomPieChart key={i}
+                data={getChartData(chartData.data, true)}
                 width={500}
                 height={500}
                 title={chartData.title} />

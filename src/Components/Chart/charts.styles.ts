@@ -6,6 +6,9 @@ export const containerClassName: string = mergeStyles({
     display: 'grid',
     gridTemplateColumns: "auto auto",
     justifyContent: 'center',
+    gridColumnGap: '10%',
+    gridRowGap: '5%',
+
 });
 
 export const customTooltipClassName: string = mergeStyles({
@@ -17,7 +20,6 @@ export const chartTitleClassName: string = mergeStyles({
     color: COLOR1,
     position: 'relative',
     fontSize: '30px',
-    marginTop: '5vh',
 });
 
 export const chartSubTitleClassName: string = mergeStyles(({

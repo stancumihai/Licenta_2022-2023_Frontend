@@ -1,4 +1,4 @@
-import { MonthlyAppUsageModel, MonthlyAppUsageModelChartModel } from '../../Models/IMonthlyAppUsage';
+import { MonthlyAppUsageModel, MonthlyAppUsageModelChartModel } from '../../Models/ChartModels/IMonthlyAppUsage';
 import { ISeenMovieRead } from '../../Models/SeenMovie/ISeenMovieRead';
 import { MonthlyMovieRuntime, MonthlyMovieCount } from './chartDataModels';
 

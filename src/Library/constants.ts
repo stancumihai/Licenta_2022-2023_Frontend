@@ -50,6 +50,7 @@ export const USER_MOVIES_SEARCHES_ENDPOINT: string = 'userMovieSearches';
 export const PREDICTED_GENRES_ENDPOINT: string = 'predictedGenres';
 export const PREDICTED_MOVIES_COUNT_ENDPOINT: string = 'predictedMoviesCount';
 export const PREDICTED_MOVIES_RUNTIME_ENDPOINT: string = 'predictedMoviesRuntime';
+export const PREDICTED_AGE_VIEWERSHIP_ENDPOINT: string = 'predictedAgesViewership';
 export const MOVIE_ENDPOINT: string = 'movies';
 export const MOVIE_RATING_ENDPOINT: string = 'movieRatings';
 export const PERSON_ENDPOINT: string = 'persons';

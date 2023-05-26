@@ -18,7 +18,8 @@ import {
     USER_MOVIES_SEARCHES_ENDPOINT,
     PREDICTED_GENRES_ENDPOINT,
     PREDICTED_MOVIES_COUNT_ENDPOINT,
-    PREDICTED_MOVIES_RUNTIME_ENDPOINT
+    PREDICTED_MOVIES_RUNTIME_ENDPOINT,
+    PREDICTED_AGE_VIEWERSHIP_ENDPOINT
 } from '../Library/constants';
 import AuthenticationService from '../Services/authenticationService';
 import KnownForService from '../Services/knownForService';
@@ -40,6 +41,7 @@ import UserMovieSearchesService from '../Services/userMovieSearchesService';
 import PredictedGenresService from '../Services/predictedGenresService';
 import PredictedMoviesCountService from '../Services/predictedMoviesCountService';
 import PredictedMoviesRuntimeService from '../Services/predictedMoviesRuntimeService';
+import PredictedAgesViewershipService from '../Services/predictedAgeViewershipService';
 
 export class ServiceContext {
     private _surveyQuestionsService?: SurveyQuestionsService;
@@ -62,6 +64,7 @@ export class ServiceContext {
     private _predictedGenresService?: PredictedGenresService;
     private _predictedMoviesCountService?: PredictedMoviesCountService;
     private _predictedMoviesRuntimeService?: PredictedMoviesRuntimeService;
+    private _predictedAgesViewershipService?: PredictedAgesViewershipService;
 
     get SurveyUserAnswerService(): SurveyUserAnswerService {
         if (this._surveyUserAnswerService == null) {
@@ -200,6 +203,12 @@ export class ServiceContext {
             this._predictedMoviesRuntimeService = new PredictedMoviesRuntimeService(PREDICTED_MOVIES_RUNTIME_ENDPOINT);
         }
         return this._predictedMoviesRuntimeService;
+    };
+    get PredictedAgesViewershipService(): PredictedAgesViewershipService {
+        if (this._predictedAgesViewershipService == null) {
+            this._predictedAgesViewershipService = new PredictedAgesViewershipService(PREDICTED_AGE_VIEWERSHIP_ENDPOINT);
+        }
+        return this._predictedAgesViewershipService;
     };
 };
 

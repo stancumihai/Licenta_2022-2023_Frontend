@@ -18,7 +18,6 @@ import {
 } from '../chart.types';
 import './customBarChart.css';
 import { chartSubTitleClassName } from '../charts.styles';
-import { useEffect } from 'react';
 
 const CONTAINER_HEIGHT: number = 200;
 
@@ -58,7 +57,7 @@ export const CustomBarChart = (props: ICustomChartProps): JSX.Element => {
                         <YAxis domain={props.maxY !== undefined ? [0, 1] : undefined} />
                         <Tooltip content={<CustomTooltip data={props.data} />} />
                         <Bar dataKey={VALUE_PROPERTY}
-                            barSize={50}  >
+                            barSize={50}>
                             {props.data!.map((entry, index: number) => (
                                 <Cell key={`bar-${index}`}
                                     fill={COLORS_PALLETE[index % COLORS_PALLETE.length]} />
