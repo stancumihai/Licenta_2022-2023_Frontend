@@ -24,4 +24,12 @@ export default class RecommendationsService extends BaseService<IRecommendationR
     async GetMonthlySummaries(): Promise<IResponse<ISummaryMonthlyStatistics[]>> {
         return await APIHelper.request(`${this._endpoint}/monthlySummaries`, 'GET')
     };
+
+    async GetAllByUserAndMonth(userUid: string, year: number, month: number): Promise<IResponse<IRecommendationRead[]>> {
+        return await APIHelper.request(`${this._endpoint}/${userUid}/${year}/${month}`, 'GET')
+    };
+
+    async GetAllByMonth(year: number, month: number): Promise<IResponse<IRecommendationRead[]>> {
+        return await APIHelper.request(`${this._endpoint}/${year}/${month}`, 'GET')
+    };
 };

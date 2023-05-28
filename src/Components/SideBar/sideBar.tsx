@@ -1,4 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
+import {
+    useContext,
+    useEffect,
+    useState
+} from 'react';
 import { ISidebarListItem } from '../../UiModels/ISidebarListItem';
 import {
     activeIconButtonStyles,
@@ -15,7 +19,6 @@ import {
     LOGIN_PATH,
     WATCH_LATER_PATH,
     MY_COLLECTION_PATH,
-    TRENDING_PATH,
     MY_HISTORY_PATH,
     DASHBOARD_PATH,
     RECOMMENDATIONS_PATH,
@@ -53,33 +56,45 @@ export const SideBar = (): JSX.Element => {
         {
             iconName: 'Home',
             text: 'Home',
-            handleSidebarNavigation: () => navigate(HOME_PATH)
+            handleSidebarNavigation: () => {
+                navigate(HOME_PATH);
+            }
         },
         {
             iconName: 'Contact',
             text: 'Users',
             count: userContext.users.length,
-            handleSidebarNavigation: () => navigate(MANAGE_USERS_PATH),
+            handleSidebarNavigation: () => {
+                navigate(MANAGE_USERS_PATH);
+            }
         },
         {
             iconName: 'BarChartVertical',
             text: 'Statistics',
-            handleSidebarNavigation: () => navigate(STATISTICS_PATH),
+            handleSidebarNavigation: () => {
+                navigate(STATISTICS_PATH);
+            }
         },
         {
             iconName: 'Trending12',
             text: 'Charts',
-            handleSidebarNavigation: () => navigate(DASHBOARD_PATH)
+            handleSidebarNavigation: () => {
+                navigate(DASHBOARD_PATH);
+            }
         },
         {
             iconName: 'FavoriteList',
             text: 'Top Genres',
-            handleSidebarNavigation: () => navigate(TOP_GENRES_PATH)
+            handleSidebarNavigation: () => {
+                navigate(TOP_GENRES_PATH);
+            }
         },
         {
             iconName: 'Flashlight',
             text: 'Arists Of The Month',
-            handleSidebarNavigation: () => navigate(ARTISTS_OF_THE_MONTH_PATH)
+            handleSidebarNavigation: () => {
+                navigate(ARTISTS_OF_THE_MONTH_PATH);
+            }
         },
         {
             iconName: 'PowerButton',
@@ -94,50 +109,61 @@ export const SideBar = (): JSX.Element => {
         {
             iconName: 'Home',
             text: 'Home',
-            handleSidebarNavigation: () => navigate(HOME_PATH)
+            handleSidebarNavigation: () => {
+                navigate(HOME_PATH)
+            }
         },
         {
             iconName: 'Heart',
             text: 'My Collection',
             count: movieContext.collectionMovies.length,
-            handleSidebarNavigation: () => navigate(MY_COLLECTION_PATH)
+            handleSidebarNavigation: () => {
+                navigate(MY_COLLECTION_PATH);
+            }
         },
         {
-            iconName: 'Trending12',
-            text: 'Trending',
-            handleSidebarNavigation: () => navigate(TRENDING_PATH),
+            iconName: 'Touch',
+            text: 'Recommendations',
+            handleSidebarNavigation: () => {
+                navigate(RECOMMENDATIONS_PATH);
+            }
         },
         {
             iconName: 'History',
             text: 'History',
             count: movieContext.historyMovies.length,
-            handleSidebarNavigation: () => navigate(MY_HISTORY_PATH)
+            handleSidebarNavigation: () => {
+                navigate(MY_HISTORY_PATH);
+            }
         },
         {
             iconName: 'Calendar',
             text: 'Watch Later',
             count: movieContext.watchLaterMovies.length,
-            handleSidebarNavigation: () => navigate(WATCH_LATER_PATH)
+            handleSidebarNavigation: () => {
+                navigate(WATCH_LATER_PATH);
+            }
         },
         {
             iconName: 'BarChartVertical',
             text: 'Charts',
-            handleSidebarNavigation: () => navigate(DASHBOARD_PATH)
-        },
-        {
-            iconName: 'Touch',
-            text: 'Recommendations',
-            handleSidebarNavigation: () => navigate(RECOMMENDATIONS_PATH)
+            handleSidebarNavigation: () => {
+                navigate(DASHBOARD_PATH);
+            }
         },
         {
             iconName: 'FavoriteList',
             text: 'Top Genres',
-            handleSidebarNavigation: () => navigate(TOP_GENRES_PATH)
+            handleSidebarNavigation: () => {
+                navigate(TOP_GENRES_PATH);
+            }
         },
         {
             iconName: 'Flashlight',
             text: 'Arists Of The Month',
-            handleSidebarNavigation: () => navigate(ARTISTS_OF_THE_MONTH_PATH)
+            handleSidebarNavigation: () => {
+                navigate(ARTISTS_OF_THE_MONTH_PATH)
+            }
         },
         {
             iconName: 'PowerButton',
@@ -150,7 +176,40 @@ export const SideBar = (): JSX.Element => {
 
     useEffect(() => {
         handleSidebarMechanism();
-    }, []);
+    }, [window.location.href]);
+
+    const getSidebarUserIndex = (): number => {
+        const url: string = window.location.href;
+        switch (url) {
+            case "http://localhost:3000/home": {
+                return 0;
+            }
+            case "http://localhost:3000/home/myCollection": {
+                return 1;
+            }
+            case "http://localhost:3000/home/recommendations": {
+                return 2;
+            }
+            case "http://localhost:3000/home/myHistory": {
+                return 3;
+            }
+            case "http://localhost:3000/home/watchLater": {
+                return 4;
+            }
+            case "http://localhost:3000/charts": {
+                return 5;
+            }
+            case "http://localhost:3000/topGenres": {
+                return 5;
+            }
+            case "http://localhost:3000/artistsOfTheMonth": {
+                return 6;
+            }
+            default: {
+                return -1;
+            }
+        }
+    };
 
     const getSidebarAdminIndex = (): number => {
         const url: string = window.location.href;
@@ -175,42 +234,6 @@ export const SideBar = (): JSX.Element => {
             }
             case "http://localhost:3000/artistsOfTheMonth": {
                 return 5;
-            }
-            default: {
-                return -1;
-            }
-        }
-    };
-
-    const getSidebarUserIndex = (): number => {
-        const url: string = window.location.href;
-        switch (url) {
-            case "http://localhost:3000/home": {
-                return 0;
-            }
-            case "http://localhost:3000/home/myCollection": {
-                return 1;
-            }
-            case "http://localhost:3000/home/trending": {
-                return 2;
-            }
-            case "http://localhost:3000/home/myHistory": {
-                return 3;
-            }
-            case "http://localhost:3000/home/watchLater": {
-                return 4;
-            }
-            case "http://localhost:3000/charts": {
-                return 5;
-            }
-            case "http://localhost:3000/recommendations": {
-                return 6;
-            }
-            case "http://localhost:3000/topGenres": {
-                return 7;
-            }
-            case "http://localhost:3000/artistsOfTheMonth": {
-                return 8;
             }
             default: {
                 return -1;

@@ -606,7 +606,6 @@ export const Dashboard = (): JSX.Element => {
 
     useEffect(() => {
         $('.ms-DatePicker-goToday').on('click', () => {
-            debugger;
             handleContextBasedActions(new Date());
         });
     }, []);

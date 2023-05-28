@@ -66,33 +66,33 @@ export const ProfileSettings = (): JSX.Element => {
         }
     };
 
-    useEffect(() => {
-        if (authenticationContext.User.role !== UserType.Administrator && currentUserHasProfile()) {
-            setTimeout(() => {
-                try {
-                    const webSocketUrl = "https://localhost:7145/notification";
-                    const connection: HubConnection = new HubConnectionBuilder()
-                        .withUrl(webSocketUrl)
-                        .configureLogging(LogLevel.None)
-                        .build();
-                    setConnection(connection);
-                } catch (e) {
-                    console.log(e);
-                }
-            }, 5000);
-        }
-    });
+    // useEffect(() => {
+    //     if (authenticationContext.User.role !== UserType.Administrator && currentUserHasProfile()) {
+    //         setTimeout(() => {
+    //             try {
+    //                 const webSocketUrl = "https://localhost:7145/notification";
+    //                 const connection: HubConnection = new HubConnectionBuilder()
+    //                     .withUrl(webSocketUrl)
+    //                     .configureLogging(LogLevel.None)
+    //                     .build();
+    //                 setConnection(connection);
+    //             } catch (e) {
+    //                 console.log(e);
+    //             }
+    //         }, 5000);
+    //     }
+    // });
 
-    useEffect(() => {
-        if (connection && authenticationContext.User.role !== UserType.Administrator) {
-            connection.start()
-                .then(result => {
-                    connection.on('ReceiveNotification', (message: string) => {
-                        authenticationContext.setUpdatedNotifications(true);
-                    });
-                })
-        }
-    }, [connection]);
+    // useEffect(() => {
+    //     if (connection && authenticationContext.User.role !== UserType.Administrator) {
+    //         connection.start()
+    //             .then(result => {
+    //                 connection.on('ReceiveNotification', (message: string) => {
+    //                     authenticationContext.setUpdatedNotifications(true);
+    //                 });
+    //             })
+    //     }
+    // }, [connection]);
 
 
     const currentUserHasProfile = (): boolean => {

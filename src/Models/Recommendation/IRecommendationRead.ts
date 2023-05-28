@@ -1,6 +1,8 @@
+import { IMovie } from '../IMovie';
+
 export interface IRecommendationRead {
     uid?: string;
-    movieUid: string;
+    movie: IMovie;
     userUid: string;
     createdAt: Date;
     likedDecisionDate: Date;

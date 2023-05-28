@@ -29,10 +29,14 @@ import UserContext from '../../Contexts/User/userContext';
 import { IUserContext } from '../../Contexts/User/userContext.types';
 import { IUserProfileRead } from '../../Models/UserProfile/IUserProfileRead';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react';
-import { PROFILE_NOT_YEY_CREATED_WARNING } from '../../Library/constants';
+import { HOME_PATH, PROFILE_NOT_YEY_CREATED_WARNING } from '../../Library/constants';
 import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import { UserType } from '../../Enums/UserType';
+import {
+    NavigateFunction,
+    useNavigate,
+} from 'react-router';
 
 export const Navbar = (): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -42,6 +46,7 @@ export const Navbar = (): JSX.Element => {
     const [showAdvancedSearch, setShowAdvancedSearch] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>('');
     const [isRefreshConfirmationDisplayed, setIsRefreshConfirmationDisplayed] = useState<boolean>(false);
+    const navigate: NavigateFunction = useNavigate();
 
     const isAdmin = (): boolean => {
         return authenticationContext.User.role === UserType.Administrator;
@@ -87,9 +92,22 @@ export const Navbar = (): JSX.Element => {
         setIsRefreshConfirmationDisplayed(true);
     };
 
-    const handlRefreshCloseDialog = (): void => {
+    const handlRefreshCloseDialog = (accepted?: boolean): void => {
+        if (accepted === true) {
+            const list = $('.list');
+            const homeElement = list[0];
+            if (homeElement instanceof HTMLElement) {
+                const element: HTMLElement = homeElement as HTMLElement;
+                let j: number = 0;
+                while (j < list.length) {
+                    list[j++].className = 'list';
+                }
+                element.className = 'list active';
+            }
+            navigate(HOME_PATH);
+            movieContext.setCurrentMovies(IMovieContextType.HOME);
+        }
         setIsRefreshConfirmationDisplayed(false);
-        movieContext.setCurrentMovies(IMovieContextType.HOME);
     };
 
     const isOnUserContext = (): boolean => {

@@ -3,5 +3,6 @@ export enum IMovieContextType {
     HISTORY,
     COLLECTION,
     WATCHLATER,
+    RECOMMENDATIONS,
     NONE
 };

@@ -21,15 +21,33 @@ import MovieContext from '../../Contexts/Movie/movieContext';
 import { useParams } from 'react-router-dom';
 import { IMovieContextType } from '../../Enums/movieContextType';
 import { PAGES } from './homePage.types';
+import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
+import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 
 export const HomePage = (): JSX.Element => {
     const { sideBarPage } = useParams();
+    const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
     const movieContext: IMovieContext = useContext(MovieContext);
     const [moviesToDisplayInPage, setMoviesToDisplayInPage] = useState<IMovie[] | undefined>([]);
     const [shouldResetPaginator, setShouldResetPaginator] = useState<boolean>(false);
 
     useEffect(() => {
         handlePageRedirection();
+    }, []);
+
+    const waitForUser = () => {
+        if (authenticationContext.User.email === "") {
+            setTimeout(() => {
+                waitForUser();
+            }, 200);
+            return;
+        }
+    };
+
+    useEffect(() => {
+        waitForUser();
+        const userRecommendations = movieContext.monthlyRecommendations.filter(f => f.userUid === authenticationContext.User.uid);
+        movieContext.setRecommendations(userRecommendations);
     }, []);
 
     useEffect(() => {
@@ -47,6 +65,10 @@ export const HomePage = (): JSX.Element => {
             case 'watchLater':
                 movieContext.setCurrentMovies(IMovieContextType.WATCHLATER);
                 return;
+            case 'recommendations': {
+                movieContext.setCurrentMovies(IMovieContextType.RECOMMENDATIONS);
+                return;
+            }
             default:
                 movieContext.setCurrentMovies(IMovieContextType.HOME);
         }

@@ -19,7 +19,6 @@ import {
     MOVIE_NOT_FOUND_IMAGE_LOCATION,
     MOVIE_WRAPPER_PATH
 } from '../../Library/constants';
-import { IUserMovieRatingCreate } from '../../Models/UserMovieRating/IUserMovieRatingCreate';
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
@@ -31,7 +30,7 @@ export const MovieCard = (props: IMovieCardProps): JSX.Element => {
     const IMAGE_SOURCE_URL: string = 'https://image.tmdb.org/t/p/w185/';
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
-    const [imageSource, setImageSource] = useState<string>('');
+    const [imageSource, setImageSource] = useState<string | undefined>(undefined);
     const [ratingToBeDisplayed, setRatingToBeDisplayed] = useState<number>(0);
     const navigate: NavigateFunction = useNavigate();
 
@@ -62,14 +61,14 @@ export const MovieCard = (props: IMovieCardProps): JSX.Element => {
             .then((response) => response.json())
             .then((data) => {
                 if (data.results.length === 0) {
-                    setImageSource(`${MOVIE_NOT_FOUND_IMAGE_LOCATION}`);
+                    setImageSource(window.location.origin + '/assets/MovieNotFound.png');
                     return;
                 }
                 const id = data.results[0].id;
                 fetch(`${POSTERS_QUERY_URL}/${id}/images?api_key=aa32df38f33efcf6781400cf7584d8bb`)
                     .then((response2) => response2.json()).then((data2) => {
                         if (data2.posters.length === 0) {
-                            setImageSource(`${MOVIE_NOT_FOUND_IMAGE_LOCATION}`)
+                            setImageSource(window.location.origin + '/assets/MovieNotFound.png');
                             return;
                         }
                         const image: string = data2.posters[0].file_path;
@@ -101,9 +100,12 @@ export const MovieCard = (props: IMovieCardProps): JSX.Element => {
 
     return <div className={cardClassName}
         onClick={handleMovieCardClick}>
-        <img className={movieCardPictureClassName}
-            src={imageSource}
-            alt='Loading'></img>
+        {
+            imageSource !== undefined &&
+            <img className={movieCardPictureClassName}
+                src={imageSource}
+                alt={"Loading"}></img>
+        }
         <MovieCardRating rating={ratingToBeDisplayed} />
         <p className={cardTitleClassName}>{props.name}</p>
     </div>

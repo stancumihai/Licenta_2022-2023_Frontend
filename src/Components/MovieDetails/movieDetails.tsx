@@ -17,7 +17,8 @@ import {
     disabledButtonTextClassName,
     disabledIconClassName,
     ratingStyles,
-    seenMoviesCountClassName
+    seenMoviesCountClassName,
+    iconButtonStyles
 } from './movieDetails.styles';
 import {
     IMovieDetailsProps,
@@ -39,7 +40,7 @@ import { IMovieSubscriptionCreate } from '../../Models/MovieSubscription/IMovieS
 import { IMovieSubscriptionRead } from '../../Models/MovieSubscription/IMovieSubscriptionRead';
 import { ISeenMovieCreate } from '../../Models/SeenMovie/ISeenMovieCreate';
 import { Rating } from '@fluentui/react';
-import { RatingSize } from 'office-ui-fabric-react';
+import { IconButton, RatingSize } from 'office-ui-fabric-react';
 import { IUserMovieRatingRead } from '../../Models/UserMovieRating/IUserMovieRatingRead';
 import { IUserMovieRatingCreate } from '../../Models/UserMovieRating/IUserMovieRatingCreate';
 import { useFetch } from '../../Hooks/useFetch';
@@ -59,6 +60,9 @@ import { UserType } from '../../Enums/UserType';
 import UiContext from '../../Contexts/Ui/uiContext';
 import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 import { ISeenMovieRead } from '../../Models/SeenMovie/ISeenMovieRead';
+import MovieContext from '../../Contexts/Movie/movieContext';
+import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
+import { IRecommendationUpdate } from '../../Models/Recommendation/IRecommendationUpdate';
 
 export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
@@ -84,6 +88,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const [areSeenMoviesLoaded, setAreSeenMoviesLoaded] = useState<boolean>(false);
     const seenMoviesData: IFetchResult<ISeenMovieRead[]> = useFetch<ISeenMovieRead[]>(() =>
         services.SeenMoviesService.GetByUserAndMovie(props.movieRating.movie.uid!));
+    const movieContext: IMovieContext = useContext(MovieContext);
 
     useEffect(() => {
         if (movieRatingData.isLoading) {
@@ -195,11 +200,28 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
         });
     };
 
-    const handleMovieLikeClick = (): void => {
+    const handleMovieLikeClick = (disliked?: boolean): void => {
         const likedMovie: ILikedMovieCreate = {
             movieUid: props.movieRating.movie.uid!,
             userUid: authenticationContext.User.uid!
         };
+        if (isRecommendationsPath()) {
+            const userRecommendations = movieContext.monthlyRecommendations.filter(m => m.userUid === authenticationContext.User.uid);
+            const recommendation = userRecommendations.filter(m => m.movie.uid === props.movieRating.movie.uid)[0];
+            const updateRecommendation: IRecommendationUpdate =
+            {
+                uid: recommendation.uid,
+                likedDecisionDate: new Date(),
+                isLiked: true
+            };
+            if (disliked === true) {
+                updateRecommendation.isLiked = false;
+            }
+            services.RecommendationService.Update(updateRecommendation);
+        }
+        if (disliked === true) {
+            return;
+        }
         if (isMovieLiked) {
             services.LikedMoviesService.Delete(movieLikeId);
             setIsMovieLiked(false);
@@ -287,6 +309,10 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
         return window.location.href.includes('watchLater');
     };
 
+    const isRecommendationsPath = (): boolean => {
+        return window.location.href.includes('?recommendations');
+    };
+
     const handleCloseDialog = (accepted?: boolean): void => {
         setIsConfirmationSeenDialogOpen(false);
         if (accepted === true) {
@@ -310,7 +336,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             <div style={{ display: 'flex', marginLeft: '-60%' }}>
                 {!isWatchLaterPath() &&
                     <div onClick={handleWatchLaterClick}
-                        style={isAdmin() ? { display: 'none' } : {}}>
+                        style={isAdmin() || isRecommendationsPath() ? { display: 'none' } : {}}>
                         <MdWatchLater className={!isWatchLaterChecked ?
                             iconClassName :
                             disabledIconClassName} />
@@ -322,7 +348,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             </div>
             <div style={{ display: 'flex', marginLeft: '-60%' }}>
                 {!isWatchLaterPath() &&
-                    <div onClick={handleMovieLikeClick}
+                    <div onClick={() => handleMovieLikeClick()}
                         style={isAdmin() ? { display: 'none' } : {}}>
                         <AiOutlineLike className={!isMovieLiked ?
                             iconClassName :
@@ -330,6 +356,16 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
                         <p className={!isMovieLiked ?
                             buttonTextClassName :
                             disabledButtonTextClassName}>Like</p>
+                    </div>
+                }
+            </div>
+            <div style={{ display: 'flex' }}>
+                {!isWatchLaterPath() &&
+                    <div onClick={() => handleMovieLikeClick(true)}
+                        style={!isRecommendationsPath() ? { display: 'none' } : {}}>
+                        <IconButton iconProps={{ iconName: "Dislike" }}
+                            styles={iconButtonStyles} />
+                        <p className={buttonTextClassName}>Dislike</p>
                     </div>
                 }
             </div>

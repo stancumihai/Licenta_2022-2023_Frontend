@@ -1,10 +1,17 @@
-import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
+import {
+    PropsWithChildren,
+    createContext,
+    useContext,
+    useEffect,
+    useState
+} from 'react';
 import { IMovieContext } from './movieContext.types';
 import { ServiceContext, ServiceContextInstance } from '../../Core/serviceContext';
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import { IMovie } from '../../Models/IMovie';
 import { IMovieContextType } from '../../Enums/movieContextType';
+import { IRecommendationRead } from '../../Models/Recommendation/IRecommendationRead';
 
 const MovieContext: React.Context<IMovieContext> = createContext<IMovieContext>({
     movies: [],
@@ -12,9 +19,11 @@ const MovieContext: React.Context<IMovieContext> = createContext<IMovieContext>(
     historyMovies: [],
     watchLaterMovies: [],
     setCurrentMovies: () => { },
+    monthlyRecommendations: [],
     currentUsedMovies: [],
     refreshMovies: false,
-    setRefreshMoviesState: () => { },
+    setRecommendations: () => { },
+    setRefreshMoviesState: () => { }
 });
 
 export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Element => {
@@ -26,7 +35,7 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
     const [refreshMovies, setRefreshMovies] = useState<boolean>(false);
     const [collectionMovies, setCollectionMovies] = useState<IMovie[]>([]);
     const [areCollectionMoviesLoaded, setAreCollectionMoviesLoaded] = useState<boolean>(false);
-    const colectionMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesCollection(), [refreshMovies.toString()]);
+    const collectionMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesCollection(), [refreshMovies.toString()]);
 
     const [historyMovies, setHistoryMovies] = useState<IMovie[]>([]);
     const [areHistoryMoviesLoaded, setAreHistoryMoviesLoaded] = useState<boolean>(false);
@@ -37,10 +46,19 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
     const watchLaterMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesSubscription(), [refreshMovies.toString()]);
     const [currentUsedMovies, setCurrentUserMovies] = useState<IMovie[]>([]);
 
+    const [userRecommendations, setUserRecommendations] = useState<IRecommendationRead[]>([]);
+
+    const [monthlyRecommendations, setMonthlyRecommendations] = useState<IRecommendationRead[]>([]);
+    const [areMonthyRecommendationsLoaded, setAreMonthlyRecommendationsLoaded] = useState<boolean>(false);
+    const monthlyRecommendationsData: IFetchResult<IRecommendationRead[]> = useFetch<IRecommendationRead[]>(
+        () => services.RecommendationService.GetAllByMonth(new Date().getFullYear(),
+            new Date().getMonth() + 1),
+        [refreshMovies.toString()]);
+
     useEffect(() => {
         if (movieData.isLoading) {
             return;
-        } 
+        }
         if (movieData.errors !== "" ||
             movieData.data?.Error !== undefined ||
             movieData.data == null ||
@@ -52,18 +70,18 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
     }, [movieData]);
 
     useEffect(() => {
-        if (colectionMoviesData.isLoading) {
+        if (collectionMoviesData.isLoading) {
             return;
         }
-        if (colectionMoviesData.errors !== "" ||
-            colectionMoviesData.data?.Error !== undefined ||
-            colectionMoviesData.data == null ||
-            colectionMoviesData.data.Data === undefined) {
+        if (collectionMoviesData.errors !== "" ||
+            collectionMoviesData.data?.Error !== undefined ||
+            collectionMoviesData.data == null ||
+            collectionMoviesData.data.Data === undefined) {
             return;
         }
-        setCollectionMovies(colectionMoviesData.data!.Data!);
+        setCollectionMovies(collectionMoviesData.data!.Data!);
         setAreCollectionMoviesLoaded(true);
-    }, [colectionMoviesData]);
+    }, [collectionMoviesData]);
 
     useEffect(() => {
         if (watchLaterMoviesData.isLoading) {
@@ -93,6 +111,21 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         setAreHistoryMoviesLoaded(true);
     }, [historyMoviesData]);
 
+
+    useEffect(() => {
+        if (monthlyRecommendationsData.isLoading) {
+            return;
+        }
+        if (monthlyRecommendationsData.errors !== "" ||
+            monthlyRecommendationsData.data?.Error !== undefined ||
+            monthlyRecommendationsData.data == null ||
+            monthlyRecommendationsData.data.Data === undefined) {
+            return;
+        }
+        setMonthlyRecommendations(monthlyRecommendationsData.data!.Data!);
+        setAreMonthlyRecommendationsLoaded(true);
+    }, [monthlyRecommendationsData, refreshMovies]);
+
     const isInitialDataLoaded = (): boolean => {
         return areMoviesLoaded;
     };
@@ -115,6 +148,10 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
                 setCurrentUserMovies(watchLaterMovies);
                 return;
             }
+            case IMovieContextType.RECOMMENDATIONS: {
+                setCurrentUserMovies(userRecommendations.map(m => m.movie));
+                return;
+            }
             default: {
                 setCurrentUserMovies(movies);
                 return;
@@ -127,6 +164,11 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         setAreHistoryMoviesLoaded(false);
         setAreCollectionMoviesLoaded(false);
         setAreWatchLaterMoviesLoaded(false);
+        setAreMonthlyRecommendationsLoaded(false);
+    };
+
+    const setRecommendations = (recommendations: IRecommendationRead[]) => {
+        setUserRecommendations(recommendations);
     };
 
     return (<MovieContext.Provider value={{
@@ -137,7 +179,9 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         setCurrentMovies,
         currentUsedMovies,
         setRefreshMoviesState,
-        refreshMovies
+        refreshMovies,
+        monthlyRecommendations,
+        setRecommendations
     }}> {isInitialDataLoaded() && children} </MovieContext.Provider>);
 };
 

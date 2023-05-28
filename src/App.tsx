@@ -281,7 +281,6 @@ export default function App(): JSX.Element {
         <Route path={FORGOT_PASSWORD_PATH} element={<ForgotPassword />} />
         <Route path={`${RENEW_PASSWORD_PATH}/:email`} element={<RenewPassword />} />
         <Route path={`${MOVIE_WRAPPER_PATH}/:movieName`} element={<MovieWrapper />} />
-        <Route path={RECOMMENDATIONS_PATH} element={<Recommendations />} ></Route>
         <Route path={TOP_GENRES_PATH} element={<TopGenres />} ></Route>
         <Route path={ARTISTS_OF_THE_MONTH_PATH} element={<ArtistsOfTheMonth />} ></Route>
         <Route path={USER_PROFILE_PATH} element={<UserProfile />} ></Route>

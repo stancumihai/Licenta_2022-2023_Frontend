@@ -1,6 +1,6 @@
 import { mergeStyles } from 'office-ui-fabric-react';
-import { COLOR1, COLOR1_D_40, COLOR2, FONT_FAMILY } from '../../Library/constants';
-import { IRatingStyles } from '@fluentui/react';
+import { COLOR1, COLOR1_D_40, COLOR2, COLOR2_D_20, COLOR2_D_40, FONT_FAMILY } from '../../Library/constants';
+import { IButtonStyles, IRatingStyles } from '@fluentui/react';
 
 export const containerClassName: string = mergeStyles({
     padding: '5vh',
@@ -48,6 +48,25 @@ export const paragraphListingClassName: string = mergeStyles({
     }
 });
 
+export const iconButtonStyles: Partial<IButtonStyles> = {
+    root: {
+        color: COLOR2_D_20,
+        marginLeft: '-50%',
+        backgroundColor: 'transparent',
+    },
+    rootHovered: {
+        color: COLOR2_D_40,
+        backgroundColor: 'transparent',
+    },
+    rootPressed: {
+        color: COLOR2_D_20,
+        backgroundColor: 'transparent',
+    },
+    icon: {
+        fontSize: '20px'
+    }
+};
+
 export const iconClassName: string = mergeStyles({
     width: '2.5vw',
     height: '2.5vh',
@@ -93,6 +112,7 @@ export const buttonTextClassName: string = mergeStyles({
     display: 'inline-block',
     position: 'relative',
     bottom: '1.05vh',
+    marginLeft: '10px',
     selectors: {
         ":hover": {
             color: '#888',

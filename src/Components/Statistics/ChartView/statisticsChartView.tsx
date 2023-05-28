@@ -44,7 +44,8 @@ export const StatisticsChartView = (): JSX.Element => {
     const [algorithmData, setAlgorithmData] = useState<IChartData[] | undefined>(undefined);
 
     const handleAlgorithmSelection = (event: React.FormEvent<HTMLDivElement>, newAlgorithm?: IDropdownOption): void => {
-        services.RecommendationService.GetAccuracyPerMonthsByAlgorithm(newAlgorithm!.text).then((data: IResponse<IAccuracyPeriodModel[]>) => {
+        const algorithm = newAlgorithm?.text.split('Classifier')[0].trim();
+        services.RecommendationService.GetAccuracyPerMonthsByAlgorithm(algorithm!).then((data: IResponse<IAccuracyPeriodModel[]>) => {
             setSelectedAlgorithmDropdownOption(newAlgorithm!);
             setIsChartButtonClicked((prev) => !prev);
             setAlgorithmData([{
