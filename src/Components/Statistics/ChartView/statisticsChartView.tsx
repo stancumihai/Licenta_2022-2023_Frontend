@@ -36,7 +36,7 @@ export const StatisticsChartView = (): JSX.Element => {
     const algorithmDropdownOptions: IDropdownOption[] = [
         { key: 'decision_tree', text: 'Decision Tree Classifier' },
         { key: 'kneighbours', text: 'K Neighbors Classifier' },
-        { key: 'random_forest', text: 'Random Forest Classifier' }
+        { key: 'random_forest', text: 'Random Forest Classifier' },
     ];
     const [selectedAlgorithmDropdownOption, setSelectedAlgorithmDropdownOption] = useState<IDropdownOption>();
     const [isChartButtonClicked, setIsChartButtonClicked] = useState<boolean>(false);
@@ -44,6 +44,7 @@ export const StatisticsChartView = (): JSX.Element => {
     const [algorithmData, setAlgorithmData] = useState<IChartData[] | undefined>(undefined);
 
     const handleAlgorithmSelection = (event: React.FormEvent<HTMLDivElement>, newAlgorithm?: IDropdownOption): void => {
+        setSelectedDateChartData(undefined);
         const algorithm = newAlgorithm?.text.split('Classifier')[0].trim();
         services.RecommendationService.GetAccuracyPerMonthsByAlgorithm(algorithm!).then((data: IResponse<IAccuracyPeriodModel[]>) => {
             setSelectedAlgorithmDropdownOption(newAlgorithm!);
@@ -59,11 +60,13 @@ export const StatisticsChartView = (): JSX.Element => {
 
     const onSelectedDateChange = (date: Date, selectedDateRangeArray?: Date[] | undefined): void => {
         setSelectedDate(date);
-        services.RecommendationService.GetMonthlyRecommendationStatuses(date!.getFullYear(), date!.getMonth() + 1, selectedAlgorithmDropdownOption!.text)
+        const algorithm = selectedAlgorithmDropdownOption!.text.split('Classifier')[0].trim();
+        services.RecommendationService.GetMonthlyRecommendationStatuses(date!.getFullYear(), date!.getMonth() + 1, algorithm)
             .then((data: IResponse<IMonthlyRecommendationStatusModel[]>) => {
                 setSelectedDateChartData([{
                     graphType: GraphTypes.PIE_CHART,
-                    data: data.Data!
+                    data: data.Data!,
+                    title: 'Movie Seen Ration This Month'
                 }]);
                 setIsChartButtonClicked((prev) => !prev);
             });

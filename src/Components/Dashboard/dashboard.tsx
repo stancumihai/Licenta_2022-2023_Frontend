@@ -308,7 +308,7 @@ export const Dashboard = (): JSX.Element => {
     };
 
     const handleGenreClick = () => {
-        onSelectedDateChange(new Date());
+        setSelectedDate(new Date());
         setCurrentChartContext('Genres');
         setShouldDisplayCalendar(true);
         setNeedsDateRange(false);
@@ -328,6 +328,7 @@ export const Dashboard = (): JSX.Element => {
                     getFormattedChartModels(currentPredictedGenresByUser)
             }
         ];
+        console.log(chartData);
         setChartData(chartData);
     };
 

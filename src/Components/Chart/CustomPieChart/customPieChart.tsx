@@ -19,14 +19,26 @@ import './customPieChart.css';
 
 export const CustomPieChart = (props: ICustomChartProps): JSX.Element => {
 
+
+
   const renderCustomizedLabel2 = (customPieLabelData: CustomPieLabelData): JSX.Element => {
     const radius: number = customPieLabelData.innerRadius + (customPieLabelData.outerRadius - customPieLabelData.innerRadius) * 0.5;
     const x: number = customPieLabelData.cx + radius * Math.cos(-customPieLabelData.midAngle * RADIAN);
     const y: number = customPieLabelData.cy + radius * Math.sin(-customPieLabelData.midAngle * RADIAN);
 
+    const getPercent = (percent: number) => {
+      if (percent >= 0.5) {
+        return (Math.floor(percent * 100));
+      }
+      if (percent <= 0.01) {
+        return 1;
+      }
+      return percent * 100;
+    };
+
     return (
       <text x={x} y={y} fill="white" textAnchor={x > customPieLabelData.cx ? 'start' : 'end'} dominantBaseline="central">
-        {`${(customPieLabelData.percent * 100).toFixed(0)}%`}
+        {`${getPercent(customPieLabelData.percent).toFixed(0)}%`}
       </text>
     );
   };
@@ -55,8 +67,8 @@ export const CustomPieChart = (props: ICustomChartProps): JSX.Element => {
             outerRadius={150}
             fill="#8884d8"
             dataKey={VALUE_PROPERTY} >
-            {props.data?.map(
-              (entry, index) => (
+            {props.data!.map(
+              (entry: any, index: number) => (
                 <Cell key={`cell-${index}`}
                   fill={COLORS_PALLETE[index % COLORS_PALLETE.length]}
                 />

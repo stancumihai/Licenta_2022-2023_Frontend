@@ -26,7 +26,6 @@ import {
   LOGIN_PATH,
   MANAGE_USERS_PATH,
   MOVIE_WRAPPER_PATH,
-  RECOMMENDATIONS_PATH,
   REFRESH_TOKEN,
   RENEW_PASSWORD_PATH,
   SESSION_EXPIRED_MESSAGE,
@@ -52,7 +51,6 @@ import { IResponse } from './Models/IResponse';
 import Cookies from 'universal-cookie';
 import { MovieWrapper } from './Components/MovieWrapper/movieWrapper';
 import { ArtistsOfTheMonth } from './Components/ArtistsOfTheMonth/artistsOfTheMonth';
-import { Recommendations } from './Components/Recommendations/recommendations';
 import { TopGenres } from './Components/TopGenres/topGenres';
 import { AuthenticatedRoute } from './Components/AuthenticatedRoute/authenticatedRoute';
 import { Survey } from './Components/Survey/survey';
@@ -161,7 +159,7 @@ export default function App(): JSX.Element {
       setTimeout(() => {
         setShouldDisplaySpinner(false);
         uiContext.setSpinnerState(false);
-      }, 2000);
+      }, 3000);
     }
   }, [uiContext.shouldDisplaySpinner]);
 
