@@ -22,7 +22,7 @@ export const containerClassName: string = mergeStyles({
 
 export const contentClassName: string = mergeStyles({
     width: '22.5%',
-    height: "80%",
+    height: "77.5%",
     margin: 'auto',
     transform: 'translate(0%, 35%)',
     boxSizing: 'border-box',
@@ -114,8 +114,8 @@ export const editButtonStyles: Partial<IButtonStyles> = {
         border: 'none',
         fontFamily: FONT_FAMILY,
         background: COLOR2,
-        width: '4vw',
-        height: '4vh',
+        width: '3.8vw',
+        height: '3.8vh',
         margin: '10% 5% 0 15%',
     },
     rootHovered: {

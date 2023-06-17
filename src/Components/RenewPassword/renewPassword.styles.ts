@@ -7,8 +7,8 @@ export const circleClassName1: string = mergeStyles({
     height: '200px',
     position: 'absolute',
     borderRadius: '100%',
-    top: '60%',
-    left: "36%"
+    top: '54%',
+    left: "36.5%"
 });
 
 export const circleClassName2: string = mergeStyles({
@@ -17,8 +17,8 @@ export const circleClassName2: string = mergeStyles({
     height: '200px',
     position: 'absolute',
     borderRadius: '100%',
-    top: '60%',
-    left: "57.5%"
+    top: '54%',
+    left: "58.5%"
 });
 
 export const iconButtonStyles: Partial<IButtonStyles> = {

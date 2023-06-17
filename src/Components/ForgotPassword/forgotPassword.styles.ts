@@ -149,8 +149,8 @@ export const circleClassName1: string = mergeStyles({
     height: '200px',
     position: 'absolute',
     borderRadius: '100%',
-    top: '60%',
-    left: "36%"
+    top: '55%',
+    left: "37%"
 });
 
 export const circleClassName2: string = mergeStyles({
@@ -159,7 +159,7 @@ export const circleClassName2: string = mergeStyles({
     height: '200px',
     position: 'absolute',
     borderRadius: '100%',
-    top: '60%',
+    top: '55%',
     left: "58%"
 });
 

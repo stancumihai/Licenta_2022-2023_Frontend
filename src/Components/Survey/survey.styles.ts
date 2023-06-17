@@ -117,7 +117,7 @@ export const sendButtonStyles: Partial<IButtonStyles> = {
         fontFamily: FONT_FAMILY,
         width: '8vw',
         height: '4.5vh',
-        left: '45%',
+        left: '35%',
         backgroundColor: COLOR1,
         color: COLOR2,
         borderRadius: '25px',
