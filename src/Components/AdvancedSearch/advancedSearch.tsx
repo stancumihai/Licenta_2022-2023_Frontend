@@ -280,7 +280,7 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
                 movieContext.setCurrentMovies(IMovieContextType.NONE, data.Data);
                 props.handleCloseDialog();
                 handleResetClick();
-                uiContext.setSpinnerState(true);
+                uiContext.setSpinnerState(true, 1500);
                 return;
             }
         });

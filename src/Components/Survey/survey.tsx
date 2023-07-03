@@ -69,9 +69,13 @@ import { useId } from '@fluentui/react-hooks';
 import { ISurveyUserAnswerBatch } from '../../Models/ISurveyUserAnswerBatch';
 import UiContext from '../../Contexts/Ui/uiContext';
 import { IUiContext } from '../../Contexts/Ui/uiContext.types';
+import MovieContext from '../../Contexts/Movie/movieContext';
+import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
+import { IRecommendationRead } from '../../Models/Recommendation/IRecommendationRead';
 
 export const Survey = (): JSX.Element => {
     const services = useContext<ServiceContext>(ServiceContextInstance);
+    const movieContext: IMovieContext = useContext(MovieContext);
     const [surveyQuestions, setSurveyQuestions] = useState<ISurveyQuestion[]>([]);
     const [areSurveyQuestionsLoaded, setAreSurveyQuestionsLoaded] = useState(false);
     const surveyQuestionsData: IFetchResult<ISurveyQuestion[]> = useFetch<ISurveyQuestion[]>(() => services.SurveyQuestionsService.GetAll());
@@ -222,7 +226,7 @@ export const Survey = (): JSX.Element => {
 
     useEffect(() => {
         if (!areSurveyQuestionsLoaded) {
-            uiContext.setSpinnerState(true);
+            uiContext.setSpinnerState(true, 1500);
         }
     }, [areSurveyQuestionsLoaded]);
 
@@ -590,12 +594,15 @@ export const Survey = (): JSX.Element => {
         const surveyUserAnswerBatch: ISurveyUserAnswerBatch = {
             surveyUserAnswers: surveyUserAnswers
         };
-        services.SurveyUserAnswerService.AddInSuperBatches(surveyUserAnswerBatch).then((data: IResponse<ISurveyUserAnswerBatch>) => { });
+        services.SurveyUserAnswerService.AddInSuperBatches(surveyUserAnswerBatch).then((data: IResponse<IRecommendationRead[]>) => {
+            movieContext.setRecommendations(data.Data!);
+        });
         setMultiselectMessage('');
         setSurveyErrorMessage('');
         setSurveyCreatedMessage('User survey created');
-        uiContext.setSpinnerState(true);
+        uiContext.setSpinnerState(true, 1500);
         setTimeout(() => {
+            authenticationContext.setUserHasSurveyAnswersStatus(true);
             navigate(HOME_PATH);
         }, 1000);
     };

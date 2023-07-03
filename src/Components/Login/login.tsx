@@ -142,7 +142,7 @@ export const Login = (): JSX.Element => {
                 cookie.set(JWT_TOKEN, data.Data.accessToken);
                 services.AuthenticationService.GetLoggedInUser().then((data: IResponse<IUser>) => {
                     authenticationContext.SetUpdatedUser(data.Data!);
-                    uiContext.setSpinnerState(true);
+                    uiContext.setSpinnerState(true, 2000);
                     movieContext.setRefreshMoviesState();
                     navigate(SURVEY_PATH);
                 });

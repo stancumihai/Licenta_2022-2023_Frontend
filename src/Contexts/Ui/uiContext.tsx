@@ -12,6 +12,7 @@ const UiContext: React.Context<IUiContext> = createContext<IUiContext>({
     setSpinnerState: () => { },
     shouldRefreshPage: false,
     setRefreshState: () => { },
+    spinnerTime: 0
 });
 
 export const UIContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Element => {
@@ -20,6 +21,7 @@ export const UIContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Elem
     const [shoudDisplaySearch, setShouldDisplaySearch] = useState<boolean>(true);
     const [shouldDisplaySpinner, setShouldDisplaySpinner] = useState<boolean>(false);
     const [shouldRefreshPage, setShouldRefreshPage] = useState<boolean>(true);
+    const [spinnerTime, setSpinnerTime] = useState<number>(0);
 
     const setNavbarState = (flag: boolean) => {
         setShouldShouldDisplayNavbar(flag);
@@ -33,8 +35,11 @@ export const UIContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Elem
         setShouldDisplaySearch(flag);
     };
 
-    const setSpinnerState = (flag: boolean) => {
+    const setSpinnerState = (flag: boolean, spinnerTime?: number) => {
         setShouldDisplaySpinner(flag);
+        if (flag) {
+            setSpinnerTime(spinnerTime!);
+        }
     };
 
     const setRefreshState = (flag: boolean) => {
@@ -54,7 +59,8 @@ export const UIContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Elem
         setSideBarState,
         setSearchState,
         setSpinnerState,
-        setRefreshState
+        setRefreshState,
+        spinnerTime: spinnerTime,
     }}> {children} </UiContext.Provider>);
 };
 

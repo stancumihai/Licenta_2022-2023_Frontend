@@ -17,6 +17,8 @@ import {
 import { useFetch } from '../../Hooks/useFetch';
 import { IFetchResult } from '../../Hooks/useFetch.types';
 import { IMovie } from '../../Models/IMovie';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const PersonDetailsCard = (props: IPersonDetailCardProps): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);

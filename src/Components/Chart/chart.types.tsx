@@ -48,7 +48,7 @@ export const COLORS_PALLETE: string[] = ['#9B3CB5', '#FF5E78', "#FF915D", "#FFC6
     "#F9F871", "#E33C99", "#008DDB", "#009F94"];
 
 export const getChartData = (data: Array<any>, isPieChart?: boolean): Array<IChart> => {
-    const result: Array<IChart> = new Array<IChart>();
+    let result: Array<IChart> = new Array<IChart>();
     data.forEach((entry: any, i: number): void => {
         let value = entry[Object.keys(entry)[1]].length;
         if (value === undefined) {
@@ -71,6 +71,9 @@ export const getChartData = (data: Array<any>, isPieChart?: boolean): Array<ICha
             });
         }
     });
+    if (isPieChart !== undefined) {
+        result = result.sort((a, b) => b.value - a.value);
+    }
     return result;
 };
 

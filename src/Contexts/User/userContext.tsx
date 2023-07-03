@@ -27,15 +27,6 @@ export const UserContextProvider = ({ children }: PropsWithChildren<{}>): JSX.El
     const usersData: IFetchResult<IUserProfileRead[]> = useFetch<IUserProfileRead[]>(() => services.UserProfilesService.GetAllUserProfiles());
     const [currentUsedUsers, setCurrentUsedUsers] = useState<IUserProfileRead[]>([]);
 
-    // const getDummyData = (usersData: IUserProfileRead[]): IUserProfileRead[] => {
-    //     const user1: IUserProfileRead = usersData[0];
-    //     const userProfiles1: IUserProfileRead[] = Array(10).fill(user1);
-    //     const user2: IUserProfileRead = usersData[0];
-    //     user2.fullName = "Stancu 2";
-    //     const userProfiles2: IUserProfileRead[] = Array(10).fill(user2);
-    //     return userProfiles1.concat(userProfiles2);
-    // };
-
     useEffect(() => {
         if (usersData.isLoading) {
             return;

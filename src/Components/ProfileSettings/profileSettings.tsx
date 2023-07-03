@@ -100,7 +100,7 @@ export const ProfileSettings = (): JSX.Element => {
     };
 
     const handleNotificationClick = (): void => {
-        authenticationContext.setUpdatedNotifications(false);
+        authenticationContext.SetUpdatedNotifications(false);
         setShowHoverCard(false);
     };
 

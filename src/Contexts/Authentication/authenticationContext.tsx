@@ -22,16 +22,19 @@ const AuthentificationContext: React.Context<IAuthentificationContext> = createC
     IsAuthenticated: () => { return false; },
     IsLoading: () => { return false; },
     IsForbidden: () => { return false; },
-    setUpdatedNotifications: () => { }
+    SetUpdatedNotifications: () => { },
+    setUserHasSurveyAnswersStatus: () => { },
+    UserHasSurveyAnswers: false
 });
 
 export const AuthentificationContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
     const [user, setUser] = useState<IUser>(defaultUser);
     const [hasNotifications, setHasNotifications] = useState<boolean>();
+    const [userHasSurveyAnswers, SetUserHasSurveyAnswers] = useState<boolean | undefined>(undefined);
     const cookies = new Cookies();
-
     const authenticatedUserFetchResult: IFetchResult<IUser> = useFetch(services.AuthenticationService.GetLoggedInUser);
+
     const forbidden: boolean | undefined = authenticatedUserFetchResult.data?.Status === undefined ?
         undefined :
         authenticatedUserFetchResult.data?.Status === 401;
@@ -73,6 +76,10 @@ export const AuthentificationContextProvider = ({ children }: PropsWithChildren<
         setHasNotifications(hasNotifications);
     };
 
+    const setUserHasSurveyAnswersStatus = (status: boolean | undefined): void => {
+        SetUserHasSurveyAnswers(status);
+    };
+
     return (<AuthentificationContext.Provider value={{
         User: user!,
         HasNotifications: hasNotifications!,
@@ -80,7 +87,9 @@ export const AuthentificationContextProvider = ({ children }: PropsWithChildren<
         IsAuthenticated: isAuthenticated,
         IsLoading: isLoading,
         IsForbidden: isForbidden,
-        setUpdatedNotifications: setUpdatedNotifications
+        SetUpdatedNotifications: setUpdatedNotifications,
+        UserHasSurveyAnswers: userHasSurveyAnswers,
+        setUserHasSurveyAnswersStatus: setUserHasSurveyAnswersStatus
     }}>
         {user !== undefined && children}</AuthentificationContext.Provider>);
 }

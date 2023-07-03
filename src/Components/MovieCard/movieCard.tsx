@@ -16,7 +16,6 @@ import {
     useNavigate
 } from 'react-router';
 import {
-    MOVIE_NOT_FOUND_IMAGE_LOCATION,
     MOVIE_WRAPPER_PATH
 } from '../../Library/constants';
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';

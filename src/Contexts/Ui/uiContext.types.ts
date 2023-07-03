@@ -6,7 +6,8 @@ export interface IUiContext {
     shoudDisplaySearch: boolean;
     setSearchState: (flag: boolean) => void;
     shouldDisplaySpinner: boolean,
-    setSpinnerState: (flag: boolean) => void;
+    setSpinnerState: (flag: boolean, spinnerTime?: number) => void;
     shouldRefreshPage: boolean;
     setRefreshState: (flag: boolean) => void;
+    spinnerTime: number;
 };

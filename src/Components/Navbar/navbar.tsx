@@ -71,12 +71,12 @@ export const Navbar = (): JSX.Element => {
     const handleSearchBarEnterKeyPressed = (e: any) => {
         if (e.key === 'Enter') {
             if (!isOnUserContext()) {
-                const searchedMovies: IMovie[] = movieContext.movies.filter((movie: IMovie) =>
+                const searchedMovies: IMovie[] = movieContext.currentUsedMovies.filter((movie: IMovie) =>
                     movie.title.toLowerCase().includes(searchText) ||
                     movie.title.includes(searchText));
                 movieContext.setCurrentMovies(IMovieContextType.NONE, searchedMovies);
                 setSearchText('');
-                uiContext.setSpinnerState(true);
+                uiContext.setSpinnerState(true, 1000);
                 return;
             }
             const searchedUsers: IUserProfileRead[] = userContext.users.filter((user: IUserProfileRead) =>
@@ -84,7 +84,6 @@ export const Navbar = (): JSX.Element => {
                 user.fullName.includes(searchText));
             userContext.setCurrentUsers(searchedUsers);
             setSearchText('');
-            uiContext.setSpinnerState(true);
         }
     };
 

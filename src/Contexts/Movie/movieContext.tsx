@@ -12,6 +12,9 @@ import { IFetchResult } from '../../Hooks/useFetch.types';
 import { IMovie } from '../../Models/IMovie';
 import { IMovieContextType } from '../../Enums/movieContextType';
 import { IRecommendationRead } from '../../Models/Recommendation/IRecommendationRead';
+import { IMovieSubscriptionRead } from '../../Models/MovieSubscription/IMovieSubscriptionRead';
+import { ISeenMovieRead } from '../../Models/SeenMovie/ISeenMovieRead';
+import { ILikedMovieRead } from '../../Models/LikedMovie/ILikedMovieRead';
 
 const MovieContext: React.Context<IMovieContext> = createContext<IMovieContext>({
     movies: [],
@@ -23,7 +26,9 @@ const MovieContext: React.Context<IMovieContext> = createContext<IMovieContext>(
     currentUsedMovies: [],
     refreshMovies: false,
     setRecommendations: () => { },
-    setRefreshMoviesState: () => { }
+    setRefreshMoviesState: () => { },
+    likedMovies: [],
+    setRefreshWatchLaterMoviesState: () => { },
 });
 
 export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.Element => {
@@ -33,18 +38,24 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
     const movieData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetAll());
 
     const [refreshMovies, setRefreshMovies] = useState<boolean>(false);
+    const [refreshWatchLaterMovies, setRefreshWatchLaterMovies] = useState<boolean>(false);
+
     const [collectionMovies, setCollectionMovies] = useState<IMovie[]>([]);
     const [areCollectionMoviesLoaded, setAreCollectionMoviesLoaded] = useState<boolean>(false);
     const collectionMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesCollection(), [refreshMovies.toString()]);
 
-    const [historyMovies, setHistoryMovies] = useState<IMovie[]>([]);
+    const [historyMovies, setHistoryMovies] = useState<ISeenMovieRead[]>([]);
     const [areHistoryMoviesLoaded, setAreHistoryMoviesLoaded] = useState<boolean>(false);
-    const historyMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesHistory(), [refreshMovies.toString()]);
+    const historyMoviesData: IFetchResult<ISeenMovieRead[]> = useFetch<ISeenMovieRead[]>(() => services.MovieService.GetMoviesHistory(), [refreshMovies.toString()]);
 
-    const [watchLaterMovies, setWatchLaterMovies] = useState<IMovie[]>([]);
+    const [watchLaterMovies, setWatchLaterMovies] = useState<IMovieSubscriptionRead[]>([]);
     const [areWatchLaterMoviesLoaded, setAreWatchLaterMoviesLoaded] = useState<boolean>(false);
-    const watchLaterMoviesData: IFetchResult<IMovie[]> = useFetch<IMovie[]>(() => services.MovieService.GetMoviesSubscription(), [refreshMovies.toString()]);
+    const watchLaterMoviesData: IFetchResult<IMovieSubscriptionRead[]> = useFetch<IMovieSubscriptionRead[]>(() => services.MovieService.GetMoviesSubscription(), [refreshWatchLaterMovies.toString()]);
     const [currentUsedMovies, setCurrentUserMovies] = useState<IMovie[]>([]);
+
+    const [likedMovies, setLikedMovies] = useState<ILikedMovieRead[]>([]);
+    const [areLikedMoviesLoaded, setAreLikedMoviesLoaded] = useState<boolean>(false);
+    const likedMoviesData: IFetchResult<ILikedMovieRead[]> = useFetch<ILikedMovieRead[]>(() => services.LikedMoviesService.GetAll(), [refreshMovies.toString()]);
 
     const [userRecommendations, setUserRecommendations] = useState<IRecommendationRead[]>([]);
 
@@ -111,7 +122,6 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         setAreHistoryMoviesLoaded(true);
     }, [historyMoviesData]);
 
-
     useEffect(() => {
         if (monthlyRecommendationsData.isLoading) {
             return;
@@ -125,6 +135,20 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         setMonthlyRecommendations(monthlyRecommendationsData.data!.Data!);
         setAreMonthlyRecommendationsLoaded(true);
     }, [monthlyRecommendationsData, refreshMovies]);
+
+    useEffect(() => {
+        if (likedMoviesData.isLoading) {
+            return;
+        }
+        if (likedMoviesData.errors !== "" ||
+            likedMoviesData.data?.Error !== undefined ||
+            likedMoviesData.data == null ||
+            likedMoviesData.data.Data === undefined) {
+            return;
+        }
+        setLikedMovies(likedMoviesData.data!.Data!);
+        setAreLikedMoviesLoaded(true);
+    }, [likedMoviesData, refreshMovies]);
 
     const isInitialDataLoaded = (): boolean => {
         return areMoviesLoaded;
@@ -141,11 +165,11 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
                 return;
             }
             case IMovieContextType.HISTORY: {
-                setCurrentUserMovies(historyMovies);
+                setCurrentUserMovies(historyMovies.map(m => m.movie));
                 return;
             }
             case IMovieContextType.WATCHLATER: {
-                setCurrentUserMovies(watchLaterMovies);
+                setCurrentUserMovies(watchLaterMovies.map(m => m.movie));
                 return;
             }
             case IMovieContextType.RECOMMENDATIONS: {
@@ -163,8 +187,13 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         setRefreshMovies(prev => !prev);
         setAreHistoryMoviesLoaded(false);
         setAreCollectionMoviesLoaded(false);
-        setAreWatchLaterMoviesLoaded(false);
+        //setAreWatchLaterMoviesLoaded(false);
         setAreMonthlyRecommendationsLoaded(false);
+    };
+
+    const setRefreshWatchLaterMoviesState = (): void => {
+        setRefreshWatchLaterMovies(prev => !prev);
+        setAreWatchLaterMoviesLoaded(false);
     };
 
     const setRecommendations = (recommendations: IRecommendationRead[]) => {
@@ -181,7 +210,9 @@ export const MovieContextProvider = ({ children }: PropsWithChildren<{}>): JSX.E
         setRefreshMoviesState,
         refreshMovies,
         monthlyRecommendations,
-        setRecommendations
+        setRecommendations,
+        likedMovies,
+        setRefreshWatchLaterMoviesState,
     }}> {isInitialDataLoaded() && children} </MovieContext.Provider>);
 };
 

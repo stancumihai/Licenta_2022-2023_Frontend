@@ -279,6 +279,7 @@ export const SideBar = (): JSX.Element => {
         cookie.remove(JWT_TOKEN);
         cookie.remove(REFRESH_TOKEN);
         navigate(LOGIN_PATH);
+        authenticationContext.setUserHasSurveyAnswersStatus(undefined);
     };
 
     const handleCloseDialog = (accepted?: boolean): void => {

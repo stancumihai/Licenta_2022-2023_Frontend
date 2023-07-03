@@ -53,6 +53,8 @@ import { IAuthentificationContext } from '../../Contexts/Authentication/authenti
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import UserContext from '../../Contexts/User/userContext';
 import { IUserContext } from '../../Contexts/User/userContext.types';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const UserProfile = (): JSX.Element => {
     const defaultUserProfile: IUserProfileRead = {
@@ -64,6 +66,7 @@ export const UserProfile = (): JSX.Element => {
         city: ''
     };
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
+    const uiContext: IUiContext = useContext(UiContext);
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const userContext: IUserContext = useContext(UserContext);
     const [fullName, setFullName] = useState<string>(defaultUserProfile.fullName);
@@ -107,8 +110,9 @@ export const UserProfile = (): JSX.Element => {
                     setProgressBarMessage('Profile Updated Succesfully!')
                     setDisplayProgessIndicator(false);
                     setTimeout(() => {
-                        window.location.href = 'http://localhost:3000/home';
-                    }, 1000)
+                        localStorage.setItem("loadSpinner", "yes");
+                        window.location.href = "http://localhost:3000/home"
+                    }, 500)
                     return;
                 }
             }, intervalDelay);
@@ -150,7 +154,7 @@ export const UserProfile = (): JSX.Element => {
         }, 500);
     };
 
-    const hasSameProfileData = () => {
+    const hasSameProfileData = (): boolean => {
         return fullName === getLoggedUserProfile()!.fullName &&
             city === getLoggedUserProfile()!.city &&
             country === getLoggedUserProfile()!.country
@@ -173,8 +177,9 @@ export const UserProfile = (): JSX.Element => {
                     country,
                     dateOfBirth
                 };
-                services.UserProfilesService.Add(userProfile);
-                setDisplayProgessIndicator(true);
+                services.UserProfilesService.Add(userProfile).then(data => {
+                    setDisplayProgessIndicator(true);
+                });
                 return;
             }
             if (hasSameProfileData()) {
@@ -186,18 +191,18 @@ export const UserProfile = (): JSX.Element => {
                 city,
                 country
             };
-            services.UserProfilesService.Update(newUserProfile);
-            setDisplayProgessIndicator(true);
-            setFullName(newUserProfile.fullName);
-            setCity(newUserProfile.city);
-            setCountry(newUserProfile.country);
+            services.UserProfilesService.Update(newUserProfile).then(() => {
+                setDisplayProgessIndicator(true);
+                setFullName(newUserProfile.fullName);
+                setCity(newUserProfile.city);
+                setCountry(newUserProfile.country);
+            });
         }, 500);
     };
 
     const handlePeriodChange = (date: Date | undefined | null): void => {
         setDateOfBirth(date!);
     };
-
 
     return <div className={containerClassName}>
         <div style={displayProgessIndicator === false ? { display: 'none' } : {}}>

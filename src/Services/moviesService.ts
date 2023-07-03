@@ -1,6 +1,8 @@
 import { APIHelper } from '../Configuration/apiHelper';
 import { IMovie } from '../Models/IMovie';
 import { IResponse } from '../Models/IResponse';
+import { IMovieSubscriptionRead } from '../Models/MovieSubscription/IMovieSubscriptionRead';
+import { ISeenMovieRead } from '../Models/SeenMovie/ISeenMovieRead';
 import { ISearchModel } from '../UiModels/ISearchModel';
 import BaseService from './baseService';
 
@@ -29,11 +31,11 @@ export default class MoviesService extends BaseService<IMovie>  {
         return await APIHelper.request(`${this._endpoint}/collection/${pageNumber}/${pageSize}`, 'GET')
     };
 
-    async GetMoviesHistory(): Promise<IResponse<IMovie[]>> {
+    async GetMoviesHistory(): Promise<IResponse<ISeenMovieRead[]>> {
         return await APIHelper.request(`${this._endpoint}/history`, 'GET')
     };
 
-    async GetMoviesSubscription(): Promise<IResponse<IMovie[]>> {
+    async GetMoviesSubscription(): Promise<IResponse<IMovieSubscriptionRead[]>> {
         return await APIHelper.request(`${this._endpoint}/subscription`, 'GET')
     };
 

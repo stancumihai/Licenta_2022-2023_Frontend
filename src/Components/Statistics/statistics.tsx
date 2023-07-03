@@ -17,12 +17,15 @@ import { IFetchResult } from '../../Hooks/useFetch.types';
 import { IRecommendationRead } from '../../Models/Recommendation/IRecommendationRead';
 import { IRecommendationUpdate } from '../../Models/Recommendation/IRecommendationUpdate';
 import { SetAlgorithmView } from './SetAlgorithmView/setAlgorithmView';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 
 export const Statistics = (): JSX.Element => {
     const [firstButtonClicked, setFirstButtonClicked] = useState<boolean>(false);
     const [pageIndex, setPageIndex] = useState<number>(1);
     const services = useContext<ServiceContext>(ServiceContextInstance);
+    const uiContext: IUiContext = useContext(UiContext);
     const [recommendations, setRecommendations] = useState<IRecommendationRead[] | IRecommendationUpdate[]>([]);
     const [areRecommendationsLoaded, setAreRecommendationsLoaded] = useState<boolean>(false);
     const recommendationsData: IFetchResult<IRecommendationRead[] | IRecommendationUpdate[]> =
@@ -63,6 +66,7 @@ export const Statistics = (): JSX.Element => {
     };
 
     const handleSummaryClick = () => {
+        uiContext.setSpinnerState(true, 1000);
         setPageIndex(1);
     };
 

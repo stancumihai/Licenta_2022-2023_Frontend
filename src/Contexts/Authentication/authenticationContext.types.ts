@@ -7,5 +7,7 @@ export interface IAuthentificationContext {
     IsAuthenticated: () => boolean
     IsLoading: () => boolean;
     IsForbidden: () => boolean | undefined;
-    setUpdatedNotifications: (hasNotification: boolean) => void
+    SetUpdatedNotifications: (hasNotification: boolean) => void;
+    UserHasSurveyAnswers: boolean | undefined
+    setUserHasSurveyAnswersStatus: (status: boolean | undefined) => void;
 };

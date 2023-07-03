@@ -1,4 +1,11 @@
-import { buttonContainerClassName, calendarClassName, calendarContainerClassName, containerClassName, contentContainerClassName, selectedDateInfoClassName } from './dashboard.styles';
+import {
+    buttonContainerClassName,
+    calendarClassName,
+    calendarContainerClassName,
+    containerClassName,
+    contentContainerClassName,
+    selectedDateInfoClassName
+} from './dashboard.styles';
 import {
     useContext,
     useState,
@@ -38,6 +45,9 @@ import {
 } from '@fluentui/react';
 import { Calendar } from 'office-ui-fabric-react';
 import { IResponse } from '../../Models/IResponse';
+import { IUserProfileRead } from '../../Models/UserProfile/IUserProfileRead';
+import UserContext from '../../Contexts/User/userContext';
+import { IUserContext } from '../../Contexts/User/userContext.types';
 
 export const Dashboard = (): JSX.Element => {
     const getDateRanges = (date: Date) => {
@@ -46,7 +56,7 @@ export const Dashboard = (): JSX.Element => {
         endDate.setMonth(startDate.getMonth() + 4);
         return [startDate, endDate];
     };
-
+    const userContext: IUserContext = useContext(UserContext);
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
     const [chartData, setChartData] = useState<IChartData[]>([]);
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
@@ -101,7 +111,6 @@ export const Dashboard = (): JSX.Element => {
     const [currentPredictedGenres, setCurrentPredictedGenres] = useState<PredictedGenre[]>([]);
     const [currentPredictedGenresByUser, setCurrentPredictedGenresByUser] = useState<PredictedGenre[]>([]);
 
-
     const filterCurrentMonthlySeenMovies = (data: Array<any>, startDate: Date) => {
         const dates: Date[] = getDateRanges(startDate);
         const startYear: number = startDate.getFullYear();
@@ -113,6 +122,9 @@ export const Dashboard = (): JSX.Element => {
     };
 
     useEffect(() => {
+        if (!currentUserHasProfile()) {
+            return;
+        }
         if (monthlySeenMoviesData.isLoading) {
             return;
         }
@@ -127,6 +139,9 @@ export const Dashboard = (): JSX.Element => {
     }, [monthlySeenMoviesData]);
 
     useEffect(() => {
+        if (!currentUserHasProfile()) {
+            return;
+        }
         if (topSeenGenresData.isLoading) {
             return;
         }
@@ -141,6 +156,9 @@ export const Dashboard = (): JSX.Element => {
     }, [topSeenGenresData]);
 
     useEffect(() => {
+        if (!currentUserHasProfile()) {
+            return;
+        }
         if (topAgeViewershipsData.isLoading) {
             return;
         }
@@ -155,6 +173,9 @@ export const Dashboard = (): JSX.Element => {
     }, [topAgeViewershipsData]);
 
     useEffect(() => {
+        if (!currentUserHasProfile()) {
+            return;
+        }
         if (predictedGenresByUserData.isLoading) {
             return;
         }
@@ -170,6 +191,9 @@ export const Dashboard = (): JSX.Element => {
     }, [predictedGenresByUserData]);
 
     useEffect(() => {
+        if (!currentUserHasProfile()) {
+            return;
+        }
         if (predictedMoviesCountByUserData.isLoading) {
             return;
         }
@@ -184,6 +208,9 @@ export const Dashboard = (): JSX.Element => {
     }, [predictedMoviesCountByUserData]);
 
     useEffect(() => {
+        if (!currentUserHasProfile()) {
+            return;
+        }
         if (predictedMoviesRuntimeByUserData.isLoading) {
             return;
         }
@@ -198,6 +225,9 @@ export const Dashboard = (): JSX.Element => {
     }, [predictedMoviesRuntimeByUserData]);
 
     useEffect(() => {
+        if (!currentUserHasProfile()) {
+            return;
+        }
         if (predictedGenresData.isLoading) {
             return;
         }
@@ -213,6 +243,9 @@ export const Dashboard = (): JSX.Element => {
     }, [predictedGenresData]);
 
     useEffect(() => {
+        if (!currentUserHasProfile()) {
+            return;
+        }
         if (predictedMoviesCountData.isLoading) {
             return;
         }
@@ -242,6 +275,9 @@ export const Dashboard = (): JSX.Element => {
 
 
     useEffect(() => {
+        if (!currentUserHasProfile()) {
+            return;
+        }
         if (topPredictedAgeViewershipsData.isLoading) {
             return;
         }
@@ -261,10 +297,18 @@ export const Dashboard = (): JSX.Element => {
         }
     }, [firstButtonClicked]);
 
-    const filterTopSeenGenresDataByUser = (): ITopGenreModel[] => {
+    useEffect(() => {
+        $('.ms-DatePicker-goToday').on('click', () => {
+            handleContextBasedActions(new Date());
+        });
+    }, []);
+
+    const filterTopSeenGenresDataByUser = (date: Date): ITopGenreModel[] => {
         let filterTopSeenGenres: ITopGenreModel[] = [];
         for (let i = 0; i < topSeenGenres!.length; i++) {
-            const filteredData: ISeenMovieRead[] = topSeenGenres![i].seenMovies.filter(s => s.userUid === authenticationContext.User.uid);
+            const filteredData: ISeenMovieRead[] = topSeenGenres![i].seenMovies.filter(s => s.userUid === authenticationContext.User.uid &&
+                new Date(s.createdAt).getFullYear() === new Date(date).getFullYear() &&
+                new Date(s.createdAt).getMonth() + 1 === new Date(date).getMonth() + 1);
             if (filteredData.length !== 0) {
                 filterTopSeenGenres.push({
                     genre: topSeenGenres![i].genre,
@@ -312,13 +356,12 @@ export const Dashboard = (): JSX.Element => {
         setCurrentChartContext('Genres');
         setShouldDisplayCalendar(true);
         setNeedsDateRange(false);
-        setDataTitle('Top Seen Genres')
+        setDataTitle('Top Seen Genres');
         setChartChangeIsMade((prev) => !prev);
-
         const chartData: IChartData[] = [
             {
                 graphType: GraphTypes.PIE_CHART,
-                data: isAdmin() ? topSeenGenres! : filterTopSeenGenresDataByUser()
+                data: isAdmin() ? topSeenGenres! : filterTopSeenGenresDataByUser(selectedDate)
             },
             {
                 title: "Predicted Genres",
@@ -328,7 +371,6 @@ export const Dashboard = (): JSX.Element => {
                     getFormattedChartModels(currentPredictedGenresByUser)
             }
         ];
-        console.log(chartData);
         setChartData(chartData);
     };
 
@@ -339,7 +381,19 @@ export const Dashboard = (): JSX.Element => {
         setNeedsDateRange(true);
         setDataTitle('Most Seen Movie Runtimes');
         setChartChangeIsMade((prev) => !prev);
-        filterCurrentMonthlySeenMovies(monthlySeenMoviesData.data!.Data!, new Date())
+        filterCurrentMonthlySeenMovies(monthlySeenMoviesData.data!.Data!, new Date());
+        const predictedMoviesRuntimeSorted = predictedMoviesRuntime?.sort((a, b) => {
+            if (a.year !== b.year) {
+                return a.year - b.year;
+            }
+            return a.month - b.month;
+        });
+        const predictedMoviesRuntimeByUserSorted = predictedMoviesRuntimeByUser?.sort((a, b) => {
+            if (a.year !== b.year) {
+                return a.year - b.year;
+            }
+            return a.month - b.month;
+        });
         const chartData: IChartData[] = [
             {
                 graphType: GraphTypes.BAR_CHART,
@@ -351,8 +405,8 @@ export const Dashboard = (): JSX.Element => {
                 title: "Predicted Hours",
                 graphType: GraphTypes.SIMPLE_LINE_CHART,
                 data: isAdmin() ?
-                    getFormattedChartModels(predictedMoviesRuntime) :
-                    getFormattedChartModels(predictedMoviesRuntimeByUser!)
+                    getFormattedChartModels(predictedMoviesRuntimeSorted) :
+                    getFormattedChartModels(predictedMoviesRuntimeByUserSorted!)
             }
         ];
         setChartData(chartData);
@@ -365,6 +419,18 @@ export const Dashboard = (): JSX.Element => {
         setNeedsDateRange(true);
         setDataTitle('Most Movies')
         setChartChangeIsMade((prev) => !prev);
+        const predictedMoviesCountSorted = predictedMoviesCount?.sort((a, b) => {
+            if (a.year !== b.year) {
+                return a.year - b.year;
+            }
+            return a.month - b.month;
+        });
+        const predictedMoviesCountByUserSorted = predictedMoviesCountByUser?.sort((a, b) => {
+            if (a.year !== b.year) {
+                return a.year - b.year;
+            }
+            return a.month - b.month;
+        });
         const chartData: IChartData[] = [
             {
                 graphType: GraphTypes.BAR_CHART,
@@ -376,8 +442,8 @@ export const Dashboard = (): JSX.Element => {
                 title: "Predicted Movie Count",
                 graphType: GraphTypes.SIMPLE_LINE_CHART,
                 data: isAdmin() ?
-                    getFormattedChartModels(predictedMoviesCount) :
-                    getFormattedChartModels(predictedMoviesCountByUser!)
+                    getFormattedChartModels(predictedMoviesCountSorted) :
+                    getFormattedChartModels(predictedMoviesCountByUserSorted!)
             }
         ];
         setChartData(chartData);
@@ -432,7 +498,7 @@ export const Dashboard = (): JSX.Element => {
                 title: 'Top Genres',
                 data: isAdmin() ?
                     topSeenGenres! :
-                    filterTopSeenGenresDataByUser()
+                    filterTopSeenGenresDataByUser(selectedDate)
             },
         ];
         if (isAdmin()) {
@@ -541,10 +607,22 @@ export const Dashboard = (): JSX.Element => {
                 setTopAgeViewerships(data.Data!);
                 chartData[3].data = data.Data!;
             });
+            const allFilteredSeenMovies: ITopGenreModel[] = [];
+            topSeenGenres?.forEach(t => {
+                const filteredSeenMovies = t.seenMovies.filter(s =>
+                    new Date(s.createdAt).getFullYear() === startDate.getFullYear() &&
+                    new Date(s.createdAt).getMonth() + 1 === startDate.getMonth() + 1);
+                allFilteredSeenMovies.push({
+                    genre: t.genre,
+                    seenMovies: filteredSeenMovies
+                });
+            })
+            chartData[2].data = allFilteredSeenMovies;
             return;
         }
         chartData[0].data = getFormattedChartModels(getMonthlyRuntime(filterMonthySeenMoviesByUser(filteredData)));
         chartData[1].data = getFormattedChartModels(getMonthlyMoviesCount(filterMonthySeenMoviesByUser(filteredData)));
+        chartData[2].data = filterTopSeenGenresDataByUser(startDate);
     };
 
 
@@ -589,12 +667,24 @@ export const Dashboard = (): JSX.Element => {
             case "Genres": {
                 setChartChangeIsMade((prev) => !prev);
                 if (isAdmin()) {
-                    const filteredData = predictedGenres!.filter(p => p.year === date.getFullYear() && p.month === date.getMonth() + 1);
-                    chartData[1].data = getFormattedChartModels(filteredData);
+                    const predictedFilteredData = predictedGenres!.filter(p => p.year === date.getFullYear() && p.month === date.getMonth() + 1);
+                    const allFilteredSeenMovies: ITopGenreModel[] = [];
+                    topSeenGenres?.forEach(t => {
+                        const filteredSeenMovies = t.seenMovies.filter(s =>
+                            new Date(s.createdAt).getFullYear() === date.getFullYear() &&
+                            new Date(s.createdAt).getMonth() + 1 === date.getMonth() + 1);
+                        allFilteredSeenMovies.push({
+                            genre: t.genre,
+                            seenMovies: filteredSeenMovies
+                        });
+                    })
+                    chartData[0].data = allFilteredSeenMovies;
+                    chartData[1].data = getFormattedChartModels(predictedFilteredData);
                     return;
                 }
-                const filteredData = predictedGenresByUser!.filter(p => p.year === date.getFullYear() && p.month === date.getMonth() + 1);
-                chartData[1].data = getFormattedChartModels(filteredData);
+                const predictedFilteredData = predictedGenresByUser!.filter(p => p.year === date.getFullYear() && p.month === date.getMonth() + 1);
+                chartData[0].data = filterTopSeenGenresDataByUser(date);
+                chartData[1].data = getFormattedChartModels(predictedFilteredData);
                 return;
             }
         }
@@ -605,18 +695,16 @@ export const Dashboard = (): JSX.Element => {
         handleContextBasedActions(date);
     };
 
-    useEffect(() => {
-        $('.ms-DatePicker-goToday').on('click', () => {
-            handleContextBasedActions(new Date());
-        });
-    }, []);
+    const currentUserHasProfile = (): boolean => {
+        return userContext.users.filter((u: IUserProfileRead) => u.userUid === authenticationContext.User.uid!)[0] != null || isAdmin();;
+    };
 
     return <div className={containerClassName}>
         {isDataLoaded() &&
             <>
-                {getButtons()}
+                {currentUserHasProfile() && getButtons()}
                 <div className={contentContainerClassName}>
-                    <>{shouldDisplayCalendar &&
+                    <>{shouldDisplayCalendar && currentUserHasProfile() &&
                         <div className={calendarContainerClassName}>
                             <p className={selectedDateInfoClassName}>Selected date: {selectedDate?.toLocaleString() || 'Not set'}</p>
                             <Calendar className={calendarClassName}

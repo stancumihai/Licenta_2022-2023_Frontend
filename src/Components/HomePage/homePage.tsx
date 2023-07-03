@@ -23,17 +23,24 @@ import { IMovieContextType } from '../../Enums/movieContextType';
 import { PAGES } from './homePage.types';
 import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
+import UiContext from '../../Contexts/Ui/uiContext';
+import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const HomePage = (): JSX.Element => {
     const { sideBarPage } = useParams();
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
     const movieContext: IMovieContext = useContext(MovieContext);
+    const uiContext: IUiContext = useContext(UiContext);
     const [moviesToDisplayInPage, setMoviesToDisplayInPage] = useState<IMovie[] | undefined>([]);
     const [shouldResetPaginator, setShouldResetPaginator] = useState<boolean>(false);
 
     useEffect(() => {
         handlePageRedirection();
     }, []);
+
+    // useEffect(() => {
+    //     uiContext.setSpinnerState(true, 1500);
+    // }, []);
 
     const waitForUser = () => {
         if (authenticationContext.User.email === "") {
@@ -49,6 +56,13 @@ export const HomePage = (): JSX.Element => {
         const userRecommendations = movieContext.monthlyRecommendations.filter(f => f.userUid === authenticationContext.User.uid);
         movieContext.setRecommendations(userRecommendations);
     }, []);
+
+    useEffect(() => {
+        if (localStorage.getItem('loadSpinner') === 'yes') {
+            localStorage.setItem('loadSpinner', 'false');
+            uiContext.setSpinnerState(true, 1000);
+        }
+    }, [window.location.href]);
 
     useEffect(() => {
         setShouldResetPaginator(prev => !prev);

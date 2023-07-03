@@ -31,11 +31,9 @@ import {
     ServiceContext,
     ServiceContextInstance
 } from '../../Core/serviceContext';
-import { ILikedMovieRead } from '../../Models/LikedMovie/ILikedMovieRead';
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import { IAuthentificationContext } from '../../Contexts/Authentication/authenticationContext.types';
 import { IResponse } from '../../Models/IResponse';
-import { ILikedMovieCreate } from '../../Models/LikedMovie/ILikedMovieCreate';
 import { IMovieSubscriptionCreate } from '../../Models/MovieSubscription/IMovieSubscriptionCreate';
 import { IMovieSubscriptionRead } from '../../Models/MovieSubscription/IMovieSubscriptionRead';
 import { ISeenMovieCreate } from '../../Models/SeenMovie/ISeenMovieCreate';
@@ -71,10 +69,10 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const services: ServiceContext = useContext<ServiceContext>(ServiceContextInstance);
 
     const [isMovieLiked, setIsMovieLiked] = useState<boolean>(false);
-    const [movieLikeId, setMovieLikedId] = useState<string>('');
+    const [movieLikeId, setMovieLikedId] = useState<string | undefined>(undefined);
 
     const [isWatchLaterChecked, setIsWatchLaterChecked] = useState<boolean>(false);
-    const [movieSubscriptionId, setMovieSubscriptionId] = useState<string>('');
+    const [movieSubscriptionId, setMovieSubscriptionId] = useState<string | undefined>(undefined);
 
     const [movieRating, setMovieRating] = useState<number>(0);
     const [isMovieRatingLoaded, setIsMovieRatingLoaded] = useState<boolean>(false);
@@ -109,42 +107,27 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     }, [movieRatingData]);
 
     useEffect(() => {
-        if (!isMovieLiked) {
-            services.LikedMoviesService.GetByUserAndMovie(props.movieRating.movie.uid!).then((data: IResponse<ILikedMovieRead>) => {
-                if (data.Status! === 404 || data.Status! === 500) {
-                    setTimeout(() => {
-                        setIsMovieLiked(false);
-                        setMovieLikedId('');
-                    }, 500);
-                    return;
-                }
-                setTimeout(() => {
-                    setIsMovieLiked(true);
-                    setMovieLikedId(data.Data!.uid!);
-                }, 500);
-                return;
-            });
+        const filteredData = movieContext.likedMovies.filter(m => m.movie.uid! === props.movieRating.movie.uid! && m.userUid === authenticationContext.User.uid!);
+        if (filteredData.length === 0) {
+            setIsMovieLiked(false);
+            setMovieLikedId(undefined);
+            return;
         }
-    }, [isMovieLiked, movieLikeId]);
+        setIsMovieLiked(true);
+        setMovieLikedId(filteredData[0].uid!);
+    }, [isMovieLiked, movieLikeId, movieContext.likedMovies]);
+
 
     useEffect(() => {
-        if (!isWatchLaterChecked) {
-            services.MovieSubscriptionsService.GetByUserAndMovie(props.movieRating.movie.uid!).then((data: IResponse<IMovieSubscriptionRead>) => {
-                if (data.Status! === 404 || data.Status! === 500) {
-                    setTimeout(() => {
-                        setIsWatchLaterChecked(false);
-                        setMovieSubscriptionId('');
-                    }, 500);
-                    return;
-                }
-                setTimeout(() => {
-                    setIsWatchLaterChecked(true);
-                    setMovieSubscriptionId(data.Data!.uid!);
-                }, 500);
-                return;
-            });
+        const filteredData = movieContext.watchLaterMovies.filter(m => m.movie.uid! === props.movieRating.movie.uid! && m.userUid === authenticationContext.User.uid!);
+        if (filteredData.length === 0) {
+            setIsWatchLaterChecked(false);
+            setMovieSubscriptionId(undefined);
+            return;
         }
-    }, [isWatchLaterChecked, movieSubscriptionId]);
+        setIsWatchLaterChecked(true);
+        setMovieSubscriptionId(filteredData[0].uid!);
+    }, [isWatchLaterChecked, movieSubscriptionId, movieContext.watchLaterMovies]);
 
     useEffect(() => {
         if (seenMoviesData.isLoading) {
@@ -201,7 +184,7 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     };
 
     const handleMovieLikeClick = (disliked?: boolean): void => {
-        const likedMovie: ILikedMovieCreate = {
+        const likedMovie: any = {
             movieUid: props.movieRating.movie.uid!,
             userUid: authenticationContext.User.uid!
         };
@@ -223,19 +206,18 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             return;
         }
         if (isMovieLiked) {
-            services.LikedMoviesService.Delete(movieLikeId);
-            setIsMovieLiked(false);
-            setMovieLikedId('');
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            services.LikedMoviesService.Delete(movieLikeId!).then((data) => {
+                setIsMovieLiked(false);
+                setMovieLikedId('');
+                movieContext.setRefreshMoviesState();
+            });
             return;
         }
-        services.LikedMoviesService.Add(likedMovie);
-        setIsMovieLiked(true);
-        setTimeout(() => {
-            window.location.reload();
-        }, 500);
+        services.LikedMoviesService.Add(likedMovie).then((data) => {
+            setIsMovieLiked(true);
+            movieContext.setRefreshMoviesState();
+            setMovieLikedId(data.Data!.uid!);
+        });
     };
 
     const handleWatchLaterClick = (): void => {
@@ -243,21 +225,19 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             movieUid: props.movieRating.movie.uid!,
             userUid: authenticationContext.User.uid!
         };
-
         if (isWatchLaterChecked) {
-            services.MovieSubscriptionsService.Delete(movieSubscriptionId);
-            setIsWatchLaterChecked(false);
-            setMovieSubscriptionId('');
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            services.MovieSubscriptionsService.Delete(movieSubscriptionId!).then((data) => {
+                movieContext.setRefreshWatchLaterMoviesState();
+                setIsWatchLaterChecked(false);
+                setMovieSubscriptionId(undefined);
+            });
             return;
         }
-        services.MovieSubscriptionsService.Add(movieSubscription);
-        setIsWatchLaterChecked(true);
-        setTimeout(() => {
-            window.location.reload();
-        }, 500);
+        services.MovieSubscriptionsService.Add(movieSubscription).then((data: any) => {
+            setMovieSubscriptionId(data.Data!.uid!)
+            movieContext.setRefreshWatchLaterMoviesState();
+            setIsWatchLaterChecked(true);
+        });
     };
 
     const handleSeenClick = (): void => {
@@ -272,7 +252,6 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
             const newAverageRating: number = (movieRating.averageRating * movieRating.votesNumber + newMyRating) / (movieRating.votesNumber + 1);
             const newMovieRating: IMovieRating = { ...movieRating, averageRating: newAverageRating, votesNumber: movieRating.votesNumber + 1 };
             services.MovieRatingsService.Update(newMovieRating);
-            window.location.reload();
             return;
         }
         const newAverageRating: number = (movieRating.averageRating * movieRating.votesNumber + newMyRating - oldMyRating) / movieRating.votesNumber;
@@ -316,11 +295,12 @@ export const MovieDetails = (props: IMovieDetailsProps): JSX.Element => {
     const handleCloseDialog = (accepted?: boolean): void => {
         setIsConfirmationSeenDialogOpen(false);
         if (accepted === true) {
+            movieContext.setRefreshMoviesState();
             services.MovieSubscriptionsService.GetByUserAndMovie(props.movieRating.movie.uid!).then((data: IResponse<IMovieSubscriptionRead>) => {
                 services.MovieSubscriptionsService.Delete(data.Data!.uid!).then(() => {
                     const seenMovie: ISeenMovieCreate = {
                         movieUid: props.movieRating.movie.uid!,
-                        userUid: authenticationContext.User.uid!
+                        userUid: authenticationContext.User.uid!,
                     };
                     services.SeenMoviesService.Add(seenMovie).then(() => {
                         navigate(HOME_PATH);

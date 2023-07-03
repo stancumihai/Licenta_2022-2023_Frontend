@@ -5,7 +5,7 @@ import BaseService from './baseService';
 import { ILikedMovieCreate } from '../Models/LikedMovie/ILikedMovieCreate';
 import { IMovie } from '../Models/IMovie';
 
-export default class LikedMoviesService extends BaseService<ILikedMovieRead | ILikedMovieCreate>  {
+export default class LikedMoviesService extends BaseService<ILikedMovieRead>  {
     async GetAllByUser(userUid: string): Promise<IResponse<IMovie[]>> {
         return await APIHelper.request(`${this._endpoint}/user/${userUid}`, 'GET')
     };

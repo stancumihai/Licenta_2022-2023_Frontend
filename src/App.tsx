@@ -20,6 +20,7 @@ import { Register } from './Components/Register/register';
 import {
   ARTISTS_OF_THE_MONTH_PATH,
   DASHBOARD_PATH,
+  DEFAULT_PATH,
   FORGOT_PASSWORD_PATH,
   HOME_PATH,
   JWT_TOKEN,
@@ -80,7 +81,6 @@ export default function App(): JSX.Element {
   const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
   const uiContext: IUiContext = useContext(UiContext);
   const navigate: NavigateFunction = useNavigate();
-  const [userHasSurveyAnswers, setUserHasSurveyAnswers] = useState<boolean | undefined>(undefined);
   const cookie = new Cookies();
   const NON_AUTH_PAGES = ["login", "forgotPassword", "renewPassword", ''];
   const isForbidden = authenticationContext.IsForbidden();
@@ -95,7 +95,7 @@ export default function App(): JSX.Element {
   useEffect(() => {
     handleAuthentication();
     hasSurveyPath();
-  }, [authenticationContext.User, isForbidden, userHasSurveyAnswers]);
+  }, [authenticationContext.User, isForbidden, authenticationContext.UserHasSurveyAnswers, authenticationContext.setUserHasSurveyAnswersStatus]);
 
   useEffect(() => {
     const currentPath: string = window.location.href;
@@ -159,9 +159,14 @@ export default function App(): JSX.Element {
       setTimeout(() => {
         setShouldDisplaySpinner(false);
         uiContext.setSpinnerState(false);
-      }, 3000);
+      }, uiContext.spinnerTime);
     }
   }, [uiContext.shouldDisplaySpinner]);
+
+  // useEffect(() => {
+  //   const currentURL: string = window.location.href;
+  //   localStorage.setItem('previousPageURL', currentURL);
+  // }, [window.location.href]);
 
   const handleAuthorizationExpired = (): void => {
     navigate(LOGIN_PATH);
@@ -223,7 +228,7 @@ export default function App(): JSX.Element {
   };
 
   const waitForSurveyAnswersLoaded = (): void => {
-    if (userHasSurveyAnswers === undefined) {
+    if (authenticationContext.UserHasSurveyAnswers === undefined) {
       setTimeout(() => {
         waitForSurveyAnswersLoaded();
         return;
@@ -236,18 +241,26 @@ export default function App(): JSX.Element {
       services.UserService.UserHasSurveyAnswers(authenticationContext.User.uid!)
         .then((data: IResponse<any>) => {
           if (!data.Data!) {
-            setUserHasSurveyAnswers(false);
+            authenticationContext.setUserHasSurveyAnswersStatus(false);
             waitForSurveyAnswersLoaded();
             return;
           }
-          setUserHasSurveyAnswers(true);
+          authenticationContext.setUserHasSurveyAnswersStatus(true);
           waitForSurveyAnswersLoaded();
         });
       return;
     }
-    setUserHasSurveyAnswers(true);
+    authenticationContext.setUserHasSurveyAnswersStatus(true);
     waitForSurveyAnswersLoaded();
   };
+
+  useEffect(() => {
+    if (!authenticationContext.UserHasSurveyAnswers) {
+      if (window.location.href.includes('home')) {
+        navigate(SURVEY_PATH);
+      }
+    }
+  }, []);
 
   return (<div className={containerClassName}>
     {shouldDisplaySpinner && <div className={loadingSpinnerContainer}>
@@ -264,7 +277,7 @@ export default function App(): JSX.Element {
         <Route path={SIGN_UP_PATH} element={<Register />} />
         <Route path={SURVEY_PATH} element={
           <AuthenticatedRoute unaunthenticatedRedirectUrl={LOGIN_PATH} permissions={SURVEY_PATH_PERMISSIONS}>
-            {!userHasSurveyAnswers ? <Survey /> : <Navigate to={HOME_PATH} />}
+            {authenticationContext.UserHasSurveyAnswers === undefined || !authenticationContext.UserHasSurveyAnswers ? <Survey /> : <Navigate to={HOME_PATH} />}
           </AuthenticatedRoute>
         } />
         <Route path={HOME_PATH} element={
@@ -283,7 +296,7 @@ export default function App(): JSX.Element {
         <Route path={ARTISTS_OF_THE_MONTH_PATH} element={<ArtistsOfTheMonth />} ></Route>
         <Route path={USER_PROFILE_PATH} element={<UserProfile />} ></Route>
         <Route path={USER_DETAILS_PATH} element={<UserDetails />} ></Route>
-        {/* <Route path={DEFAULT_PATH} element={<HomePage />} ></Route> */}
+        <Route path={DEFAULT_PATH} element={<HomePage />} ></Route>
       </Routes>
     </div>
   </div>

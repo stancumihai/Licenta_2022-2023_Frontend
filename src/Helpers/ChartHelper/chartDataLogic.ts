@@ -20,7 +20,7 @@ export const getMonthlyRuntime = (monthlySeenMovies: MonthlyAppUsageModel[]): Mo
 };
 
 export const getFormattedChartModels = (data: any) => {
-    return data!.map((chartData: any) => {
+    const result = data!.map((chartData: any) => {
         const month: number = chartData[Object.keys(chartData)[0]];
         const year: number = chartData[Object.keys(chartData)[1]];
         const date: string = year + "\\" + month;
@@ -31,6 +31,7 @@ export const getFormattedChartModels = (data: any) => {
         };
         return monthlyUsageChartModel;
     });
+    return result;
 };
 
 export const getMonthlyMoviesCount = (monthlySeenMovies: MonthlyAppUsageModel[]): MonthlyMovieCount[] => {

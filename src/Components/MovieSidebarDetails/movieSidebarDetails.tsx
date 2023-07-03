@@ -27,8 +27,32 @@ export const MovieSidebarDetails = (props: IMovieSidebarDetailsProps): JSX.Eleme
         return props.movieRating / 10 * 5;
     };
 
+    // const navigateToPreviousPage = (): void => {
+    //     const previousPageURL = localStorage.getItem('previousPageURL');
+    //     if (previousPageURL) {
+    //         const locationSplit = previousPageURL.split('?');
+    //         if (locationSplit.length > 1) {
+    //             switch (locationSplit[1]) {
+    //                 case RECOMMENDATIONS_ENDPOINT: {
+    //                     navigate(RECOMMENDATIONS_PATH);
+    //                     return;
+    //                 }
+    //                 case WATCH_LATER_PATH: {
+
+    //                 }
+    //                 default: {
+    //                     navigate(locationSplit[1]);
+    //                 }
+    //             }
+    //             return;
+    //         }
+    //         navigate(HOME_PATH);
+    //     }
+    //     navigate(HOME_PATH);
+    // };
+
     return <div className={detailsSidebarClassName}>
-        <img onClick={() => { navigate(HOME_PATH); }}
+        <img onClick={() => { navigate(HOME_PATH) }}
             className={imageClassName}
             src={props.imageSource}
             alt='Loading'></img>

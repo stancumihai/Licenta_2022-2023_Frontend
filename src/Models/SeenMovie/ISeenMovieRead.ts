@@ -4,4 +4,5 @@ export interface ISeenMovieRead {
     uid?: string;
     movie: IMovie;
     userUid: string;
+    createdAt: Date;
 };
