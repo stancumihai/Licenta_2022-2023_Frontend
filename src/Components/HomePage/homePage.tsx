@@ -14,7 +14,7 @@ import {
 } from 'react';
 import { IMovie } from '../../Models/IMovie';
 import {
-    MAX_MOVIES_PER_PAGE
+    MAX_MOVIES_PER_PAGE, SURVEY_PATH
 } from '../../Library/constants';
 import { IMovieContext } from '../../Contexts/Movie/movieContext.types';
 import MovieContext from '../../Contexts/Movie/movieContext';
@@ -25,6 +25,7 @@ import { IAuthentificationContext } from '../../Contexts/Authentication/authenti
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import UiContext from '../../Contexts/Ui/uiContext';
 import { IUiContext } from '../../Contexts/Ui/uiContext.types';
+import { NavigateFunction, useNavigate } from 'react-router';
 
 export const HomePage = (): JSX.Element => {
     const { sideBarPage } = useParams();
@@ -33,10 +34,17 @@ export const HomePage = (): JSX.Element => {
     const uiContext: IUiContext = useContext(UiContext);
     const [moviesToDisplayInPage, setMoviesToDisplayInPage] = useState<IMovie[] | undefined>([]);
     const [shouldResetPaginator, setShouldResetPaginator] = useState<boolean>(false);
+    const navigate: NavigateFunction = useNavigate();
 
     useEffect(() => {
         handlePageRedirection();
     }, []);
+
+    // useEffect(() => {
+    //     if (authenticationContext.UserHasSurveyAnswers) {
+    //         navigate(SURVEY_PATH);
+    //     }
+    // }, []);
 
     // useEffect(() => {
     //     uiContext.setSpinnerState(true, 1500);

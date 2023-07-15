@@ -53,8 +53,6 @@ import { IAuthentificationContext } from '../../Contexts/Authentication/authenti
 import AuthentificationContext from '../../Contexts/Authentication/authenticationContext';
 import UserContext from '../../Contexts/User/userContext';
 import { IUserContext } from '../../Contexts/User/userContext.types';
-import UiContext from '../../Contexts/Ui/uiContext';
-import { IUiContext } from '../../Contexts/Ui/uiContext.types';
 
 export const UserProfile = (): JSX.Element => {
     const defaultUserProfile: IUserProfileRead = {
@@ -66,7 +64,6 @@ export const UserProfile = (): JSX.Element => {
         city: ''
     };
     const authenticationContext: IAuthentificationContext = useContext(AuthentificationContext);
-    const uiContext: IUiContext = useContext(UiContext);
     const services = useContext<ServiceContext>(ServiceContextInstance);
     const userContext: IUserContext = useContext(UserContext);
     const [fullName, setFullName] = useState<string>(defaultUserProfile.fullName);

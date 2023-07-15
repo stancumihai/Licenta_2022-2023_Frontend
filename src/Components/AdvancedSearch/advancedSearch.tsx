@@ -404,11 +404,11 @@ export const AdvancedSearch = (props: IAdvancedSearchProps): JSX.Element => {
                     min={minDateSpinButton}
                     max={new Date().getFullYear()} />
             </div>
-            <Label className={labelClassName}>Items Per Page</Label>
+            <Label className={labelClassName}>Number of items</Label>
             <div className={releaseDateSpinButtonsContainerClassName}>
                 <SpinButton min={1}
                     onChange={handleItemsPerPageChange}
-                    max={8}
+                    max={100}
                     value={itemsPerPage.toString()}
                     step={1}
                     styles={spinButtonStyles} />

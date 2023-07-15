@@ -579,6 +579,9 @@ export const Survey = (): JSX.Element => {
         if (!isReadyToSend()) {
             return;
         }
+        if (authenticationContext.UserHasSurveyAnswers) {
+            return;
+        }
         let textFieldData: ISurveyUserRowResponse[] = getTextfieldData().slice(-TEXFIELD_MAX_ANSWER_NUMBER);
         textFieldData = textFieldData.concat(collectedData.slice(-MULTICHOICE_AND_SINGLECHOICE_MAX_ANSWER_NUMBER));
         const surveyUserAnswers: ISurveyUserAnswer[] = [];

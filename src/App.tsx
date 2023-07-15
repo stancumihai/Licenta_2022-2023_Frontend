@@ -280,6 +280,9 @@ export default function App(): JSX.Element {
             {authenticationContext.UserHasSurveyAnswers === undefined || !authenticationContext.UserHasSurveyAnswers ? <Survey /> : <Navigate to={HOME_PATH} />}
           </AuthenticatedRoute>
         } />
+        <Route path={SURVEY_PATH} element={
+          <Survey />
+        } />
         <Route path={HOME_PATH} element={
           <HomePage />
         } />
